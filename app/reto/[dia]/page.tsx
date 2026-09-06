@@ -2,11 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { PortableText } from "@portabletext/react";
-import { requireUsuario, getProgreso, estadoRacha } from "@/lib/progreso";
-import { getLeccion } from "@/lib/contenido";
+import { requireUsuario, getProgreso, estadoRacha, completarDiaSiCorresponde } from "@/lib/progreso";
+import { getLeccion, getPiezaPorDia } from "@/lib/contenido";
 import { DIAS_TOTALES } from "@/lib/types";
 import AdSlot from "@/app/components/AdSlot";
-import PalabraDelDiaInput from "@/app/components/PalabraDelDiaInput";
+import PiezaDesbloqueada from "@/app/components/PiezaDesbloqueada";
 
 export async function generateMetadata({ params }: { params: Promise<{ dia: string }> }) {
   const { dia } = await params;
@@ -22,48 +22,41 @@ export default async function DiaPage({ params }: { params: Promise<{ dia: strin
   const progreso = await getProgreso(supabase, user);
   const estado = estadoRacha(progreso);
 
-  const completado = dia < progreso.current_day;
+  const yaEstabaCompletado = dia < progreso.current_day;
   const esActual = dia === progreso.current_day && !progreso.reto_completado;
 
-  // Día futuro: bloqueado.
-  if (!completado && !esActual) redirect("/dashboard?msg=bloqueado");
-  // Día de hoy pero ya completó uno hoy: se abre mañana.
+  if (!yaEstabaCompletado && !esActual) redirect("/dashboard?msg=bloqueado");
   if (esActual && estado.completadoHoy) redirect("/dashboard?msg=manana");
 
+  // Visitar la lección del día pendiente la completa: no hace falta ninguna acción extra.
+  const resultado = esActual ? await completarDiaSiCorresponde(supabase, user, dia, progreso) : null;
+  const exito = resultado && "success" in resultado ? resultado : null;
+
   const leccion = await getLeccion(dia);
+  const pieza = exito?.pieza ? await getPiezaPorDia(dia) : null;
 
   if (!leccion) {
     return (
       <div className="space-y-4 text-center">
-        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-vk-gold">Día {dia}</p>
-        <h1 className="text-2xl font-black">Lección en preparación</h1>
-        <p className="text-vk-muted">Vuelve en un rato: estamos publicando el contenido de hoy.</p>
-        <Link href="/dashboard" className="text-vk-gold underline">
+        <p className="font-display text-xs text-ember-2">Día {dia}</p>
+        <h1 className="font-display text-2xl">Lección en preparación</h1>
+        <p className="text-ink-dim">Vuelve en un rato: estamos publicando el contenido de hoy.</p>
+        <Link href="/dashboard" className="text-ember-2 underline">
           Volver al dashboard
         </Link>
       </div>
     );
   }
 
+  const completado = yaEstabaCompletado || Boolean(exito);
+
   return (
     <article className="space-y-6">
       <header>
-        <div className="flex items-center justify-between">
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-vk-gold">
-            Día {dia} de {DIAS_TOTALES}
-          </p>
-          {completado && (
-            <span className="rounded-full bg-vk-green/15 px-2.5 py-1 text-xs font-semibold text-vk-green">
-              ✓ Completado
-            </span>
-          )}
-          {leccion.esDiaDePieza && !completado && (
-            <span className="rounded-full bg-vk-gold/15 px-2.5 py-1 text-xs font-semibold text-vk-gold">
-              🧩 Día de pieza
-            </span>
-          )}
-        </div>
-        <h1 className="mt-2 text-3xl font-black leading-tight">{leccion.titulo}</h1>
+        <p className="font-display text-xs text-ember-2">
+          Día {dia} de {DIAS_TOTALES}
+        </p>
+        <h1 className="mt-2 font-display text-3xl leading-tight">{leccion.titulo}</h1>
       </header>
 
       <AdSlot position="top" />
@@ -87,39 +80,44 @@ export default async function DiaPage({ params }: { params: Promise<{ dia: strin
       <AdSlot position="mid-content" />
 
       {leccion.tipAccionable && (
-        <div className="rounded-xl border border-vk-green/40 bg-vk-green/10 p-4">
-          <p className="text-xs font-bold uppercase tracking-widest text-vk-green">Tip de hoy</p>
+        <div className="rounded-xl border border-line bg-bg-2 p-4">
+          <p className="font-display text-xs text-ink-dim">Tip de hoy</p>
           <p className="mt-1 font-medium">{leccion.tipAccionable}</p>
         </div>
       )}
 
-      {esActual ? (
-        <PalabraDelDiaInput dia={dia} />
-      ) : (
-        <div className="flex gap-3">
-          {dia > 1 && (
-            <Link
-              href={`/reto/${dia - 1}`}
-              className="flex-1 rounded-lg border border-vk-border px-4 py-3 text-center text-sm font-semibold hover:bg-vk-surface"
-            >
-              ← Día {dia - 1}
-            </Link>
-          )}
-          <Link
-            href={dia < progreso.current_day - 1 || progreso.reto_completado ? `/reto/${Math.min(dia + 1, DIAS_TOTALES)}` : "/dashboard"}
-            className="flex-1 rounded-lg bg-vk-gold px-4 py-3 text-center text-sm font-bold text-vk-bg hover:bg-vk-gold-dark"
-          >
-            {dia < progreso.current_day - 1 || (progreso.reto_completado && dia < DIAS_TOTALES)
-              ? `Día ${dia + 1} →`
-              : "Dashboard →"}
-          </Link>
-        </div>
-      )}
+      {pieza && <PiezaDesbloqueada pieza={pieza} />}
 
+      <nav className="flex gap-3 border-t border-line pt-5 text-sm">
+        {dia > 1 && (
+          <Link
+            href={`/reto/${dia - 1}`}
+            className="flex-1 rounded-lg border border-line px-4 py-3 text-center hover:bg-bg-2"
+          >
+            ← Día {dia - 1}
+          </Link>
+        )}
+        <Link
+          href="/dashboard"
+          className="flex-1 rounded-lg border border-line px-4 py-3 text-center hover:bg-bg-2"
+        >
+          Dashboard
+        </Link>
+        {dia < DIAS_TOTALES && dia < progreso.current_day - 1 && (
+          <Link
+            href={`/reto/${dia + 1}`}
+            className="flex-1 rounded-lg border border-line px-4 py-3 text-center hover:bg-bg-2"
+          >
+            Día {dia + 1} →
+          </Link>
+        )}
+      </nav>
+
+      {completado && !leccion.cliffhanger && (
+        <p className="text-center text-sm text-ink-dim">✓ Día {dia} completado.</p>
+      )}
       {leccion.cliffhanger && (
-        <p className="border-t border-vk-border pt-4 text-center text-sm italic text-vk-muted">
-          {leccion.cliffhanger}
-        </p>
+        <p className="text-center text-sm italic text-ink-dim">{leccion.cliffhanger}</p>
       )}
     </article>
   );

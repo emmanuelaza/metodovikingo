@@ -10,22 +10,22 @@ export default function FaqPage() {
   return (
     <div className="space-y-6">
       <header>
-        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-vk-gold">Ayuda</p>
-        <h1 className="mt-2 text-3xl font-black">Preguntas frecuentes</h1>
+        <p className="font-display text-xs text-ember-2">Ayuda</p>
+        <h1 className="mt-2 font-display text-3xl">Preguntas frecuentes</h1>
       </header>
 
       <AdSlot position="top" />
 
-      <div className="space-y-2">
+      <div>
         {FAQ.map((p, i) => (
           <div key={p.q}>
-            <details className="group rounded-xl border border-vk-border bg-vk-surface">
-              <summary className="cursor-pointer list-none px-4 py-3 font-semibold marker:content-none">
-                <span className="mr-2 text-vk-gold group-open:hidden">+</span>
-                <span className="mr-2 hidden text-vk-gold group-open:inline">−</span>
+            <details className="group border-t border-line py-3">
+              <summary className="cursor-pointer list-none font-semibold marker:content-none">
+                <span className="mr-2 text-ember-2 group-open:hidden">+</span>
+                <span className="mr-2 hidden text-ember-2 group-open:inline">−</span>
                 {p.q}
               </summary>
-              <p className="px-4 pb-4 text-sm leading-relaxed text-vk-muted">{p.a}</p>
+              <p className="mt-2 text-sm leading-relaxed text-ink-dim">{p.a}</p>
             </details>
             {i === 3 && <AdSlot position="mid-content" />}
           </div>

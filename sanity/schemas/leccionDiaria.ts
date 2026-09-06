@@ -13,13 +13,6 @@ export const leccionDiaria = defineType({
       validation: (R) => R.required().min(1).max(30).integer(),
     }),
     defineField({ name: "titulo", title: "Título", type: "string", validation: (R) => R.required() }),
-    defineField({
-      name: "palabraDelDia",
-      title: "Palabra del día (para desbloquear)",
-      type: "string",
-      description: "Se compara sin tildes ni mayúsculas.",
-      validation: (R) => R.required(),
-    }),
     defineField({ name: "contenido", title: "Contenido", type: "array", of: [{ type: "block" }] }),
     defineField({ name: "imagen", title: "Imagen", type: "image", options: { hotspot: true } }),
     defineField({ name: "tipAccionable", title: "Tip accionable del día", type: "text", rows: 3 }),

@@ -1,20 +1,24 @@
 @import "tailwindcss";
 
-/* Paleta de marca — Método Vikingo (tema oscuro único) */
+/* Paleta de marca — Método Vikingo (portada desde la landing HTML original) */
 @theme {
-  --color-vk-bg: #0b0e13;
-  --color-vk-surface: #141922;
-  --color-vk-surface-2: #1c2330;
-  --color-vk-border: #2a3442;
-  --color-vk-text: #eceef2;
-  --color-vk-muted: #97a2b3;
-  --color-vk-gold: #e3a92e;
-  --color-vk-gold-dark: #b8831a;
-  --color-vk-red: #c94a33;
-  --color-vk-green: #47a86f;
+  --color-bg: #0b0c0f;
+  --color-bg-2: #111318;
+  --color-bg-3: #181b21;
+  --color-ink: #f2efe9;
+  --color-ink-dim: #9aa0a8;
+  --color-ink-faint: #5c6067;
+  --color-ember: #ff8a3d;
+  --color-ember-2: #ffb35c;
+  --color-ember-deep: #e05a2b;
+  --color-line: #23262c;
 
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  /* Estados (no forman parte de la marca; se usan solo para éxito/error puntuales) */
+  --color-ok: #5a9a6f;
+  --color-err: #c9634a;
+
+  --font-display: var(--font-anton), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
 }
 
 html {
@@ -22,47 +26,37 @@ html {
 }
 
 body {
-  background: var(--color-vk-bg);
-  color: var(--color-vk-text);
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
 }
 
-/* Animaciones de éxito / reveal */
-@keyframes vk-pop {
-  0% { transform: scale(0.6); opacity: 0; }
-  60% { transform: scale(1.08); opacity: 1; }
-  100% { transform: scale(1); opacity: 1; }
+h1, h2, h3, .font-display {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.015em;
+  font-weight: 400;
 }
-@keyframes vk-shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-6px); }
-  75% { transform: translateX(6px); }
-}
-@keyframes vk-glow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(227, 169, 46, 0.35); }
-  50% { box-shadow: 0 0 0 12px rgba(227, 169, 46, 0); }
-}
-@keyframes vk-rise {
-  from { transform: translateY(12px); opacity: 0; }
+
+/* Transición de entrada discreta para contenido (no es una animación "de juego") */
+@keyframes rise {
+  from { transform: translateY(8px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
-
-.anim-pop { animation: vk-pop 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.3) both; }
-.anim-shake { animation: vk-shake 0.3s ease-in-out; }
-.anim-glow { animation: vk-glow 1.6s ease-out infinite; }
-.anim-rise { animation: vk-rise 0.45s ease-out both; }
+.anim-rise { animation: rise 0.4s ease-out both; }
 
 /* Contenido de lección (Portable Text) */
 .prose-vk p { margin: 0 0 1rem; line-height: 1.7; }
-.prose-vk h2 { font-size: 1.25rem; font-weight: 700; margin: 1.5rem 0 0.5rem; color: var(--color-vk-gold); }
-.prose-vk h3 { font-size: 1.1rem; font-weight: 700; margin: 1.25rem 0 0.5rem; }
+.prose-vk h2 { font-family: var(--font-display); text-transform: uppercase; font-size: 1.25rem; margin: 1.5rem 0 0.5rem; color: var(--color-ember-2); }
+.prose-vk h3 { font-family: var(--font-display); text-transform: uppercase; font-size: 1.1rem; margin: 1.25rem 0 0.5rem; }
 .prose-vk ul { list-style: disc; padding-left: 1.25rem; margin: 0 0 1rem; }
 .prose-vk ol { list-style: decimal; padding-left: 1.25rem; margin: 0 0 1rem; }
 .prose-vk li { margin-bottom: 0.35rem; line-height: 1.6; }
-.prose-vk strong { color: var(--color-vk-text); font-weight: 700; }
+.prose-vk strong { color: var(--color-ink); font-weight: 700; }
 .prose-vk blockquote {
-  border-left: 3px solid var(--color-vk-gold);
+  border-left: 3px solid var(--color-ember);
   padding-left: 1rem;
   margin: 1rem 0;
-  color: var(--color-vk-muted);
+  color: var(--color-ink-dim);
   font-style: italic;
 }

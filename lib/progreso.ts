@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import type { SupabaseClient, User } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 import { diasEntre, hoyISO } from "@/lib/fecha";
-import { DIAS_TOTALES, type UserProgress } from "@/lib/types";
+import { DIAS_TOTALES, type ResultadoCompletarDia, type UserProgress } from "@/lib/types";
 
 /** Devuelve el cliente y el usuario autenticado; redirige a "/" si no hay sesión. */
 export async function requireUsuario(): Promise<{ supabase: SupabaseClient; user: User }> {
@@ -71,6 +71,36 @@ export type EstadoRacha = {
   diaBloqueadoHastaManana: boolean;
   porcentaje: number;
 };
+
+/**
+ * El desbloqueo es automático: al visitar la lección del día pendiente,
+ * si ya pasó al menos un día desde la última visita (o es la primera vez),
+ * el día queda completado sin que el usuario haga nada más que entrar.
+ * No hay "botón de completar": esto se llama directo desde el Server
+ * Component de la página, no es una Server Action.
+ */
+export async function completarDiaSiCorresponde(
+  supabase: SupabaseClient,
+  user: User,
+  dia: number,
+  progreso: UserProgress,
+): Promise<ResultadoCompletarDia | null> {
+  const esDiaPendiente = dia === progreso.current_day && !progreso.reto_completado;
+  const yaCompletadoHoy = estadoRacha(progreso).completadoHoy;
+  if (!esDiaPendiente || yaCompletadoHoy) return null;
+
+  const { data, error } = await supabase.rpc("completar_dia", {
+    p_user_id: user.id,
+    p_day: dia,
+    p_hoy: hoyISO(),
+  });
+
+  if (error) {
+    console.error("completar_dia rpc:", error);
+    return null;
+  }
+  return data as ResultadoCompletarDia;
+}
 
 export function estadoRacha(p: UserProgress, hoy: string = hoyISO()): EstadoRacha {
   const diasSinCompletar = p.last_completed_at ? diasEntre(p.last_completed_at, hoy) : null;

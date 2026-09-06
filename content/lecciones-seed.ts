@@ -1,14 +1,10 @@
 /**
  * Lecciones de fallback (se usan solo si Sanity no está configurado o falta el día).
  * El contenido real se escribe en Sanity: tipo `leccionDiaria`.
- *
- * Regla: la palabra del día debe aparecer dentro de la lección para que el
- * usuario la encuentre leyendo.
  */
 export type LeccionSeed = {
   dia: number;
   titulo: string;
-  palabraDelDia: string;
   parrafos: string[];
   tipAccionable: string;
   cliffhanger: string;
@@ -19,7 +15,6 @@ export const LECCIONES_SEED: LeccionSeed[] = [
   {
     dia: 1,
     titulo: "El punto de partida",
-    palabraDelDia: "DÉFICIT",
     parrafos: [
       "Bienvenido al Reto Vikingo. Durante 30 días vas a recibir una lección corta, un tip que puedes aplicar hoy mismo y, cada semana, una pieza del método completo.",
       "Empecemos por la única regla que no se puede negociar: para bajar grasa necesitas un déficit calórico. Comer un poco menos energía de la que gastas. No hay alimento mágico ni horario mágico; hay balance.",
@@ -31,7 +26,6 @@ export const LECCIONES_SEED: LeccionSeed[] = [
   {
     dia: 2,
     titulo: "Por qué las dietas fallan",
-    palabraDelDia: "HÁBITO",
     parrafos: [
       "Las dietas fallan porque dependen de motivación, y la motivación se agota. Lo que se queda es el hábito: la acción que haces sin discutir contigo mismo.",
       "Un hábito pequeño repetido 30 días le gana a un plan perfecto abandonado en 10. Por eso este reto es diario y corto.",
@@ -42,7 +36,6 @@ export const LECCIONES_SEED: LeccionSeed[] = [
   {
     dia: 3,
     titulo: "El pilar: proteína",
-    palabraDelDia: "PROTEÍNA",
     parrafos: [
       "Si solo pudieras cambiar una cosa de tu alimentación, sería esta: más proteína. Te sacia más, protege tu músculo cuando estás en déficit y cuesta más energía digerirla.",
       "Referencia simple: una porción del tamaño de tu palma en cada comida principal. Huevos, pollo, pescado, carne magra, legumbres, yogur griego.",
@@ -53,7 +46,6 @@ export const LECCIONES_SEED: LeccionSeed[] = [
   {
     dia: 4,
     titulo: "Hambre falsa",
-    palabraDelDia: "AGUA",
     parrafos: [
       "Muchas veces lo que sientes como hambre es sed, aburrimiento o cansancio. Antes de comer entre horas, toma un vaso de agua y espera 10 minutos.",
       "El agua también mejora tu rendimiento al entrenar y reduce la retención de líquidos que te hace ver más hinchado.",
@@ -64,7 +56,6 @@ export const LECCIONES_SEED: LeccionSeed[] = [
   {
     dia: 5,
     titulo: "Dormir también entrena",
-    palabraDelDia: "SUEÑO",
     parrafos: [
       "Dormir poco sube el cortisol y la grelina (hormona del hambre) y baja la leptina (saciedad). Resultado: al día siguiente comes más y con más antojos.",
       "El sueño no es tiempo perdido; es cuando tu cuerpo repara músculo y regula el apetito. Apunta a 7-8 horas.",
@@ -75,7 +66,6 @@ export const LECCIONES_SEED: LeccionSeed[] = [
   {
     dia: 6,
     titulo: "El ejercicio invisible",
-    palabraDelDia: "PASOS",
     parrafos: [
       "Caminar es el quemador de grasa más subestimado. No cansa, no genera hambre extra y suma cientos de calorías al día sin que lo notes.",
       "No necesitas 10.000 pasos desde hoy. Necesitas más que ayer. Sube 1.000 pasos cada semana.",
@@ -86,7 +76,6 @@ export const LECCIONES_SEED: LeccionSeed[] = [
   {
     dia: 7,
     titulo: "Primera pieza del Método",
-    palabraDelDia: "CONSTANCIA",
     parrafos: [
       "Siete días. La mayoría de la gente nunca llega aquí. Tú sí. Y eso te enseña la primera pieza del Método: constancia.",
       "No importa si el día fue perfecto. Importa que apareciste. Ese músculo mental es el que va a mover todo lo demás.",
@@ -98,7 +87,6 @@ export const LECCIONES_SEED: LeccionSeed[] = [
   {
     dia: 8,
     titulo: "Carbohidratos: no son el enemigo",
-    palabraDelDia: "ENERGÍA",
     parrafos: [
       "Los carbohidratos no engordan por sí mismos; engorda el exceso total. Son tu fuente principal de energía para entrenar y pensar.",
       "La clave es la calidad y el momento: arroz, papa, avena, frutas alrededor del entrenamiento; menos ultraprocesados en cualquier momento.",
@@ -109,7 +97,6 @@ export const LECCIONES_SEED: LeccionSeed[] = [
   {
     dia: 9,
     titulo: "Grasas buenas",
-    palabraDelDia: "GRASA",
     parrafos: [
       "Comer grasa no es lo mismo que acumular grasa. Aguacate, aceite de oliva, frutos secos, huevo y pescado azul regulan tus hormonas y te sacian.",
       "Cuidado: la grasa es densa (9 kcal por gramo). Un puñado de frutos secos es porción; medio paquete no.",
@@ -120,7 +107,6 @@ export const LECCIONES_SEED: LeccionSeed[] = [
   {
     dia: 10,
     titulo: "Leer etiquetas en 10 segundos",
-    palabraDelDia: "ETIQUETA",
     parrafos: [
       "Ignora el frente del empaque; es marketing. Ve a la etiqueta nutricional y mira tres cosas: calorías por porción, gramos de proteína y gramos de azúcar.",
       "Si la lista de ingredientes es más larga que tu brazo y no reconoces la mitad, no es comida de base.",
@@ -131,7 +117,6 @@ export const LECCIONES_SEED: LeccionSeed[] = [
   {
     dia: 11,
     titulo: "Fuerza: la palanca que cambia todo",
-    palabraDelDia: "FUERZA",
     parrafos: [
       "El músculo es tejido metabólicamente activo: cuanto más tienes, más energía gastas en reposo. Entrenar fuerza le dice a tu cuerpo qué conservar cuando bajas grasa.",
       "No necesitas un gimnasio para empezar. Sentadillas, flexiones, remos con una mochila. Dos o tres veces por semana ya cambia tu cuerpo.",
@@ -142,7 +127,6 @@ export const LECCIONES_SEED: LeccionSeed[] = [
   {
     dia: 12,
     titulo: "Sobrecarga progresiva",
-    palabraDelDia: "PROGRESO",
     parrafos: [
       "Tu cuerpo se adapta a lo que le pides. Si siempre haces lo mismo, deja de cambiar. Progreso = pedir un poco más cada semana: una repetición, un kilo, una serie.",
       "Anota lo que haces. Sin registro no hay progreso, solo movimiento.",
@@ -153,7 +137,6 @@ export const LECCIONES_SEED: LeccionSeed[] = [
   {
     dia: 13,
     titulo: "El descanso construye",
-    palabraDelDia: "DESCANSO",
     parrafos: [
       "El músculo no crece en el gimnasio; crece cuando descansas. Entrenar todos los días sin recuperar es la forma más rápida de estancarte o lesionarte.",
       "Un día de descanso activo (caminar, estirar) vale más que un entrenamiento a medias por agotamiento.",
@@ -164,7 +147,6 @@ export const LECCIONES_SEED: LeccionSeed[] = [
   {
     dia: 14,
     titulo: "Segunda pieza del Método",
-    palabraDelDia: "ESTRUCTURA",
     parrafos: [
       "Dos semanas. Ya sabes qué comer y por qué entrenar. Ahora la segunda pieza: estructura.",
       "La estructura es decidir una vez para no decidir cada día: horarios de comida, días de entrenamiento, compras de la semana. Cuando está decidido, la voluntad deja de gastarse.",
@@ -176,7 +158,6 @@ export const LECCIONES_SEED: LeccionSeed[] = [
   {
     dia: 15,
     titulo: "Comer fuera sin culpa",
-    palabraDelDia: "EQUILIBRIO",
     parrafos: [
       "Una comida no define tu progreso; lo define la semana completa. El equilibrio real es comer bien el 80 % del tiempo y disfrutar el 20 % sin culpa.",
       "Trucos: elige proteína como base del plato, pide las salsas aparte, agua en vez de refresco.",
@@ -187,7 +168,6 @@ export const LECCIONES_SEED: LeccionSeed[] = [
   {
     dia: 16,
     titulo: "Snacks inteligentes",
-    palabraDelDia: "SNACK",
     parrafos: [
       "El problema no es picar; es picar lo que hay a mano. Un snack inteligente tiene proteína o fibra: yogur griego, fruta, huevo duro, un puñado de frutos secos.",
       "Prepáralos con antelación; el hambre no espera a que cocines.",
@@ -198,7 +178,6 @@ export const LECCIONES_SEED: LeccionSeed[] = [
   {
     dia: 17,
     titulo: "Estrés y cortisol",
-    palabraDelDia: "CALMA",
     parrafos: [
       "El estrés crónico sube el cortisol, y el cortisol favorece guardar grasa abdominal y comer por ansiedad. No puedes eliminar el estrés, pero sí bajar su volumen.",
       "Diez minutos de calma al día (caminar sin celular, respirar, estirar) cambian más tu cuerpo de lo que crees.",
@@ -209,7 +188,6 @@ export const LECCIONES_SEED: LeccionSeed[] = [
   {
     dia: 18,
     titulo: "Meal prep en una hora",
-    palabraDelDia: "PREPARACIÓN",
     parrafos: [
       "La preparación es la diferencia entre 'quiero comer bien' y 'como bien'. Una hora el domingo: 2 proteínas cocinadas, 2 carbohidratos, verduras lavadas.",
       "No preparas platos completos; preparas piezas que combinas en 3 minutos.",
@@ -220,7 +198,6 @@ export const LECCIONES_SEED: LeccionSeed[] = [
   {
     dia: 19,
     titulo: "Alcohol y progreso",
-    palabraDelDia: "DECISIÓN",
     parrafos: [
       "El alcohol aporta calorías vacías, frena la quema de grasa mientras lo procesas y empeora tu sueño. No es prohibido; es una decisión con costo.",
       "Si vas a tomar: menos cantidad, sin mezclas azucaradas, agua entre medias. Y no compenses saltándote comidas.",
@@ -231,7 +208,6 @@ export const LECCIONES_SEED: LeccionSeed[] = [
   {
     dia: 20,
     titulo: "Cuando te estancas",
-    palabraDelDia: "AJUSTE",
     parrafos: [
       "El estancamiento es normal: tu cuerpo se adaptó. No es momento de rendirse ni de cortar todo a la mitad. Es momento de un ajuste pequeño.",
       "Opciones: sumar 1.500 pasos al día, quitar 100-150 kcal, revisar si el fin de semana está borrando la semana.",
@@ -242,7 +218,6 @@ export const LECCIONES_SEED: LeccionSeed[] = [
   {
     dia: 21,
     titulo: "Tercera pieza del Método",
-    palabraDelDia: "MEDICIÓN",
     parrafos: [
       "Tres semanas. Ya tienes constancia y estructura. La tercera pieza: medición.",
       "Lo que no se mide no se puede ajustar. Peso semanal (mismo día, misma hora), cintura, fotos y pasos. No para juzgarte; para saber qué palanca mover.",
@@ -254,7 +229,6 @@ export const LECCIONES_SEED: LeccionSeed[] = [
   {
     dia: 22,
     titulo: "Fibra y saciedad",
-    palabraDelDia: "FIBRA",
     parrafos: [
       "La fibra llena, regula el azúcar en sangre y alimenta tu microbiota. Verduras, legumbres, avena, frutas con piel.",
       "Meta simple: verduras en al menos dos comidas al día.",
@@ -265,7 +239,6 @@ export const LECCIONES_SEED: LeccionSeed[] = [
   {
     dia: 23,
     titulo: "Entrenar en casa",
-    palabraDelDia: "CASA",
     parrafos: [
       "No hay excusa de tiempo ni de gimnasio. En casa puedes hacer un circuito completo en 20 minutos: sentadillas, flexiones, zancadas, plancha, remo con mochila.",
       "Tres rondas, descanso corto, y a subir repeticiones cada semana.",
@@ -276,7 +249,6 @@ export const LECCIONES_SEED: LeccionSeed[] = [
   {
     dia: 24,
     titulo: "Cardio: cuánto y cuándo",
-    palabraDelDia: "CARDIO",
     parrafos: [
       "El cardio ayuda al corazón y suma gasto, pero no sustituye a la fuerza ni a la alimentación. Dos o tres sesiones de 20-30 minutos por semana son suficientes.",
       "Mejor un cardio que disfrutes (bici, caminar rápido, bailar) que uno perfecto que abandonas.",
@@ -287,7 +259,6 @@ export const LECCIONES_SEED: LeccionSeed[] = [
   {
     dia: 25,
     titulo: "Suplementos que sí sirven",
-    palabraDelDia: "CREATINA",
     parrafos: [
       "El 95 % de los suplementos son ruido. Los que tienen evidencia: proteína en polvo (si no llegas con comida), creatina (fuerza y rendimiento), cafeína (energía) y vitamina D si tienes déficit.",
       "Ninguno sustituye lo básico: comida, sueño, entrenamiento.",
@@ -298,7 +269,6 @@ export const LECCIONES_SEED: LeccionSeed[] = [
   {
     dia: 26,
     titulo: "Eres lo que repites",
-    palabraDelDia: "IDENTIDAD",
     parrafos: [
       "No estás 'haciendo un reto'. Te estás convirtiendo en alguien que entrena, come bien y mide. Esa es la identidad que sostiene los hábitos cuando el reto termine.",
       "Cada día que apareces votas por esa versión de ti.",
@@ -309,7 +279,6 @@ export const LECCIONES_SEED: LeccionSeed[] = [
   {
     dia: 27,
     titulo: "El entorno decide",
-    palabraDelDia: "ENTORNO",
     parrafos: [
       "Tu fuerza de voluntad pierde contra tu entorno. Si hay galletas a la vista, comes galletas. Si la fruta está al frente, comes fruta.",
       "Diseña tu entorno: lo que quieres comer, visible; lo que no, fuera de casa o guardado.",
@@ -320,7 +289,6 @@ export const LECCIONES_SEED: LeccionSeed[] = [
   {
     dia: 28,
     titulo: "Paciencia estratégica",
-    palabraDelDia: "PACIENCIA",
     parrafos: [
       "Bajar 0,5 kg por semana parece poco; son 25 kg en un año. La paciencia no es esperar; es seguir ejecutando sin necesitar resultados inmediatos.",
       "Los que llegan lejos no son los más intensos; son los que no se detienen.",
@@ -331,7 +299,6 @@ export const LECCIONES_SEED: LeccionSeed[] = [
   {
     dia: 29,
     titulo: "Tu plan de 90 días",
-    palabraDelDia: "PLAN",
     parrafos: [
       "El reto termina mañana, pero tu proceso no. Un plan simple: 3 días de fuerza, 8.000+ pasos, proteína en cada comida, medición semanal, un ajuste cuando te estanques.",
       "Escríbelo. Un plan escrito se cumple el doble.",
@@ -342,7 +309,6 @@ export const LECCIONES_SEED: LeccionSeed[] = [
   {
     dia: 30,
     titulo: "El Método completo",
-    palabraDelDia: "VIKINGO",
     parrafos: [
       "Lo lograste. 30 días. Ya tienes las tres piezas: constancia, estructura y medición. La cuarta pieza es el sistema que las une, y ese sistema eres tú ejecutándolo.",
       "Un vikingo no es el más fuerte del pueblo; es el que sale a remar todos los días aunque llueva. Hoy desbloqueas el Método completo.",

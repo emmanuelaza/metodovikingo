@@ -5,11 +5,14 @@ import { fechaCorta } from "@/lib/fecha";
 
 export type PuntoProgreso = { fecha: string; peso: number | null; cintura: number | null };
 
-// Colores validados contra la superficie oscura (#141922) con el validador de dataviz.
-const COLOR_PESO = "#b8831a";
+// Colores de la gráfica, validados con el validador de dataviz contra el fondo #0B0C0F.
+// COLOR_PESO usa --ember-deep de la marca; COLOR_CINTURA es un verde solo para este uso
+// (peso y cintura nunca comparten un mismo gráfico, así que no compiten por identidad).
+const COLOR_PESO = "#E05A2B";
 const COLOR_CINTURA = "#47a86f";
-const INK_MUTED = "#97a2b3";
-const GRID = "#2a3442";
+const INK_DIM = "#9AA0A8";
+const GRID = "#23262C";
+const BG = "#0B0C0F";
 
 type TooltipPayload = { value?: number | string | null; payload?: PuntoProgreso }[];
 
@@ -28,8 +31,8 @@ function TooltipVK({
   const fecha = p.payload?.fecha;
   if (valor === null || valor === undefined || !fecha) return null;
   return (
-    <div className="rounded-lg border border-vk-border bg-vk-bg px-3 py-2 text-sm shadow-lg">
-      <p className="text-xs text-vk-muted">{fechaCorta(fecha)}</p>
+    <div className="rounded-lg border border-line bg-bg px-3 py-2 text-sm shadow-lg">
+      <p className="text-xs text-ink-dim">{fechaCorta(fecha)}</p>
       <p className="font-semibold">
         {valor} {unidad}
       </p>
@@ -58,11 +61,11 @@ function Serie({
   const delta = Math.round((ultimo - primero) * 10) / 10;
 
   return (
-    <div className="rounded-2xl border border-vk-border bg-vk-surface p-4">
+    <div className="border-t border-line pt-4">
       <div className="mb-2 flex items-baseline justify-between">
-        <p className="text-sm font-bold">{titulo}</p>
-        <p className="text-sm text-vk-muted">
-          <span className="text-lg font-black text-vk-text">
+        <p className="text-sm font-semibold">{titulo}</p>
+        <p className="text-sm text-ink-dim">
+          <span className="text-lg font-semibold text-ink">
             {ultimo} {unidad}
           </span>
           {conDatos.length > 1 && (
@@ -75,7 +78,7 @@ function Serie({
       </div>
 
       {conDatos.length < 2 ? (
-        <p className="py-6 text-center text-sm text-vk-muted">Registra un segundo dato para ver la tendencia.</p>
+        <p className="py-6 text-center text-sm text-ink-dim">Registra un segundo dato para ver la tendencia.</p>
       ) : (
         <div className="h-48 w-full">
           <ResponsiveContainer width="100%" height="100%">
@@ -84,29 +87,29 @@ function Serie({
               <XAxis
                 dataKey="fecha"
                 tickFormatter={fechaCorta}
-                tick={{ fill: INK_MUTED, fontSize: 11 }}
+                tick={{ fill: INK_DIM, fontSize: 11 }}
                 axisLine={{ stroke: GRID }}
                 tickLine={false}
                 minTickGap={24}
               />
               <YAxis
                 domain={["auto", "auto"]}
-                tick={{ fill: INK_MUTED, fontSize: 11 }}
+                tick={{ fill: INK_DIM, fontSize: 11 }}
                 axisLine={false}
                 tickLine={false}
                 width={44}
               />
               <Tooltip
                 content={<TooltipVK unidad={unidad} />}
-                cursor={{ stroke: INK_MUTED, strokeWidth: 1, strokeDasharray: "3 3" }}
+                cursor={{ stroke: INK_DIM, strokeWidth: 1, strokeDasharray: "3 3" }}
               />
               <Line
                 type="monotone"
                 dataKey={clave}
                 stroke={color}
                 strokeWidth={2}
-                dot={{ r: 4, fill: color, stroke: "#141922", strokeWidth: 2 }}
-                activeDot={{ r: 6, fill: color, stroke: "#141922", strokeWidth: 2 }}
+                dot={{ r: 4, fill: color, stroke: BG, strokeWidth: 2 }}
+                activeDot={{ r: 6, fill: color, stroke: BG, strokeWidth: 2 }}
                 isAnimationActive={false}
               />
             </LineChart>

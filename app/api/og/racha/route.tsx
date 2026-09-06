@@ -23,8 +23,8 @@ export async function GET(request: Request) {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(160deg, #0b0e13 0%, #141922 60%, #1c2330 100%)",
-          color: "#eceef2",
+          background: "linear-gradient(160deg, #0B0C0F 0%, #111318 60%, #181B21 100%)",
+          color: "#F2EFE9",
           fontFamily: "sans-serif",
           position: "relative",
         }}
@@ -41,7 +41,7 @@ export async function GET(request: Request) {
             letterSpacing: 8,
           }}
         >
-          <span style={{ color: "#e3a92e" }}>⚔</span>
+          <span style={{ color: "#FF8A3D" }}>⚔</span>
           <span>RETO VIKINGO</span>
         </div>
 
@@ -55,11 +55,11 @@ export async function GET(request: Request) {
             fontSize: 260,
             fontWeight: 900,
             lineHeight: 1,
-            color: "#e3a92e",
+            color: "#FF8A3D",
           }}
         >
           {racha}
-          <span style={{ fontSize: 72, color: "#eceef2", fontWeight: 700 }}>{racha === 1 ? "día" : "días"}</span>
+          <span style={{ fontSize: 72, color: "#F2EFE9", fontWeight: 700 }}>{racha === 1 ? "día" : "días"}</span>
         </div>
 
         <div style={{ display: "flex", fontSize: 56, fontWeight: 700, marginTop: 8 }}>de racha</div>
@@ -71,17 +71,17 @@ export async function GET(request: Request) {
               marginTop: 48,
               padding: "16px 40px",
               borderRadius: 999,
-              border: "4px solid #e3a92e",
+              border: "4px solid #FF8A3D",
               fontSize: 40,
               fontWeight: 700,
-              color: "#e3a92e",
+              color: "#FF8A3D",
             }}
           >
             Día {dia} de 30 completado
           </div>
         )}
 
-        <div style={{ position: "absolute", bottom: 64, display: "flex", fontSize: 34, color: "#97a2b3" }}>
+        <div style={{ position: "absolute", bottom: 64, display: "flex", fontSize: 34, color: "#9AA0A8" }}>
           Reto gratuito de 30 días · Método Vikingo
         </div>
       </div>

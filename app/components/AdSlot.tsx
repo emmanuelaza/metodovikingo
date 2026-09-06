@@ -8,7 +8,6 @@ type Position = "top" | "mid-content" | "bottom";
 /**
  * Slot de anuncio reutilizable. Se apaga por completo con NEXT_PUBLIC_ADS_ENABLED=false
  * y cambia de red con NEXT_PUBLIC_AD_PROVIDER (adsense | adsterra).
- * Nunca colocar dentro del flujo del input de palabra del día.
  */
 export default function AdSlot({ position, className = "" }: { position: Position; className?: string }) {
   if (!ADS_ENABLED) return null;

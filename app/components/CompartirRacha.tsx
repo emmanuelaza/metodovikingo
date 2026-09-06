@@ -32,9 +32,9 @@ export default function CompartirRacha({ racha, dia }: { racha: number; dia: num
       type="button"
       onClick={compartir}
       disabled={estado === "cargando"}
-      className="w-full rounded-lg border border-vk-gold/50 px-4 py-2.5 text-sm font-semibold text-vk-gold transition hover:bg-vk-gold/10 disabled:opacity-60"
+      className="w-full rounded-lg border border-line px-4 py-2.5 text-sm text-ink-dim transition hover:border-ember/50 hover:text-ink disabled:opacity-60"
     >
-      {estado === "cargando" ? "Generando imagen…" : "📤 Compartir mi racha"}
+      {estado === "cargando" ? "Generando imagen…" : "Compartir mi racha"}
     </button>
   );
 }

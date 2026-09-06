@@ -1,16 +1,12 @@
 import type { Pieza } from "@/lib/contenido";
 
-export default function PiezaDesbloqueada({ pieza, final = false }: { pieza: Pieza; final?: boolean }) {
+/** Sección de contenido normal, no un "reveal" — se muestra dentro de la lección del día. */
+export default function PiezaDesbloqueada({ pieza }: { pieza: Pieza }) {
   return (
-    <div className="anim-rise rounded-2xl border-2 border-vk-gold bg-gradient-to-b from-vk-gold/15 to-transparent p-5 text-center">
-      <p className="text-xs font-bold uppercase tracking-[0.3em] text-vk-gold">
-        {final ? "Método completo" : `Pieza ${pieza.numero} de 4 desbloqueada`}
-      </p>
-      <p className="my-3 text-5xl anim-pop" aria-hidden>
-        🧩
-      </p>
-      <h3 className="text-2xl font-black">{pieza.titulo}</h3>
-      <p className="mt-3 text-left leading-relaxed text-vk-text/90">{pieza.texto}</p>
+    <div className="rounded-xl border border-ember/40 bg-bg-2 p-5">
+      <p className="font-display text-xs text-ember-2">Pieza {pieza.numero} de 4 · Método Vikingo</p>
+      <h3 className="mt-1 font-display text-xl">{pieza.titulo}</h3>
+      <p className="mt-3 leading-relaxed text-ink/90">{pieza.texto}</p>
     </div>
   );
 }

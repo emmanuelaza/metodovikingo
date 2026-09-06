@@ -30,11 +30,10 @@ create table if not exists public.user_progress (
 );
 
 create table if not exists public.daily_completions (
-  id                 bigint generated always as identity primary key,
-  user_id            uuid not null references public.profiles(id) on delete cascade,
-  day_number         int  not null check (day_number between 1 and 30),
-  completed_at       timestamptz not null default now(),
-  palabra_ingresada  text,
+  id            bigint generated always as identity primary key,
+  user_id       uuid not null references public.profiles(id) on delete cascade,
+  day_number    int  not null check (day_number between 1 and 30),
+  completed_at  timestamptz not null default now(),
   unique (user_id, day_number)
 );
 
@@ -119,14 +118,15 @@ create trigger on_auth_user_created
 
 -- ---------------------------------------------------------------------
 -- 4. RPC: completar_dia
---    p_hoy lo manda el servidor de Next ya calculado en la zona horaria
---    del reto (RETO_TIMEZONE), para que "hoy" no dependa del reloj UTC.
+--    El desbloqueo es automático: se llama al visitar la lección del día
+--    pendiente (no requiere ninguna acción del usuario). p_hoy lo manda el
+--    servidor de Next ya calculado en la zona horaria del reto
+--    (RETO_TIMEZONE), para que "hoy" no dependa del reloj UTC.
 -- ---------------------------------------------------------------------
 
 create or replace function public.completar_dia(
   p_user_id uuid,
   p_day     int,
-  p_palabra text,
   p_hoy     date default current_date
 )
 returns json
@@ -203,8 +203,8 @@ begin
     updated_at        = now()
   where user_id = p_user_id;
 
-  insert into public.daily_completions (user_id, day_number, palabra_ingresada)
-  values (p_user_id, p_day, left(p_palabra, 100))
+  insert into public.daily_completions (user_id, day_number)
+  values (p_user_id, p_day)
   on conflict (user_id, day_number) do nothing;
 
   return json_build_object(
@@ -285,7 +285,7 @@ $$;
 -- 6. PERMISOS: solo usuarios autenticados y el service role ejecutan RPCs.
 -- ---------------------------------------------------------------------
 
-revoke all on function public.completar_dia(uuid, int, text, date)  from public;
-revoke all on function public.recuperar_racha(uuid, date)          from public;
-grant execute on function public.completar_dia(uuid, int, text, date) to authenticated, service_role;
-grant execute on function public.recuperar_racha(uuid, date)         to authenticated, service_role;
+revoke all on function public.completar_dia(uuid, int, date)  from public;
+revoke all on function public.recuperar_racha(uuid, date)     from public;
+grant execute on function public.completar_dia(uuid, int, date) to authenticated, service_role;
+grant execute on function public.recuperar_racha(uuid, date)    to authenticated, service_role;

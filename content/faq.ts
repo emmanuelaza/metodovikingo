@@ -11,11 +11,7 @@ export const FAQ: Pregunta[] = [
   },
   {
     q: "¿Puedo hacer varios días en uno?",
-    a: "No. Se desbloquea una lección por día. El reto está diseñado para crear el hábito de volver cada día; adelantar contenido rompe justamente eso.",
-  },
-  {
-    q: "¿Dónde encuentro la palabra del día?",
-    a: "Dentro de la lección. Léela completa y la vas a encontrar. Se escribe sin importar mayúsculas o tildes.",
+    a: "No. Se desbloquea una lección por día: entras, la lees, y esa visita ya cuenta como completada. Al día siguiente se abre la próxima. El reto está diseñado para crear el hábito de volver cada día; adelantar contenido rompe justamente eso.",
   },
   {
     q: "¿Qué son las piezas del Método?",

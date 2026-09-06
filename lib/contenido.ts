@@ -11,7 +11,6 @@ import { PIEZAS_SEED } from "@/content/piezas-seed";
 export type Leccion = {
   dia: number;
   titulo: string;
-  palabraDelDia: string;
   contenido: PortableTextBlock[];
   imagenUrl: string | null;
   tipAccionable: string | null;
@@ -29,7 +28,6 @@ export type Pieza = {
 const QUERY_LECCION = `*[_type == "leccionDiaria" && diaNumero == $dia][0]{
   "dia": diaNumero,
   titulo,
-  palabraDelDia,
   contenido,
   "imagenUrl": imagen.asset->url,
   tipAccionable,
@@ -56,7 +54,6 @@ function seedALeccion(s: LeccionSeed): Leccion {
   return {
     dia: s.dia,
     titulo: s.titulo,
-    palabraDelDia: s.palabraDelDia,
     contenido: parrafosABloques(s.parrafos),
     imagenUrl: null,
     tipAccionable: s.tipAccionable,
