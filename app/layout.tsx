@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
-import Link from "next/link";
 import { Anton, Manrope } from "next/font/google";
 import "./globals.css";
 import Nav from "@/app/components/Nav";
@@ -12,7 +11,7 @@ const manrope = Manrope({ variable: "--font-manrope", subsets: ["latin"] });
 export const metadata: Metadata = {
   title: { default: "Reto Vikingo — 30 días", template: "%s · Reto Vikingo" },
   description:
-    "Reto gratuito de 30 días de nutrición y entrenamiento. Una lección nueva cada día y el Método completo al final.",
+    "Curso gratuito de 30 días de nutrición y entrenamiento. Una lección nueva cada día y el Método completo al final.",
   metadataBase: process.env.NEXT_PUBLIC_SITE_URL ? new URL(process.env.NEXT_PUBLIC_SITE_URL) : undefined,
 };
 
@@ -35,12 +34,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           />
         )}
         <Nav />
-        <main className="flex-1 w-full max-w-lg mx-auto px-4 pt-5 pb-16">{children}</main>
+        <main className="flex-1 w-full">{children}</main>
         <footer className="border-t border-line py-6 text-center text-xs text-ink-dim">
-          <div className="flex justify-center gap-4 mb-2">
-            <Link href="/recetas" className="hover:text-ink">Recetas</Link>
-            <Link href="/faq" className="hover:text-ink">Preguntas frecuentes</Link>
-          </div>
           <p>Método Vikingo · Contenido educativo, no sustituye consejo médico.</p>
         </footer>
       </body>

@@ -1,6 +1,6 @@
 # Reto Vikingo
 
-Plataforma web del reto gratuito de 30 días (Método Vikingo). Next.js 16 + Supabase + Sanity + Tailwind v4.
+Curso web gratuito de 30 días (Método Vikingo), estilo plataforma de curso simple (tipo Udemy/Platzi básico) — sin mecánicas de juego. Next.js 16 + Supabase (auth anónima) + Sanity + Tailwind v4.
 
 ## Puesta en marcha
 
@@ -13,17 +13,9 @@ npm run dev
 ### 1. Supabase
 
 1. Crea un proyecto en [supabase.com](https://supabase.com).
-2. En **SQL Editor**, pega y ejecuta `supabase/migrations/0001_init.sql` (tablas, RLS, trigger y funciones `completar_dia` / `recuperar_racha`).
-3. En **Authentication → Providers → Email**: activa Email y desactiva "Confirm email" no es necesario (el magic link ya verifica).
-4. En **Authentication → URL Configuration**: agrega `http://localhost:3000/auth/callback` y la URL de producción a *Redirect URLs*.
-5. En **Authentication → Email Templates → Magic Link**, incluye el código de 6 dígitos además del link, para que funcione aunque el usuario abra el correo en otro navegador (típico desde TikTok):
-
-   ```html
-   <h2>Tu acceso al Reto Vikingo</h2>
-   <p><a href="{{ .ConfirmationURL }}">Entrar al reto</a></p>
-   <p>O escribe este código: <strong>{{ .Token }}</strong></p>
-   ```
-6. Copia `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY` a `.env.local`.
+2. En **SQL Editor**, pega y ejecuta `supabase/migrations/0001_init.sql` (tablas `profiles`, `daily_completions`, `body_progress_logs` + RLS + trigger de alta).
+3. En **Authentication → Sign In / Providers**, activa **"Allow anonymous sign-ins"**. Es el único paso de auth necesario: no hay email, ni magic link, ni formulario de registro — la primera visita crea una sesión anónima automáticamente (ver `lib/supabase/middleware.ts`).
+4. Copia `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY` a `.env.local`.
 
 ### 2. Sanity (opcional al inicio)
 
@@ -38,30 +30,34 @@ Ver [`sanity/README.md`](sanity/README.md). Mientras no esté configurado, la ap
 
 ```
 app/
-  page.tsx                  Landing: palabra de entrada + captura (magic link / código)
-  auth/actions.ts           Server Actions de auth · auth/callback/route.ts
-  dashboard/                Racha, progreso, piezas, recuperar racha
-  reto/[dia]/               Lección del día + Server Action completarDia()
-  metodo-secreto/           Reveal final (solo reto_completado)
+  page.tsx                  Temario (índice de 30 días) — página principal, full-bleed
+  reto/[dia]/               Lección del día como artículo + actions.ts (marcarCompletado)
+  metodo-secreto/           Síntesis final (visible cuando el día 30 está habilitado)
   progreso/                 Registro de peso/cintura + gráfica (Recharts)
   api/og/racha/route.tsx    Imagen compartible de la racha (next/og)
   recetas/ · faq/           Contenido evergreen
-  components/               AdSlot, RachaBadge, ProgressBar, PalabraDelDiaInput, PiezaDesbloqueada, …
+  components/               AdSlot, ProgressBar, CompartirRacha, PiezaDesbloqueada, MarcarCompletado, Nav
 lib/
-  supabase/                 Clientes server/browser + refresco de sesión (proxy.ts)
+  supabase/                 Clientes server/browser + alta de sesión anónima (proxy.ts)
   contenido.ts              Capa de contenido: Sanity → fallback content/
-  progreso.ts               requireUsuario, getProgreso, estadoRacha
+  progreso.ts               requireUsuario, getPerfil, diaMaximoDisponible, calcularEstadoCurso
   fecha.ts                  "Hoy" en RETO_TIMEZONE
 content/                    Seeds locales (lecciones, piezas, recetas, FAQ)
 supabase/migrations/        SQL del esquema
 sanity/schemas/             Schemas para el Studio
 ```
 
-## Reglas de negocio
+## Cómo funciona el desbloqueo (sin mecánicas de juego)
 
-- **Un día por fecha**: `completar_dia` rechaza un segundo día el mismo día (`ya_completado_hoy`). El día siguiente se abre mañana.
-- **Racha**: +1 si completó ayer; se reinicia si pasaron ≥ 2 días. `recuperar_racha` (1 vez/mes) mueve `last_completed_at` a ayer para que la racha continúe.
-- **Fecha del día**: la calcula el servidor de Next en `RETO_TIMEZONE` y la pasa a Postgres (`p_hoy`), no depende de UTC.
-- **Palabra del día**: se valida en el servidor (`completarDia`); la palabra correcta nunca llega al cliente. Comparación sin tildes ni mayúsculas.
-- **Escrituras de progreso**: solo por RPC (`security definer`), nunca desde el cliente. RLS no da `update` sobre `user_progress` ni `insert` sobre `daily_completions` al rol `authenticated`.
-- **Piezas**: días 7, 14, 21 → `pieces_unlocked`; día 30 → `reto_completado = true` y acceso a `/metodo-secreto`.
+- **Cero fricción de entrada**: no hay landing, ni palabra de entrada, ni registro. El middleware crea una sesión anónima de Supabase en la primera visita (`auth.signInAnonymously()`) y el usuario cae directo en el temario.
+- **Desbloqueo por calendario, no por acción del usuario**: cada `profiles.fecha_inicio` (fijada al crear el perfil) determina qué día máximo está disponible: `día_máximo = min(30, hoy - fecha_inicio + 1)`. No hace falta "activar" ni completar nada para que se abra el siguiente día — simplemente pasa el tiempo. Ver `diaMaximoDisponible()` en `lib/progreso.ts`.
+- **El checkbox de "marcar como completado" es solo seguimiento personal**: inserta/borra una fila en `daily_completions`. No bloquea ni desbloquea nada — es un dato para la barra de progreso y la racha, no un gate. Por eso no hace falta una función `security definer`: es un hecho idempotente protegido por RLS, no un estado derivado con invariantes que proteger.
+- **Racha**: se calcula leyendo las fechas distintas de `daily_completions` (días de calendario consecutivos con al menos una lección marcada, como Duolingo/GitHub) — no hay contador guardado ni mecánica de "recuperar racha". Ver `calcularEstadoCurso()`.
+- **"Continuar donde quedaste"**: el temario (`/`) calcula el primer día habilitado sin marcar y lo ofrece como botón principal, sin que el usuario tenga que buscarlo en la lista.
+- **Piezas del Método**: contenido real embebido dentro de las lecciones de los días 7, 14 y 21 (no una animación de "desbloqueo"). El día 30 se habilita `/metodo-secreto` con la síntesis completa.
+- **Diseño de página completa**: `app/layout.tsx` no restringe el ancho; cada página arma su propio full-bleed (franja de header + contenedor interno de lectura), en vez de una tarjeta centrada angosta.
+- **Pendiente**: comunidad de Discord y guías descargables en PDF están marcadas como "Próximamente" en el temario y al final de cada lección — placeholders intencionales, sin funcionalidad detrás todavía.
+
+## Limitación conocida del login anónimo
+
+Al no haber cuenta, el progreso vive en las cookies de ese navegador/dispositivo. Cambiar de navegador, usar modo incógnito o borrar datos del sitio reinicia el progreso. Si más adelante se quiere permitir "guardar mi progreso" con un correo opcional, se puede vincular la identidad anónima a un email con `supabase.auth.updateUser()` sin perder el historial.

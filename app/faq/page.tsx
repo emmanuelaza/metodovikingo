@@ -8,7 +8,7 @@ export const metadata = {
 
 export default function FaqPage() {
   return (
-    <div className="space-y-6">
+    <div className="mx-auto max-w-3xl space-y-6 px-6 py-10">
       <header>
         <p className="font-display text-xs text-ember-2">Ayuda</p>
         <h1 className="mt-2 font-display text-3xl">Preguntas frecuentes</h1>

@@ -1,65 +1,123 @@
-import { redirect } from "next/navigation";
 import Link from "next/link";
-import { createClient, SUPABASE_CONFIGURADO } from "@/lib/supabase/server";
-import LandingForm from "@/app/components/LandingForm";
+import { requireUsuario, getPerfil, getFechasCompletado, calcularEstadoCurso } from "@/lib/progreso";
+import { getTitulos } from "@/lib/contenido";
+import { DIAS_TOTALES } from "@/lib/types";
+import AdSlot from "@/app/components/AdSlot";
+import ProgressBar from "@/app/components/ProgressBar";
+import CompartirRacha from "@/app/components/CompartirRacha";
 
 const MENSAJES: Record<string, string> = {
-  login: "Inicia sesión para continuar con tu reto.",
-  link_invalido: "Ese link ya venció. Pide uno nuevo o usa el código de 6 dígitos del correo.",
+  bloqueado: "Ese día todavía no está disponible. Vuelve cuando le toque a tu calendario.",
 };
 
-export default async function Landing({
+export default async function Temario({
   searchParams,
 }: {
   searchParams: Promise<{ msg?: string }>;
 }) {
   const { msg } = await searchParams;
-
-  if (SUPABASE_CONFIGURADO) {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (user) redirect("/dashboard");
-  }
+  const { supabase, user } = await requireUsuario();
+  const [perfil, fechas, titulos] = await Promise.all([
+    getPerfil(supabase, user),
+    getFechasCompletado(supabase, user),
+    getTitulos(),
+  ]);
+  const estado = calcularEstadoCurso(perfil, fechas);
+  const aviso = msg ? MENSAJES[msg] : undefined;
 
   return (
-    <div className="space-y-8">
-      <section className="pt-6 text-center">
-        <p className="font-display text-xs text-ember-2">Reto gratuito</p>
-        <h1 className="mt-3 text-4xl leading-tight">
-          30 días.
-          <br />
-          <span className="text-ember">Un método.</span>
-        </h1>
-        <p className="mt-4 text-ink-dim">
-          Una lección nueva cada día. Entras, la lees, y tu racha sigue. Al final, el Método Vikingo completo.
-        </p>
-      </section>
+    <div>
+      <section className="border-b border-line bg-bg-2">
+        <div className="mx-auto max-w-4xl px-6 py-12">
+          <p className="font-display text-xs text-ember-2">Reto Vikingo · 30 días</p>
+          <h1 className="mt-2 font-display text-4xl leading-tight">Tu temario</h1>
 
-      {msg && MENSAJES[msg] && (
-        <p className="rounded-lg border border-ember/40 bg-bg-2 px-4 py-3 text-sm text-ember-2">{MENSAJES[msg]}</p>
-      )}
-
-      <LandingForm />
-
-      <section className="space-y-3 border-t border-line pt-6">
-        {[
-          ["Racha diaria", "Cada día que entras suma. Si fallas uno, tienes 1 recuperación al mes."],
-          ["Piezas del Método", "Los días 7, 14 y 21 suman una pieza. El día 30, el Método completo."],
-          ["Tu progreso", "Registra peso y cintura cada semana y mira tu evolución en una gráfica."],
-        ].map(([titulo, texto]) => (
-          <div key={titulo}>
-            <p className="font-semibold text-ink">{titulo}</p>
-            <p className="text-sm text-ink-dim">{texto}</p>
+          <div className="mt-6 flex flex-wrap items-center gap-x-8 gap-y-3 text-sm">
+            {estado.racha > 0 && (
+              <span className="text-ink">
+                🔥 <strong>{estado.racha}</strong> {estado.racha === 1 ? "día" : "días"} de racha
+              </span>
+            )}
+            <span className="text-ink-dim">
+              {estado.diasCompletados.size} / {DIAS_TOTALES} lecciones completadas
+            </span>
           </div>
-        ))}
+
+          <div className="mt-4 max-w-sm">
+            <ProgressBar completados={estado.diasCompletados.size} total={DIAS_TOTALES} />
+          </div>
+
+          {aviso && <p className="mt-5 text-sm text-ember-2">{aviso}</p>}
+
+          <div className="mt-7">
+            {estado.cursoCompletado ? (
+              <Link href="/metodo-secreto" className="inline-block rounded-lg bg-ember px-5 py-3 font-semibold text-bg hover:bg-ember-deep">
+                Ver el Método completo →
+              </Link>
+            ) : estado.diaPendiente ? (
+              <Link
+                href={`/reto/${estado.diaPendiente}`}
+                className="inline-block rounded-lg bg-ember px-5 py-3 font-semibold text-bg hover:bg-ember-deep"
+              >
+                Continuar: Día {estado.diaPendiente} →
+              </Link>
+            ) : (
+              <p className="text-ink-dim">Ya viste todo lo disponible por hoy. Vuelve mañana para el siguiente día.</p>
+            )}
+          </div>
+
+          {estado.racha > 0 && (
+            <div className="mt-4 max-w-xs">
+              <CompartirRacha racha={estado.racha} dia={estado.diasCompletados.size} />
+            </div>
+          )}
+        </div>
       </section>
 
-      <p className="text-center text-sm text-ink-dim">
-        Mientras tanto: <Link href="/recetas" className="text-ember-2 underline">recetas</Link> ·{" "}
-        <Link href="/faq" className="text-ember-2 underline">preguntas frecuentes</Link>
-      </p>
+      <div className="mx-auto max-w-4xl px-6 py-10">
+        <AdSlot position="top" />
+
+        <ol className="divide-y divide-line border-y border-line">
+          {Array.from({ length: DIAS_TOTALES }, (_, i) => i + 1).map((d) => {
+            const disponible = d <= estado.diaMaximo;
+            const hecho = estado.diasCompletados.has(d);
+            const titulo = titulos.find((t) => t.dia === d)?.titulo;
+
+            const contenido = (
+              <div className="flex items-center justify-between gap-4 px-1 py-4">
+                <div>
+                  <p className={disponible ? "font-semibold" : "font-semibold text-ink-faint"}>
+                    Día {d}
+                    {titulo ? ` — ${titulo}` : ""}
+                  </p>
+                  {!disponible && <p className="mt-0.5 text-xs text-ink-faint">Se habilita en {d - estado.diaMaximo} {d - estado.diaMaximo === 1 ? "día" : "días"}</p>}
+                </div>
+                <span aria-hidden className="text-lg">
+                  {hecho ? "✓" : disponible ? "" : "🔒"}
+                </span>
+              </div>
+            );
+
+            return (
+              <li key={d}>
+                {disponible ? (
+                  <Link href={`/reto/${d}`} className="block hover:bg-bg-2">
+                    {contenido}
+                  </Link>
+                ) : (
+                  <div className="opacity-60">{contenido}</div>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+
+        <p className="mt-8 border-t border-line pt-6 text-sm text-ink-dim">Comunidad de Discord — Próximamente</p>
+
+        <div className="mt-8">
+          <AdSlot position="bottom" />
+        </div>
+      </div>
     </div>
   );
 }

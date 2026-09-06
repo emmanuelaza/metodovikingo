@@ -1,9 +1,13 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-/** Rutas que requieren sesión. */
-const RUTAS_PROTEGIDAS = ["/dashboard", "/reto", "/progreso", "/metodo-secreto"];
-
+/**
+ * Cero fricción de entrada: si el visitante no tiene sesión, se crea una
+ * sesión anónima de Supabase en la primera petición, sin ningún paso
+ * visible (nada de formularios ni "palabra de entrada"). Requiere tener
+ * activado "Allow anonymous sign-ins" en Authentication → Settings del
+ * proyecto de Supabase.
+ */
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
 
@@ -31,16 +35,11 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { pathname } = request.nextUrl;
-  const esProtegida = RUTAS_PROTEGIDAS.some(
-    (ruta) => pathname === ruta || pathname.startsWith(`${ruta}/`),
-  );
-
-  if (!user && esProtegida) {
-    const destino = request.nextUrl.clone();
-    destino.pathname = "/";
-    destino.search = "?msg=login";
-    return NextResponse.redirect(destino);
+  if (!user) {
+    const { error } = await supabase.auth.signInAnonymously();
+    if (error) {
+      console.error("signInAnonymously:", error.message);
+    }
   }
 
   return supabaseResponse;

@@ -40,7 +40,7 @@ export default async function Progreso({
   const aviso = msg ? MENSAJES[msg] : undefined;
 
   return (
-    <div className="space-y-6">
+    <div className="mx-auto max-w-3xl space-y-6 px-6 py-10">
       <header>
         <p className="font-display text-xs text-ember-2">Medición</p>
         <h1 className="mt-2 font-display text-2xl">Mi progreso</h1>
