@@ -14,8 +14,9 @@ npm run dev
 
 1. Crea un proyecto en [supabase.com](https://supabase.com).
 2. En **SQL Editor**, pega y ejecuta `supabase/migrations/0001_init.sql` (tablas `profiles`, `daily_completions`, `body_progress_logs` + RLS + trigger de alta).
+   - Si el proyecto ya tenía aplicada una versión anterior del esquema (con `user_progress`, `palabra_ingresada` o las funciones `completar_dia`/`recuperar_racha`), corre también `supabase/migrations/0002_simplificar_curso.sql` para actualizarlo al modelo actual. Las migraciones son manuales: editar los archivos `.sql` en este repo no cambia nada hasta que se pegan en el SQL Editor.
 3. En **Authentication → Sign In / Providers**, activa **"Allow anonymous sign-ins"**. Es el único paso de auth necesario: no hay email, ni magic link, ni formulario de registro — la primera visita crea una sesión anónima automáticamente (ver `lib/supabase/middleware.ts`).
-4. Copia `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY` a `.env.local`.
+4. Copia `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY` a `.env.local` (**no** a `.env.example` — ese archivo se sube a git y Next.js no lo lee; solo `.env.local` alimenta la app y está en `.gitignore`).
 
 ### 2. Sanity (opcional al inicio)
 
