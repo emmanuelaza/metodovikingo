@@ -1,26 +1,68 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Paleta de marca — Método Vikingo (tema oscuro único) */
+@theme {
+  --color-vk-bg: #0b0e13;
+  --color-vk-surface: #141922;
+  --color-vk-surface-2: #1c2330;
+  --color-vk-border: #2a3442;
+  --color-vk-text: #eceef2;
+  --color-vk-muted: #97a2b3;
+  --color-vk-gold: #e3a92e;
+  --color-vk-gold-dark: #b8831a;
+  --color-vk-red: #c94a33;
+  --color-vk-green: #47a86f;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-vk-bg);
+  color: var(--color-vk-text);
+}
+
+/* Animaciones de éxito / reveal */
+@keyframes vk-pop {
+  0% { transform: scale(0.6); opacity: 0; }
+  60% { transform: scale(1.08); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes vk-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+@keyframes vk-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(227, 169, 46, 0.35); }
+  50% { box-shadow: 0 0 0 12px rgba(227, 169, 46, 0); }
+}
+@keyframes vk-rise {
+  from { transform: translateY(12px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.anim-pop { animation: vk-pop 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.3) both; }
+.anim-shake { animation: vk-shake 0.3s ease-in-out; }
+.anim-glow { animation: vk-glow 1.6s ease-out infinite; }
+.anim-rise { animation: vk-rise 0.45s ease-out both; }
+
+/* Contenido de lección (Portable Text) */
+.prose-vk p { margin: 0 0 1rem; line-height: 1.7; }
+.prose-vk h2 { font-size: 1.25rem; font-weight: 700; margin: 1.5rem 0 0.5rem; color: var(--color-vk-gold); }
+.prose-vk h3 { font-size: 1.1rem; font-weight: 700; margin: 1.25rem 0 0.5rem; }
+.prose-vk ul { list-style: disc; padding-left: 1.25rem; margin: 0 0 1rem; }
+.prose-vk ol { list-style: decimal; padding-left: 1.25rem; margin: 0 0 1rem; }
+.prose-vk li { margin-bottom: 0.35rem; line-height: 1.6; }
+.prose-vk strong { color: var(--color-vk-text); font-weight: 700; }
+.prose-vk blockquote {
+  border-left: 3px solid var(--color-vk-gold);
+  padding-left: 1rem;
+  margin: 1rem 0;
+  color: var(--color-vk-muted);
+  font-style: italic;
 }
