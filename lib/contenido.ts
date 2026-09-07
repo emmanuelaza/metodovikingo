@@ -1,20 +1,25 @@
-import type { PortableTextBlock } from "@portabletext/types";
 import { SANITY_CONFIGURADO, sanityClient } from "@/lib/sanity/client";
 import { LECCIONES_SEED, type LeccionSeed } from "@/content/lecciones-seed";
 import { PIEZAS_SEED } from "@/content/piezas-seed";
+import { FASES_SEED, type Fase } from "@/content/fases-seed";
 
 /**
- * Capa de contenido. Todo el texto de lecciones y piezas sale de Sanity;
- * si Sanity no está configurado (desarrollo local), se usa content/*.
+ * Capa de contenido. Todo el texto de lecciones, piezas y fases sale de
+ * Sanity; si Sanity no está configurado (desarrollo local), se usa content/*.
  */
+
+export type { Fase };
 
 export type Leccion = {
   dia: number;
+  fase: number;
   titulo: string;
-  contenido: PortableTextBlock[];
-  imagenUrl: string | null;
-  tipAccionable: string | null;
-  cliffhanger: string | null;
+  introduccion: string;
+  concepto: string;
+  rutinaTitulo: string;
+  rutinaItems: string[];
+  tipAccionable: string;
+  previewSiguiente: string;
   esDiaDePieza: boolean;
 };
 
@@ -27,11 +32,14 @@ export type Pieza = {
 
 const QUERY_LECCION = `*[_type == "leccionDiaria" && diaNumero == $dia][0]{
   "dia": diaNumero,
+  fase,
   titulo,
-  contenido,
-  "imagenUrl": imagen.asset->url,
+  introduccion,
+  concepto,
+  rutinaTitulo,
+  rutinaItems,
   tipAccionable,
-  cliffhanger,
+  previewSiguiente,
   esDiaDePieza
 }`;
 
@@ -39,25 +47,19 @@ const QUERY_PIEZAS = `*[_type == "piezaMetodo"] | order(numero asc){ numero, dia
 
 const QUERY_TITULOS = `*[_type == "leccionDiaria"] | order(diaNumero asc){ "dia": diaNumero, titulo }`;
 
-/** Convierte párrafos de texto plano a bloques Portable Text (para el seed local). */
-function parrafosABloques(parrafos: string[]): PortableTextBlock[] {
-  return parrafos.map((texto, i) => ({
-    _type: "block",
-    _key: `p${i}`,
-    style: "normal",
-    markDefs: [],
-    children: [{ _type: "span", _key: `s${i}`, text: texto, marks: [] }],
-  }));
-}
+const QUERY_FASES = `*[_type == "fase"] | order(numero asc){ numero, nombre, descripcion, diaInicio, diaFin }`;
 
 function seedALeccion(s: LeccionSeed): Leccion {
   return {
     dia: s.dia,
+    fase: s.fase,
     titulo: s.titulo,
-    contenido: parrafosABloques(s.parrafos),
-    imagenUrl: null,
+    introduccion: s.introduccion,
+    concepto: s.concepto,
+    rutinaTitulo: s.rutinaTitulo,
+    rutinaItems: s.rutinaItems,
     tipAccionable: s.tipAccionable,
-    cliffhanger: s.cliffhanger,
+    previewSiguiente: s.previewSiguiente,
     esDiaDePieza: s.esDiaDePieza ?? false,
   };
 }
@@ -74,10 +76,7 @@ export async function getLeccion(dia: number): Promise<Leccion | null> {
     if (doc) {
       return {
         ...doc,
-        contenido: doc.contenido ?? [],
-        imagenUrl: doc.imagenUrl ?? null,
-        tipAccionable: doc.tipAccionable ?? null,
-        cliffhanger: doc.cliffhanger ?? null,
+        rutinaItems: doc.rutinaItems ?? [],
         esDiaDePieza: Boolean(doc.esDiaDePieza),
       };
     }
@@ -111,4 +110,12 @@ export async function getTitulos(): Promise<{ dia: number; titulo: string }[]> {
     if (docs?.length) return docs;
   }
   return LECCIONES_SEED.map((l) => ({ dia: l.dia, titulo: l.titulo }));
+}
+
+export async function getFases(): Promise<Fase[]> {
+  if (SANITY_CONFIGURADO) {
+    const docs = await sanityClient().fetch<Fase[]>(QUERY_FASES, {}, { next: { revalidate: 300 } });
+    if (docs?.length) return docs;
+  }
+  return FASES_SEED;
 }

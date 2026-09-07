@@ -13,39 +13,53 @@ npm run dev
 ### 1. Supabase
 
 1. Crea un proyecto en [supabase.com](https://supabase.com).
-2. En **SQL Editor**, pega y ejecuta `supabase/migrations/0001_init.sql` (tablas `profiles`, `daily_completions`, `body_progress_logs` + RLS + trigger de alta).
-   - Si el proyecto ya tenía aplicada una versión anterior del esquema (con `user_progress`, `palabra_ingresada` o las funciones `completar_dia`/`recuperar_racha`), corre también `supabase/migrations/0002_simplificar_curso.sql` para actualizarlo al modelo actual. Las migraciones son manuales: editar los archivos `.sql` en este repo no cambia nada hasta que se pegan en el SQL Editor.
+2. En **SQL Editor**, corre en orden los archivos de `supabase/migrations/` (`0001_init.sql`, luego `0002_simplificar_curso.sql` si el proyecto tenía el esquema viejo, `0003_push_subscriptions.sql`, `0004_hardening.sql`). Las migraciones son manuales: editar los `.sql` de este repo no cambia nada hasta que se pegan en el SQL Editor (o se aplican vía el MCP de Supabase, si está conectado).
 3. En **Authentication → Sign In / Providers**, activa **"Allow anonymous sign-ins"**. Es el único paso de auth necesario: no hay email, ni magic link, ni formulario de registro — la primera visita crea una sesión anónima automáticamente (ver `lib/supabase/middleware.ts`).
-4. Copia `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY` a `.env.local` (**no** a `.env.example` — ese archivo se sube a git y Next.js no lo lee; solo `.env.local` alimenta la app y está en `.gitignore`).
+4. Copia `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY` a `.env.local` (**no** a `.env.example` — ese archivo se sube a git y Next.js no lo lee; solo `.env.local` alimenta la app y está en `.gitignore`). `SUPABASE_SERVICE_ROLE_KEY` solo hace falta para el cron de notificaciones push.
 
 ### 2. Sanity (opcional al inicio)
 
-Ver [`sanity/README.md`](sanity/README.md). Mientras no esté configurado, la app usa `content/lecciones-seed.ts` y `content/piezas-seed.ts`.
+Ver [`sanity/README.md`](sanity/README.md). Mientras no esté configurado, la app usa `content/lecciones-seed.ts`, `content/piezas-seed.ts` y `content/fases-seed.ts`.
 
-### 3. Anuncios
+### 3. Anuncios (Adsterra)
 
-- `NEXT_PUBLIC_ADS_ENABLED=true` para encender; `false` apaga todos los slots del sitio.
-- `NEXT_PUBLIC_AD_PROVIDER=adsense|adsterra` cambia de red sin tocar código.
+- `NEXT_PUBLIC_ADS_ENABLED=true` para encender; `false` apaga los 4 slots del sitio de una vez.
+- Los 4 slots (código real, no configurables por env) están en `lib/adsConfig.ts`: banner nativo dentro de cada lección, 300x250 en el temario, y los banners de footer 320x50 (móvil) / 728x90 (escritorio), mutuamente excluyentes por breakpoint.
+
+### 4. Notificaciones push
+
+1. Genera un par de claves: `npx web-push generate-vapid-keys` y ponlas en `.env.local` (`NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT=mailto:...`).
+2. En producción (Vercel), define además `CRON_SECRET` (cualquier string) — protege `/api/cron/notificar`, que `vercel.json` programa para correr una vez al día.
+3. El usuario decide activarlas desde el banner discreto que aparece una sola vez, tras completar el día 1 (`NotificacionesPrompt.tsx`) — nunca de entrada.
 
 ## Estructura
 
 ```
 app/
-  page.tsx                  Temario (índice de 30 días) — página principal, full-bleed
-  reto/[dia]/               Lección del día como artículo + actions.ts (marcarCompletado)
+  page.tsx                  Temario agrupado en 5 fases — página principal, full-bleed
+  reto/[dia]/               Lección (intro, concepto, rutina/plan, tip, preview) + actions.ts
   metodo-secreto/           Síntesis final (visible cuando el día 30 está habilitado)
   progreso/                 Registro de peso/cintura + gráfica (Recharts)
+  privacidad/               Política de privacidad (cookies + anuncios de terceros)
   api/og/racha/route.tsx    Imagen compartible de la racha (next/og)
+  api/ads/frame/route.ts    Aísla los banners iframe de Adsterra (document.write) en su propio HTML
+  api/cron/notificar/       Envío diario de push (protegido con CRON_SECRET)
   recetas/ · faq/           Contenido evergreen
-  components/               AdSlot, ProgressBar, CompartirRacha, PiezaDesbloqueada, MarcarCompletado, Nav
+  components/               AdSlot, ProgressBar, CompartirRacha, PiezaDesbloqueada, MarcarCompletado,
+                             TestimonioProximamente, NotificacionesPrompt, Nav
+  template.tsx              Transición fade/slide entre navegaciones
+  */loading.tsx             Skeletons por ruta
 lib/
-  supabase/                 Clientes server/browser + alta de sesión anónima (proxy.ts)
-  contenido.ts              Capa de contenido: Sanity → fallback content/
+  supabase/                 Clientes server/browser (+ admin.ts, solo para el cron) y sesión anónima (proxy.ts)
+  contenido.ts              Capa de contenido: Sanity → fallback content/ (lecciones, piezas/runas, fases)
   progreso.ts               requireUsuario, getPerfil, diaMaximoDisponible, calcularEstadoCurso
   fecha.ts                  "Hoy" en RETO_TIMEZONE
-content/                    Seeds locales (lecciones, piezas, recetas, FAQ)
-supabase/migrations/        SQL del esquema
-sanity/schemas/             Schemas para el Studio
+  adsConfig.ts              Los 4 slots reales de Adsterra
+  push/                     client.ts (suscripción), actions.ts (guardar), server.ts (VAPID/web-push)
+content/                    Seeds locales (lecciones, piezas/runas, fases, recetas, FAQ)
+supabase/migrations/        SQL del esquema (0001-0004, ya aplicadas al proyecto real)
+sanity/schemas/             Schemas para el Studio (leccionDiaria, piezaMetodo, fase)
+public/sw.js                Service worker (solo push, no cache offline)
 ```
 
 ## Cómo funciona el desbloqueo (sin mecánicas de juego)

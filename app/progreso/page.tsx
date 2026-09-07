@@ -73,7 +73,7 @@ export default async function Progreso({
         </button>
       </form>
 
-      <AdSlot position="top" />
+      <AdSlot slot="banner300x250Dashboard" className="mx-auto" />
 
       {logs.length === 0 ? (
         <p className="border-t border-line pt-6 text-sm text-ink-dim">
@@ -119,8 +119,6 @@ export default async function Progreso({
           </section>
         </>
       )}
-
-      <AdSlot position="bottom" />
     </div>
   );
 }

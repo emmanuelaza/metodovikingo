@@ -14,10 +14,10 @@ export default function FaqPage() {
         <h1 className="mt-2 font-display text-3xl">Preguntas frecuentes</h1>
       </header>
 
-      <AdSlot position="top" />
+      <AdSlot slot="banner300x250Dashboard" className="mx-auto" />
 
       <div>
-        {FAQ.map((p, i) => (
+        {FAQ.map((p) => (
           <div key={p.q}>
             <details className="group border-t border-line py-3">
               <summary className="cursor-pointer list-none font-semibold marker:content-none">
@@ -27,12 +27,9 @@ export default function FaqPage() {
               </summary>
               <p className="mt-2 text-sm leading-relaxed text-ink-dim">{p.a}</p>
             </details>
-            {i === 3 && <AdSlot position="mid-content" />}
           </div>
         ))}
       </div>
-
-      <AdSlot position="bottom" />
     </div>
   );
 }

@@ -3,7 +3,7 @@ export type Pregunta = { q: string; a: string };
 export const FAQ: Pregunta[] = [
   {
     q: "¿El reto es gratis?",
-    a: "Sí. Las 30 lecciones, la racha, las piezas del Método y el registro de progreso son gratuitos. Al final te mostramos el programa completo de pago, pero no es obligatorio.",
+    a: "Sí. Las 30 lecciones, la racha, las runas del Método Secreto y el registro de progreso son gratuitos. Al final te mostramos el programa completo de pago, pero no es obligatorio.",
   },
   {
     q: "¿Necesito crear una cuenta?",

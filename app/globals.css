@@ -45,18 +45,25 @@ h1, h2, h3, .font-display {
 }
 .anim-rise { animation: rise 0.4s ease-out both; }
 
-/* Contenido de lección (Portable Text) */
-.prose-vk p { margin: 0 0 1rem; line-height: 1.7; }
-.prose-vk h2 { font-family: var(--font-display); text-transform: uppercase; font-size: 1.25rem; margin: 1.5rem 0 0.5rem; color: var(--color-ember-2); }
-.prose-vk h3 { font-family: var(--font-display); text-transform: uppercase; font-size: 1.1rem; margin: 1.25rem 0 0.5rem; }
-.prose-vk ul { list-style: disc; padding-left: 1.25rem; margin: 0 0 1rem; }
-.prose-vk ol { list-style: decimal; padding-left: 1.25rem; margin: 0 0 1rem; }
-.prose-vk li { margin-bottom: 0.35rem; line-height: 1.6; }
-.prose-vk strong { color: var(--color-ink); font-weight: 700; }
-.prose-vk blockquote {
-  border-left: 3px solid var(--color-ember);
-  padding-left: 1rem;
-  margin: 1rem 0;
-  color: var(--color-ink-dim);
-  font-style: italic;
+/* Skeleton loading (ver los loading.tsx de cada ruta) */
+@keyframes pulse-suave {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.9; }
+}
+.skeleton { animation: pulse-suave 1.6s ease-in-out infinite; background: var(--color-bg-3); border-radius: 0.5rem; }
+
+/* Efecto "reveal" al marcar un día como completado: 8 chispas ember, 1-2s, no bloquea nada */
+@keyframes ember-spark {
+  0% { transform: translate(-50%, -50%) rotate(var(--angulo)) translateX(0) scale(1); opacity: 1; }
+  100% { transform: translate(-50%, -50%) rotate(var(--angulo)) translateX(28px) scale(0); opacity: 0; }
+}
+.ember-spark {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-ember-2);
+  animation: ember-spark 0.9s ease-out both;
 }

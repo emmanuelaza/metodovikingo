@@ -15,10 +15,10 @@ export default function Recetas() {
         <p className="mt-2 text-ink-dim">Altas en proteína, pocas cosas que lavar. Sin dietas raras.</p>
       </header>
 
-      <AdSlot position="top" />
+      <AdSlot slot="banner300x250Dashboard" className="mx-auto" />
 
       <div className="space-y-6">
-        {RECETAS.map((r, i) => (
+        {RECETAS.map((r) => (
           <div key={r.slug}>
             <article id={r.slug} className="border-t border-line pt-5">
               <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-ink-dim">
@@ -40,12 +40,9 @@ export default function Recetas() {
                 ))}
               </ol>
             </article>
-            {i === 1 && <AdSlot position="mid-content" />}
           </div>
         ))}
       </div>
-
-      <AdSlot position="bottom" />
     </div>
   );
 }
