@@ -19,18 +19,27 @@ function formatear(ms: number): string {
  */
 export default function ContadorSiguienteDia({ objetivoEpoch }: { objetivoEpoch: number }) {
   const router = useRouter();
-  const [restante, setRestante] = useState(() => objetivoEpoch - Date.now());
+  // null hasta el primer efecto client-side: Date.now() difiere entre el
+  // render en servidor y la hidratación en cliente, así que calcularlo
+  // durante el render (incluso en el estado inicial) provoca un mismatch
+  // de hidratación (React #418). Arrancar en null mantiene el primer
+  // render idéntico en servidor y cliente.
+  const [restante, setRestante] = useState<number | null>(null);
 
   useEffect(() => {
-    const id = setInterval(() => {
+    const tick = () => {
+      const nuevo = objetivoEpoch - Date.now();
       setRestante((actual) => {
-        const nuevo = objetivoEpoch - Date.now();
-        if (nuevo <= 0 && actual > 0) router.refresh();
+        if (nuevo <= 0 && actual !== null && actual > 0) router.refresh();
         return nuevo;
       });
-    }, 1000);
+    };
+    tick();
+    const id = setInterval(tick, 1000);
     return () => clearInterval(id);
   }, [objetivoEpoch, router]);
+
+  if (restante === null) return null;
 
   if (restante <= 0) {
     return <p className="text-ink-dim">Tu siguiente lección ya está disponible.</p>;
