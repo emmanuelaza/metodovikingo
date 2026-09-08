@@ -7,6 +7,8 @@ import AdSlot from "@/app/components/AdSlot";
 import PiezaDesbloqueada from "@/app/components/PiezaDesbloqueada";
 import MarcarCompletado from "@/app/components/MarcarCompletado";
 import TestimonioProximamente from "@/app/components/TestimonioProximamente";
+import QuizFase from "@/app/components/QuizFase";
+import { quizDelDia } from "@/content/quizzes-seed";
 
 /** Días de la Fase 3/4 donde se integra un testimonio placeholder (2-3 bloques en total). */
 const DIAS_CON_TESTIMONIO = [19, 26];
@@ -35,6 +37,7 @@ export default async function DiaPage({ params }: { params: Promise<{ dia: strin
   const pieza = (DIAS_CON_PIEZA as readonly number[]).includes(dia) ? await getPiezaPorDia(dia) : null;
   const completado = estado.diasCompletados.has(dia);
   const fase = leccion ? fases.find((f) => f.numero === leccion.fase) : undefined;
+  const quiz = quizDelDia(dia);
 
   return (
     <article>
@@ -77,6 +80,8 @@ export default async function DiaPage({ params }: { params: Promise<{ dia: strin
                 <p className="mt-2 leading-relaxed">{leccion.tipAccionable}</p>
               </div>
             )}
+
+            {quiz && <QuizFase preguntas={quiz.preguntas} />}
 
             {pieza && <PiezaDesbloqueada pieza={pieza} />}
 
