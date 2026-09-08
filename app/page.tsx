@@ -9,7 +9,6 @@ import CompartirRacha from "@/app/components/CompartirRacha";
 import NotificacionesPrompt from "@/app/components/NotificacionesPrompt";
 import ContadorSiguienteDia from "@/app/components/ContadorSiguienteDia";
 import Logros from "@/app/components/Logros";
-import GuiasDescargables from "@/app/components/GuiasDescargables";
 
 const JSON_LD_CURSO = {
   "@context": "https://schema.org",
@@ -40,7 +39,6 @@ export default async function Temario({
   const hoy = hoyISO();
   const estado = calcularEstadoCurso(perfil, fechas, hoy);
   const aviso = msg ? MENSAJES[msg] : undefined;
-  const faseMaxima = fases.reduce((max, f) => (f.diaInicio <= estado.diaMaximo ? Math.max(max, f.numero) : max), 1);
 
   return (
     <div>
@@ -172,10 +170,9 @@ export default async function Temario({
           );
         })}
 
-        <GuiasDescargables faseMaxima={faseMaxima} />
-
         <div className="space-y-1 border-t border-line pt-6 text-sm text-ink-dim">
           <p>Comunidad de Discord — Próximamente</p>
+          <p>Guías descargables en PDF — Próximamente</p>
           <p>Testimonios del reto — Próximamente</p>
         </div>
       </div>

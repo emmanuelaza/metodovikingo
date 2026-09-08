@@ -7,7 +7,6 @@ import AdSlot from "@/app/components/AdSlot";
 import PiezaDesbloqueada from "@/app/components/PiezaDesbloqueada";
 import MarcarCompletado from "@/app/components/MarcarCompletado";
 import TestimonioProximamente from "@/app/components/TestimonioProximamente";
-import GuiasDescargables from "@/app/components/GuiasDescargables";
 
 /** Días de la Fase 3/4 donde se integra un testimonio placeholder (2-3 bloques en total). */
 const DIAS_CON_TESTIMONIO = [19, 26];
@@ -36,7 +35,6 @@ export default async function DiaPage({ params }: { params: Promise<{ dia: strin
   const pieza = (DIAS_CON_PIEZA as readonly number[]).includes(dia) ? await getPiezaPorDia(dia) : null;
   const completado = estado.diasCompletados.has(dia);
   const fase = leccion ? fases.find((f) => f.numero === leccion.fase) : undefined;
-  const faseMaxima = fases.reduce((max, f) => (f.diaInicio <= estado.diaMaximo ? Math.max(max, f.numero) : max), 1);
 
   return (
     <article>
@@ -84,10 +82,9 @@ export default async function DiaPage({ params }: { params: Promise<{ dia: strin
 
             {DIAS_CON_TESTIMONIO.includes(dia) && <TestimonioProximamente />}
 
-            {fase && <GuiasDescargables faseMaxima={faseMaxima} soloFase={fase.numero} />}
-
             <div className="border-t border-line pt-6 text-sm text-ink-dim">
               <p>Comunidad de Discord — Próximamente</p>
+              <p>Guía descargable en PDF — Próximamente</p>
             </div>
 
             <div className="border-t border-line pt-6">
