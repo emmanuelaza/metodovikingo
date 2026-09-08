@@ -28,6 +28,36 @@ export function diasEntre(a: string, b: string): number {
   return Math.round((utcB - utcA) / 86_400_000);
 }
 
+/** Offset (ms) de `timeZone` respecto a UTC en el instante `fecha`. */
+function offsetZonaMs(timeZone: string, fecha: Date): number {
+  const partes = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    hourCycle: "h23",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  }).formatToParts(fecha);
+
+  const get = (t: string) => Number(partes.find((p) => p.type === t)?.value);
+  const comoUTC = Date.UTC(get("year"), get("month") - 1, get("day"), get("hour"), get("minute"), get("second"));
+  return comoUTC - fecha.getTime();
+}
+
+/** Epoch (ms) de la medianoche de mañana en RETO_TIMEZONE, tomando `hoy` ('YYYY-MM-DD') como referencia. */
+export function proximaMedianocheEpoch(hoy: string = hoyISO()): number {
+  const [y, m, d] = hoy.split("-").map(Number);
+  let epoch = Date.UTC(y, m - 1, d + 1, 0, 0, 0);
+  // Dos pasadas para converger incluso si el offset cambia cerca de la transición (DST).
+  for (let i = 0; i < 2; i++) {
+    const offset = offsetZonaMs(ZONA, new Date(epoch));
+    epoch = Date.UTC(y, m - 1, d + 1, 0, 0, 0) - offset;
+  }
+  return epoch;
+}
+
 /** Formatea 'YYYY-MM-DD' a algo legible en español, ej. "6 sep". */
 export function fechaCorta(iso: string): string {
   const [y, m, d] = iso.split("-").map(Number);

@@ -1,6 +1,6 @@
-import Script from "next/script";
 import { ADS_ENABLED } from "@/lib/ads";
 import { AD_SLOTS, type AdSlotName } from "@/lib/adsConfig";
+import NativeAdSlot from "@/app/components/NativeAdSlot";
 
 /**
  * Slot de anuncio Adsterra. Se apaga por completo con NEXT_PUBLIC_ADS_ENABLED=false.
@@ -12,15 +12,12 @@ export default function AdSlot({ slot, className = "" }: { slot: AdSlotName; cla
   const config = AD_SLOTS[slot];
 
   if (config.tipo === "native") {
-    const containerId = `container-${config.key}`;
     return (
-      <div className={`flex justify-center overflow-hidden ${className}`} style={{ minHeight: config.minHeight }}>
-        <div id={containerId} className="w-full" />
-        <Script
-          async
-          data-cfasync="false"
+      <div className={className}>
+        <NativeAdSlot
+          containerId={`container-${config.key}`}
           src={`https://pl31219369.profitableratecpmnetwork.com/${config.key}/invoke.js`}
-          strategy="lazyOnload"
+          minHeight={config.minHeight}
         />
       </div>
     );
