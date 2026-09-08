@@ -4,9 +4,9 @@ import Script from "next/script";
 import { Anton, Manrope } from "next/font/google";
 import "./globals.css";
 import Nav from "@/app/components/Nav";
+import PopunderGate from "@/app/components/PopunderGate";
 import { ADS_ENABLED } from "@/lib/ads";
 
-const POPUNDER_SRC = "https://pl31224702.profitableratecpmnetwork.com/b6/1b/7c/b61b7c108f4bb722951d8eb5186cf118.js";
 const SOCIAL_BAR_SRC = "https://pl31224703.profitableratecpmnetwork.com/ec/85/e8/ec85e8d57198e6ba577e1836d8860803.js";
 
 const anton = Anton({ variable: "--font-anton", weight: "400", subsets: ["latin"] });
@@ -50,8 +50,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* RootLayout no se vuelve a montar en navegación client-side (Link), así
             que estos scripts cargan una sola vez por sesión de navegación, no en
             cada cambio de ruta. strategy="afterInteractive": no bloquean el
-            primer render. Apagar todo con NEXT_PUBLIC_ADS_ENABLED=false. */}
-        {ADS_ENABLED && <Script src={POPUNDER_SRC} strategy="afterInteractive" />}
+            primer render. Apagar todo con NEXT_PUBLIC_ADS_ENABLED=false.
+            PopunderGate además limita el Popunder a una vez cada 24h por navegador. */}
+        {ADS_ENABLED && <PopunderGate />}
 
         <Nav />
         <main className="flex-1 w-full">{children}</main>
