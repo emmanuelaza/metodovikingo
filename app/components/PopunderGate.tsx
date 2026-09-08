@@ -5,6 +5,9 @@ import { useEffect } from "react";
 const SRC = "https://pl31224702.profitableratecpmnetwork.com/b6/1b/7c/b61b7c108f4bb722951d8eb5186cf118.js";
 const CLAVE_LOCALSTORAGE = "vikingo_popunder_ultimo";
 const VEINTICUATRO_HORAS_MS = 24 * 60 * 60 * 1000;
+/** Da tiempo a que el usuario interactúe con la lección (o el botón del PDF)
+ * antes de que el Popunder empiece a escuchar el próximo click de la página. */
+const RETRASO_MS = 12_000;
 
 /**
  * Limita el Popunder a una vez cada 24h por navegador (localStorage), aparte
@@ -16,18 +19,22 @@ const VEINTICUATRO_HORAS_MS = 24 * 60 * 60 * 1000;
  */
 export default function PopunderGate() {
   useEffect(() => {
-    try {
-      const ultimo = Number(localStorage.getItem(CLAVE_LOCALSTORAGE) ?? "0");
-      if (Date.now() - ultimo < VEINTICUATRO_HORAS_MS) return;
+    const id = setTimeout(() => {
+      try {
+        const ultimo = Number(localStorage.getItem(CLAVE_LOCALSTORAGE) ?? "0");
+        if (Date.now() - ultimo < VEINTICUATRO_HORAS_MS) return;
 
-      localStorage.setItem(CLAVE_LOCALSTORAGE, String(Date.now()));
-      const script = document.createElement("script");
-      script.src = SRC;
-      script.async = true;
-      document.body.appendChild(script);
-    } catch {
-      // localStorage no disponible: no cargar para no arriesgar mostrarlo de más.
-    }
+        localStorage.setItem(CLAVE_LOCALSTORAGE, String(Date.now()));
+        const script = document.createElement("script");
+        script.src = SRC;
+        script.async = true;
+        document.body.appendChild(script);
+      } catch {
+        // localStorage no disponible: no cargar para no arriesgar mostrarlo de más.
+      }
+    }, RETRASO_MS);
+
+    return () => clearTimeout(id);
   }, []);
 
   return null;
