@@ -58,6 +58,12 @@ export function proximaMedianocheEpoch(hoy: string = hoyISO()): number {
   return epoch;
 }
 
+/** true si `hoy` ('YYYY-MM-DD') cae en domingo. */
+export function esDomingo(hoy: string): boolean {
+  const [y, m, d] = hoy.split("-").map(Number);
+  return new Date(Date.UTC(y, m - 1, d)).getUTCDay() === 0;
+}
+
 /** Formatea 'YYYY-MM-DD' a algo legible en español, ej. "6 sep". */
 export function fechaCorta(iso: string): string {
   const [y, m, d] = iso.split("-").map(Number);
