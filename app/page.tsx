@@ -2,10 +2,12 @@ import Link from "next/link";
 import { requireUsuario, getPerfil, getFechasCompletado, calcularEstadoCurso } from "@/lib/progreso";
 import { getTitulos, getFases } from "@/lib/contenido";
 import { DIAS_TOTALES } from "@/lib/types";
+import { hoyISO, proximaMedianocheEpoch } from "@/lib/fecha";
 import AdSlot from "@/app/components/AdSlot";
 import ProgressBar from "@/app/components/ProgressBar";
 import CompartirRacha from "@/app/components/CompartirRacha";
 import NotificacionesPrompt from "@/app/components/NotificacionesPrompt";
+import ContadorSiguienteDia from "@/app/components/ContadorSiguienteDia";
 
 const MENSAJES: Record<string, string> = {
   bloqueado: "Ese día todavía no está disponible. Vuelve cuando le toque a tu calendario.",
@@ -24,7 +26,8 @@ export default async function Temario({
     getTitulos(),
     getFases(),
   ]);
-  const estado = calcularEstadoCurso(perfil, fechas);
+  const hoy = hoyISO();
+  const estado = calcularEstadoCurso(perfil, fechas, hoy);
   const aviso = msg ? MENSAJES[msg] : undefined;
 
   return (
@@ -64,7 +67,7 @@ export default async function Temario({
                 Continuar: Día {estado.diaPendiente} →
               </Link>
             ) : (
-              <p className="text-ink-dim">Ya viste todo lo disponible por hoy. Vuelve mañana para el siguiente día.</p>
+              <ContadorSiguienteDia objetivoEpoch={proximaMedianocheEpoch(hoy)} />
             )}
           </div>
 
