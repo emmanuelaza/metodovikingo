@@ -83,9 +83,14 @@ export async function GET(request: Request) {
 
       if (estado.racha > 0 && estado.diaPendiente !== null) {
         const titulo = titulos.find((t) => t.dia === estado.diaPendiente)?.titulo;
+        // Completar hoy dejaría la racha por encima del récord histórico: mismo aviso, en positivo.
+        const rompeRecord = estado.racha + 1 > estado.rachaMax;
+        const cuerpo = rompeRecord
+          ? `🏆 Si completas hoy, superas tu récord de ${estado.rachaMax} días seguidos. Termina el Día ${estado.diaPendiente}${titulo ? `: ${titulo}` : ""} antes de medianoche.`
+          : `🔥 Tu racha de ${estado.racha} ${estado.racha === 1 ? "día se rompe" : "días se rompe"} a medianoche. Termina el Día ${estado.diaPendiente}${titulo ? `: ${titulo}` : ""} antes de que se acabe hoy.`;
         payload = JSON.stringify({
           titulo: "Reto Vikingo",
-          cuerpo: `🔥 Tu racha de ${estado.racha} ${estado.racha === 1 ? "día se rompe" : "días se rompe"} a medianoche. Termina el Día ${estado.diaPendiente}${titulo ? `: ${titulo}` : ""} antes de que se acabe hoy.`,
+          cuerpo,
           url: `${siteUrl}/reto/${estado.diaPendiente}`,
         });
       } else if (domingo && estado.diaMaximo >= 7) {

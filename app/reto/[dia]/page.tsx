@@ -101,7 +101,7 @@ export default async function DiaPage({ params }: { params: Promise<{ dia: strin
             </div>
 
             <div className="border-t border-line pt-6">
-              <MarcarCompletado dia={dia} completado={completado} />
+              <MarcarCompletado dia={dia} completado={completado} finDeFase={fase && dia === fase.diaFin ? fase.numero : undefined} />
             </div>
 
             {leccion.previewSiguiente && <p className="text-sm italic text-ink-dim">{leccion.previewSiguiente}</p>}

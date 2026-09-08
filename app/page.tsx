@@ -9,6 +9,7 @@ import NotificacionesPrompt from "@/app/components/NotificacionesPrompt";
 import ContadorSiguienteDia from "@/app/components/ContadorSiguienteDia";
 import Logros from "@/app/components/Logros";
 import TestimoniosCarrusel from "@/app/components/TestimoniosCarrusel";
+import CalendarioRacha from "@/app/components/CalendarioRacha";
 
 const JSON_LD_CURSO = {
   "@context": "https://schema.org",
@@ -67,6 +68,10 @@ export default async function Temario({
 
           <div className="mt-4 max-w-sm">
             <ProgressBar completados={estado.diasCompletados.size} total={DIAS_TOTALES} />
+          </div>
+
+          <div className="mt-5 max-w-md">
+            <CalendarioRacha diaMaximo={estado.diaMaximo} diasCompletados={estado.diasCompletados} />
           </div>
 
           {aviso && <p className="mt-5 text-sm text-ember-2">{aviso}</p>}
