@@ -9,6 +9,7 @@ import CompartirRacha from "@/app/components/CompartirRacha";
 import NotificacionesPrompt from "@/app/components/NotificacionesPrompt";
 import ContadorSiguienteDia from "@/app/components/ContadorSiguienteDia";
 import Logros from "@/app/components/Logros";
+import TestimoniosCarrusel from "@/app/components/TestimoniosCarrusel";
 
 const JSON_LD_CURSO = {
   "@context": "https://schema.org",
@@ -170,10 +171,14 @@ export default async function Temario({
           );
         })}
 
+        <div className="border-t border-line pt-6">
+          <p className="mb-4 font-display text-xs text-ink-dim">Lo que dice quien ya lo hizo</p>
+          <TestimoniosCarrusel />
+        </div>
+
         <div className="space-y-1 border-t border-line pt-6 text-sm text-ink-dim">
           <p>Comunidad de Discord — Próximamente</p>
           <p>Guías descargables en PDF — Próximamente</p>
-          <p>Testimonios del reto — Próximamente</p>
         </div>
       </div>
     </div>

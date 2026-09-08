@@ -6,11 +6,11 @@ import { DIAS_TOTALES, DIAS_CON_PIEZA } from "@/lib/types";
 import AdSlot from "@/app/components/AdSlot";
 import PiezaDesbloqueada from "@/app/components/PiezaDesbloqueada";
 import MarcarCompletado from "@/app/components/MarcarCompletado";
-import TestimonioProximamente from "@/app/components/TestimonioProximamente";
+import TestimoniosCarrusel from "@/app/components/TestimoniosCarrusel";
 import QuizFase from "@/app/components/QuizFase";
 import { quizDelDia } from "@/content/quizzes-seed";
 
-/** Días de la Fase 3/4 donde se integra un testimonio placeholder (2-3 bloques en total). */
+/** Días de la Fase 3/4 donde se integra el carrusel de testimonios. */
 const DIAS_CON_TESTIMONIO = [19, 26];
 
 export async function generateMetadata({ params }: { params: Promise<{ dia: string }> }) {
@@ -85,7 +85,12 @@ export default async function DiaPage({ params }: { params: Promise<{ dia: strin
 
             {pieza && <PiezaDesbloqueada pieza={pieza} />}
 
-            {DIAS_CON_TESTIMONIO.includes(dia) && <TestimonioProximamente />}
+            {DIAS_CON_TESTIMONIO.includes(dia) && (
+              <div>
+                <p className="mb-4 font-display text-xs text-ink-dim">Lo que dice quien ya lo hizo</p>
+                <TestimoniosCarrusel />
+              </div>
+            )}
 
             <div className="border-t border-line pt-6 text-sm text-ink-dim">
               <p>Comunidad de Discord — Próximamente</p>

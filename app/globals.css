@@ -45,6 +45,17 @@ h1, h2, h3, .font-display {
 }
 .anim-rise { animation: rise 0.4s ease-out both; }
 
+/* Carrusel infinito de testimonios (TestimoniosCarrusel.tsx): la lista se
+   duplica una vez y se anima -50% para que el loop sea continuo. */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee { animation: marquee 36s linear infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee { animation: none; }
+}
+
 /* Skeleton loading (ver los loading.tsx de cada ruta) */
 @keyframes pulse-suave {
   0%, 100% { opacity: 0.5; }
