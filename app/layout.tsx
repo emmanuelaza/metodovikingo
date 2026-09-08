@@ -4,6 +4,7 @@ import Script from "next/script";
 import { Anton, Manrope } from "next/font/google";
 import "./globals.css";
 import Nav from "@/app/components/Nav";
+import NavMovil from "@/app/components/NavMovil";
 import PopunderGate from "@/app/components/PopunderGate";
 import { ADS_ENABLED } from "@/lib/ads";
 
@@ -41,12 +42,16 @@ export const viewport: Viewport = {
   themeColor: "#0b0c0f",
   width: "device-width",
   initialScale: 1,
+  // Necesario para que env(safe-area-inset-*) tenga valor en iPhone con notch.
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es" className={`${anton.variable} ${manrope.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">
+      {/* Deja libre la altura de NavMovil (3.5rem + su borde) más un respiro,
+          para que el contenido no termine pegado a la barra. Solo móvil. */}
+      <body className="flex min-h-full flex-col pb-[calc(4.5rem+env(safe-area-inset-bottom))] sm:pb-0">
         {/* RootLayout no se vuelve a montar en navegación client-side (Link), así
             que estos scripts cargan una sola vez por sesión de navegación, no en
             cada cambio de ruta. strategy="afterInteractive": no bloquean el
@@ -64,6 +69,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </Link>
           </p>
         </footer>
+
+        <NavMovil />
 
         {ADS_ENABLED && <Script src={SOCIAL_BAR_SRC} strategy="afterInteractive" />}
       </body>

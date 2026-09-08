@@ -12,15 +12,19 @@ type CompletadoFila = { user_id: string; day_number: number; completed_at: strin
 type LogFila = { user_id: string; logged_at: string };
 
 /**
- * Cron nocturno (ver vercel.json): manda uno de dos avisos honestos por
- * usuario, nunca los dos.
- * 1. Racha en riesgo: tiene una racha real y todavía no completó el día
- *    disponible de hoy — se rompe a medianoche si no entra.
- * 2. Recordatorio de progreso (solo domingos): no registró peso/cintura en
- *    los últimos 7 días.
- * Nada de esto es una amenaza inventada: ambas son consecuencias reales de
- * la mecánica ya existente (racha) o del hábito que la app promueve
- * (medición semanal en /progreso).
+ * Cron nocturno (ver vercel.json): manda como mucho UN aviso por usuario,
+ * en este orden de prioridad.
+ * 1. Racha en riesgo: tiene racha activa y no completó el día de hoy — se
+ *    rompe a medianoche. Si completar hoy supera su récord, el mismo aviso
+ *    va en positivo.
+ * 2. Resumen semanal (domingos, desde el día 7): días completados de los
+ *    últimos 7, su récord, y el recordatorio de pesarse si hace 7+ días que
+ *    no registra nada.
+ * 3. Reenganche: quien lleva exactamente 3, 7 o 14 días sin actividad. Solo
+ *    en esos tres cortes, para que sea un recordatorio y no una molestia
+ *    cada noche.
+ * Nada de esto es una amenaza inventada: son consecuencias reales de la
+ * mecánica que ya existe (racha) o datos propios del usuario.
  */
 export async function GET(request: Request) {
   const secreto = process.env.CRON_SECRET;
@@ -78,7 +82,8 @@ export async function GET(request: Request) {
       const perfil = perfilPorUsuario.get(sub.user_id);
       if (!perfil) return;
 
-      const estado = calcularEstadoCurso(perfil, completadosPorUsuario.get(sub.user_id) ?? [], hoy);
+      const completadosUsuario = completadosPorUsuario.get(sub.user_id) ?? [];
+      const estado = calcularEstadoCurso(perfil, completadosUsuario, hoy);
       let payload: string | null = null;
 
       if (estado.racha > 0 && estado.diaPendiente !== null) {
@@ -94,13 +99,35 @@ export async function GET(request: Request) {
           url: `${siteUrl}/reto/${estado.diaPendiente}`,
         });
       } else if (domingo && estado.diaMaximo >= 7) {
+        // Resumen de la semana: días distintos con actividad en los últimos 7.
+        const fechasUnicas = new Set(completadosUsuario.map((c) => c.completed_at));
+        const diasSemana = Array.from(fechasUnicas).filter((f) => {
+          const distancia = diasEntre(f, hoy);
+          return distancia >= 0 && distancia <= 6;
+        }).length;
+
         const ultimoLog = ultimoLogPorUsuario.get(sub.user_id);
-        const sinRegistroReciente = !ultimoLog || diasEntre(ultimoLog.slice(0, 10), hoy) >= 7;
-        if (sinRegistroReciente) {
+        const sinPesarse = !ultimoLog || diasEntre(ultimoLog.slice(0, 10), hoy) >= 7;
+
+        payload = JSON.stringify({
+          titulo: "Reto Vikingo",
+          cuerpo: `📊 Tu semana: ${diasSemana}/7 días. Tu récord son ${estado.rachaMax} seguidos.${sinPesarse ? " Te falta pesarte esta semana." : ""}`,
+          url: `${siteUrl}${sinPesarse ? "/progreso" : "/"}`,
+        });
+      } else if (estado.diaPendiente !== null) {
+        // Reenganche de inactivos: solo a los 3, 7 y 14 días sin actividad,
+        // para que sea un recordatorio y no una molestia cada noche.
+        const ultimaActividad = completadosUsuario.reduce<string | null>(
+          (max, c) => (max === null || c.completed_at > max ? c.completed_at : max),
+          null,
+        );
+        const diasInactivo = diasEntre(ultimaActividad ?? perfil.fecha_inicio, hoy);
+
+        if (diasInactivo === 3 || diasInactivo === 7 || diasInactivo === 14) {
           payload = JSON.stringify({
             titulo: "Reto Vikingo",
-            cuerpo: "📏 ¿Ya te pesaste esta semana? Un dato a la semana es todo lo que necesitas para ver tu progreso real.",
-            url: `${siteUrl}/progreso`,
+            cuerpo: `Tu Día ${estado.diaPendiente} sigue ahí esperándote. Retomarlo hoy te toma 5 minutos.`,
+            url: `${siteUrl}/reto/${estado.diaPendiente}`,
           });
         }
       }

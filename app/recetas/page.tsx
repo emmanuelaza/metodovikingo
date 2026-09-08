@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { RECETAS } from "@/content/recetas";
 
 export const metadata = {
@@ -9,7 +10,10 @@ export default function Recetas() {
   return (
     <div className="mx-auto max-w-3xl space-y-6 px-6 py-10">
       <header>
-        <p className="font-display text-xs text-ember-2">Biblioteca</p>
+        <Link href="/" className="text-sm text-ink-dim hover:text-ink">
+          ← Temario
+        </Link>
+        <p className="mt-4 font-display text-xs text-ember-2">Biblioteca</p>
         <h1 className="mt-2 font-display text-3xl">Recetas Vikingas</h1>
         <p className="mt-2 text-ink-dim">Altas en proteína, pocas cosas que lavar. Sin dietas raras.</p>
       </header>

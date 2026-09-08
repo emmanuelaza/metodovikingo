@@ -18,20 +18,22 @@ export default async function Nav() {
   }
 
   return (
-    <header className="sticky top-0 z-20 border-b border-line bg-bg/90 backdrop-blur">
-      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
-        <Link href="/" className="font-display text-lg tracking-wide">
+    <header className="sticky top-0 z-20 border-b border-line bg-bg/95 backdrop-blur-md">
+      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5 sm:px-6">
+        <Link href="/" className="font-display text-base tracking-wide sm:text-lg">
           RETO VIKINGO
         </Link>
+        {/* En móvil las secciones viven en la barra inferior (NavMovil): aquí
+            solo queda la racha, que es el dato que engancha. */}
         <nav className="flex items-center gap-5 text-sm text-ink-dim">
           {racha > 0 && (
-            <span className="text-ink" title="Tu racha actual">
+            <span className="rounded-full border border-ember/40 px-2.5 py-1 text-ink" title="Tu racha actual">
               🔥 {racha}
             </span>
           )}
-          <Link href="/progreso" className="hover:text-ink">Progreso</Link>
-          <Link href="/recetas" className="hover:text-ink">Recetas</Link>
-          <Link href="/faq" className="hover:text-ink">FAQ</Link>
+          <Link href="/progreso" className="hidden hover:text-ink sm:inline">Progreso</Link>
+          <Link href="/recetas" className="hidden hover:text-ink sm:inline">Recetas</Link>
+          <Link href="/faq" className="hidden hover:text-ink sm:inline">FAQ</Link>
         </nav>
       </div>
     </header>

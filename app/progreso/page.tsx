@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { requireUsuario } from "@/lib/progreso";
 import { fechaCorta } from "@/lib/fecha";
 import type { BodyLog } from "@/lib/types";
@@ -41,7 +42,10 @@ export default async function Progreso({
   return (
     <div className="mx-auto max-w-3xl space-y-6 px-6 py-10">
       <header>
-        <p className="font-display text-xs text-ember-2">Medición</p>
+        <Link href="/" className="text-sm text-ink-dim hover:text-ink">
+          ← Temario
+        </Link>
+        <p className="mt-4 font-display text-xs text-ember-2">Medición</p>
         <h1 className="mt-2 font-display text-2xl">Mi progreso</h1>
         <p className="mt-1 text-sm text-ink-dim">
           Una vez por semana, mismo día y misma hora (ideal: en ayunas). No te peses a diario.

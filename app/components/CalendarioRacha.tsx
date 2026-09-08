@@ -8,7 +8,7 @@ import { DIAS_TOTALES } from "@/lib/types";
  */
 export default function CalendarioRacha({ diaMaximo, diasCompletados }: { diaMaximo: number; diasCompletados: Set<number> }) {
   return (
-    <div className="grid grid-cols-10 gap-1.5">
+    <div className="grid grid-cols-6 gap-1.5 sm:grid-cols-10">
       {Array.from({ length: DIAS_TOTALES }, (_, i) => i + 1).map((d) => {
         const hecho = diasCompletados.has(d);
         const disponible = d <= diaMaximo;
@@ -24,7 +24,7 @@ export default function CalendarioRacha({ diaMaximo, diasCompletados }: { diaMax
           <div
             key={d}
             title={hecho ? `Día ${d}: completado` : perdido ? `Día ${d}: no completado` : `Día ${d}`}
-            className={`flex aspect-square items-center justify-center rounded border text-[10px] font-semibold ${clases}`}
+            className={`flex aspect-square items-center justify-center rounded border text-xs font-semibold sm:text-[10px] ${clases}`}
           >
             {d}
           </div>

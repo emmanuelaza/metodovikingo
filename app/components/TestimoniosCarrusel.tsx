@@ -16,7 +16,7 @@ export default function TestimoniosCarrusel() {
     >
       <div className="flex w-max gap-4 animate-marquee">
         {items.map((t, i) => (
-          <div key={i} className="w-72 flex-none rounded-xl border border-line bg-bg-2 p-5">
+          <div key={i} className="w-64 flex-none rounded-xl border border-line bg-bg-2 p-5 sm:w-72">
             <p className="text-sm leading-relaxed text-ink/90">&ldquo;{t.texto}&rdquo;</p>
             <p className="mt-3 text-xs text-ink-dim">{t.alias}</p>
           </div>

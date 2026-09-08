@@ -13,6 +13,12 @@ self.addEventListener("push", (event) => {
     self.registration.showNotification(datos.titulo, {
       body: datos.cuerpo,
       icon: "/favicon.ico",
+      badge: "/favicon.ico",
+      // Un solo aviso del reto a la vez: el nuevo reemplaza al anterior en vez
+      // de apilarse. renotify hace que el reemplazo igual vibre/suene.
+      tag: "reto-vikingo",
+      renotify: true,
+      vibrate: [60, 40, 60],
       data: { url: datos.url },
     }),
   );
@@ -25,8 +31,12 @@ self.addEventListener("notificationclick", (event) => {
   event.waitUntil(
     self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((lista) => {
       const abierta = lista.find((c) => c.url.includes(self.location.origin));
-      if (abierta) return abierta.focus().then(() => abierta.navigate(url));
-      return self.clients.openWindow(url);
+      if (!abierta) return self.clients.openWindow(url);
+      // Si navigate() falla (pestaña no controlada por este SW), abrir una nueva.
+      return abierta
+        .focus()
+        .then(() => abierta.navigate(url))
+        .catch(() => self.clients.openWindow(url));
     }),
   );
 });

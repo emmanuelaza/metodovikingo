@@ -16,9 +16,12 @@ export default function RunaIcon({ simbolo, className = "h-5 w-5" }: { simbolo: 
         </svg>
       );
     case "estructura":
+      // Jera: dos chevrones desplazados en diagonal, nunca cruzados — una "X"
+      // en un logro bloqueado se lee como "fallaste", no como "pendiente".
       return (
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className={className}>
-          <path d="M6 4 L12 12 L6 20 M18 4 L12 12 L18 20" />
+          <path d="M6 3 L13 9 L6 15" />
+          <path d="M18 21 L11 15 L18 9" />
         </svg>
       );
     case "medicion":
@@ -28,11 +31,14 @@ export default function RunaIcon({ simbolo, className = "h-5 w-5" }: { simbolo: 
         </svg>
       );
     case "valhalla":
+      // Valknut: tres triángulos entrelazados. Los ángulos NO pueden ser
+      // múltiplos de 120° — un triángulo equilátero tiene simetría de orden 3
+      // y las tres copias caerían exactamente una sobre otra.
       return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" className={className}>
-          <polygon points="12,4 19,17 5,17" transform="rotate(0 12 12)" />
-          <polygon points="12,4 19,17 5,17" transform="rotate(120 12 12)" />
-          <polygon points="12,4 19,17 5,17" transform="rotate(240 12 12)" />
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" className={className}>
+          <polygon points="12,3 20,17 4,17" transform="rotate(0 12 12)" />
+          <polygon points="12,3 20,17 4,17" transform="rotate(40 12 12)" />
+          <polygon points="12,3 20,17 4,17" transform="rotate(80 12 12)" />
         </svg>
       );
   }

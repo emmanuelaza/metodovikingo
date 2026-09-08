@@ -119,6 +119,21 @@ export function calcularRacha(fechas: string[], hoy: string): { racha: number; r
   return { racha, rachaMax };
 }
 
+/**
+ * Cuántas personas distintas completaron alguna lección hoy (prueba social).
+ * Va por la función RPC `completados_hoy` (migración 0005) porque RLS impide
+ * contar filas de otros usuarios. Devuelve null si la migración todavía no
+ * está aplicada — la página simplemente no muestra el dato en vez de romperse.
+ */
+export async function contarCompletadosHoy(
+  supabase: SupabaseClient,
+  hoy: string = hoyISO(),
+): Promise<number | null> {
+  const { data, error } = await supabase.rpc("completados_hoy", { fecha: hoy });
+  if (error || typeof data !== "number") return null;
+  return data;
+}
+
 export async function getFechasCompletado(
   supabase: SupabaseClient,
   user: User,

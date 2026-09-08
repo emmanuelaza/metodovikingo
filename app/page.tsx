@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { requireUsuario, getPerfil, getFechasCompletado, calcularEstadoCurso } from "@/lib/progreso";
+import { requireUsuario, getPerfil, getFechasCompletado, calcularEstadoCurso, contarCompletadosHoy } from "@/lib/progreso";
 import { getTitulos, getFases, getPiezas } from "@/lib/contenido";
 import { DIAS_TOTALES } from "@/lib/types";
 import { hoyISO, proximaMedianocheEpoch } from "@/lib/fecha";
@@ -30,14 +30,15 @@ export default async function Temario({
 }) {
   const { msg } = await searchParams;
   const { supabase, user } = await requireUsuario();
-  const [perfil, fechas, titulos, fases, piezas] = await Promise.all([
+  const hoy = hoyISO();
+  const [perfil, fechas, titulos, fases, piezas, completadosHoy] = await Promise.all([
     getPerfil(supabase, user),
     getFechasCompletado(supabase, user),
     getTitulos(),
     getFases(),
     getPiezas(),
+    contarCompletadosHoy(supabase, hoy),
   ]);
-  const hoy = hoyISO();
   const estado = calcularEstadoCurso(perfil, fechas, hoy);
   const aviso = msg ? MENSAJES[msg] : undefined;
 
@@ -46,11 +47,13 @@ export default async function Temario({
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD_CURSO) }} />
 
       <section className="border-b border-line bg-bg-2">
-        <div className="mx-auto max-w-4xl px-6 py-12">
+        <div className="mx-auto max-w-4xl px-6 py-10 sm:py-12">
           <p className="font-display text-xs text-ember-2">Reto Vikingo · 30 días</p>
-          <h1 className="mt-2 font-display text-4xl leading-tight">Tu temario</h1>
+          <h1 className="mt-2 font-display text-3xl leading-tight sm:text-4xl">Tu temario</h1>
 
-          <div className="mt-6 flex flex-wrap items-center gap-x-8 gap-y-3 text-sm">
+          {aviso && <p className="mt-4 text-sm text-ember-2">{aviso}</p>}
+
+          <div className="mt-5 flex flex-wrap items-center gap-x-8 gap-y-3 text-sm">
             {estado.racha > 0 && (
               <span className="text-ink">
                 🔥 <strong>{estado.racha}</strong> {estado.racha === 1 ? "día" : "días"} de racha
@@ -66,25 +69,28 @@ export default async function Temario({
             </span>
           </div>
 
-          <div className="mt-4 max-w-sm">
-            <ProgressBar completados={estado.diasCompletados.size} total={DIAS_TOTALES} />
-          </div>
+          {/* Prueba social real. Se oculta con números bajos: "2 personas" desmotiva
+              más de lo que motiva, y no se va a inflar la cifra. */}
+          {completadosHoy !== null && completadosHoy >= 5 && (
+            <p className="mt-3 text-sm text-ink-dim">
+              <strong className="text-ink">{completadosHoy}</strong> personas ya completaron su día de hoy.
+            </p>
+          )}
 
-          <div className="mt-5 max-w-md">
-            <CalendarioRacha diaMaximo={estado.diaMaximo} diasCompletados={estado.diasCompletados} />
-          </div>
-
-          {aviso && <p className="mt-5 text-sm text-ember-2">{aviso}</p>}
-
-          <div className="mt-7">
+          {/* La acción principal va antes de las métricas: en móvil tiene que
+              alcanzarse sin scroll, sobre todo si se llegó desde un push. */}
+          <div className="mt-5">
             {estado.cursoCompletado ? (
-              <Link href="/metodo-secreto" className="inline-block rounded-lg bg-ember px-5 py-3 font-semibold text-bg hover:bg-ember-deep">
+              <Link
+                href="/metodo-secreto"
+                className="block w-full rounded-lg bg-ember px-5 py-3.5 text-center font-semibold text-bg hover:bg-ember-deep sm:inline-block sm:w-auto"
+              >
                 Ver el Método completo →
               </Link>
             ) : estado.diaPendiente ? (
               <Link
                 href={`/reto/${estado.diaPendiente}`}
-                className="inline-block rounded-lg bg-ember px-5 py-3 font-semibold text-bg hover:bg-ember-deep"
+                className="block w-full rounded-lg bg-ember px-5 py-3.5 text-center font-semibold text-bg hover:bg-ember-deep sm:inline-block sm:w-auto"
               >
                 Continuar: Día {estado.diaPendiente} →
               </Link>
@@ -93,8 +99,16 @@ export default async function Temario({
             )}
           </div>
 
+          <div className="mt-6 max-w-sm">
+            <ProgressBar completados={estado.diasCompletados.size} total={DIAS_TOTALES} />
+          </div>
+
+          <div className="mt-5 max-w-md">
+            <CalendarioRacha diaMaximo={estado.diaMaximo} diasCompletados={estado.diasCompletados} />
+          </div>
+
           {estado.racha > 0 && (
-            <div className="mt-4 max-w-xs">
+            <div className="mt-5 max-w-xs">
               <CompartirRacha racha={estado.racha} dia={estado.diasCompletados.size} />
             </div>
           )}
