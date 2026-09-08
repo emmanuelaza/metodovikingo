@@ -95,7 +95,7 @@ export function calcularEstadoCurso(
  * (como GitHub/Duolingo: importa que hayas entrado, no cuál día del curso).
  * Si el último día activo no fue hoy ni ayer, la racha visible es 0.
  */
-function calcularRacha(fechas: string[], hoy: string): { racha: number; rachaMax: number } {
+export function calcularRacha(fechas: string[], hoy: string): { racha: number; rachaMax: number } {
   const unicas = Array.from(new Set(fechas)).sort();
   if (unicas.length === 0) return { racha: 0, rachaMax: 0 };
 

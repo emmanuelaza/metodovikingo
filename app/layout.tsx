@@ -9,11 +9,29 @@ import { ADS_ENABLED } from "@/lib/ads";
 const anton = Anton({ variable: "--font-anton", weight: "400", subsets: ["latin"] });
 const manrope = Manrope({ variable: "--font-manrope", subsets: ["latin"] });
 
+const TITULO = "Reto Vikingo — 30 días";
+const DESCRIPCION =
+  "Curso gratuito de 30 días de nutrición y entrenamiento. Una lección nueva cada día y el Método completo al final.";
+
 export const metadata: Metadata = {
-  title: { default: "Reto Vikingo — 30 días", template: "%s · Reto Vikingo" },
-  description:
-    "Curso gratuito de 30 días de nutrición y entrenamiento. Una lección nueva cada día y el Método completo al final.",
+  title: { default: TITULO, template: "%s · Reto Vikingo" },
+  description: DESCRIPCION,
+  keywords: ["reto de 30 días", "reto fitness gratis", "nutrición y entrenamiento", "método vikingo", "reto vikingo"],
   metadataBase: process.env.NEXT_PUBLIC_SITE_URL ? new URL(process.env.NEXT_PUBLIC_SITE_URL) : undefined,
+  openGraph: {
+    type: "website",
+    locale: "es_CO",
+    siteName: "Reto Vikingo",
+    title: TITULO,
+    description: DESCRIPCION,
+    images: [{ url: "/api/og", width: 1200, height: 630, alt: TITULO }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITULO,
+    description: DESCRIPCION,
+    images: ["/api/og"],
+  },
 };
 
 export const viewport: Viewport = {

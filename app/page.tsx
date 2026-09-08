@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { requireUsuario, getPerfil, getFechasCompletado, calcularEstadoCurso } from "@/lib/progreso";
-import { getTitulos, getFases } from "@/lib/contenido";
+import { getTitulos, getFases, getPiezas } from "@/lib/contenido";
 import { DIAS_TOTALES } from "@/lib/types";
 import { hoyISO, proximaMedianocheEpoch } from "@/lib/fecha";
 import AdSlot from "@/app/components/AdSlot";
@@ -8,6 +8,16 @@ import ProgressBar from "@/app/components/ProgressBar";
 import CompartirRacha from "@/app/components/CompartirRacha";
 import NotificacionesPrompt from "@/app/components/NotificacionesPrompt";
 import ContadorSiguienteDia from "@/app/components/ContadorSiguienteDia";
+import Logros from "@/app/components/Logros";
+import GuiasDescargables from "@/app/components/GuiasDescargables";
+
+const JSON_LD_CURSO = {
+  "@context": "https://schema.org",
+  "@type": "Course",
+  name: "Reto Vikingo — 30 días",
+  description: "Curso gratuito de 30 días de nutrición y entrenamiento, una lección nueva cada día.",
+  provider: { "@type": "Organization", name: "Método Vikingo" },
+};
 
 const MENSAJES: Record<string, string> = {
   bloqueado: "Ese día todavía no está disponible. Vuelve cuando le toque a tu calendario.",
@@ -20,18 +30,22 @@ export default async function Temario({
 }) {
   const { msg } = await searchParams;
   const { supabase, user } = await requireUsuario();
-  const [perfil, fechas, titulos, fases] = await Promise.all([
+  const [perfil, fechas, titulos, fases, piezas] = await Promise.all([
     getPerfil(supabase, user),
     getFechasCompletado(supabase, user),
     getTitulos(),
     getFases(),
+    getPiezas(),
   ]);
   const hoy = hoyISO();
   const estado = calcularEstadoCurso(perfil, fechas, hoy);
   const aviso = msg ? MENSAJES[msg] : undefined;
+  const faseMaxima = fases.reduce((max, f) => (f.diaInicio <= estado.diaMaximo ? Math.max(max, f.numero) : max), 1);
 
   return (
     <div>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD_CURSO) }} />
+
       <section className="border-b border-line bg-bg-2">
         <div className="mx-auto max-w-4xl px-6 py-12">
           <p className="font-display text-xs text-ember-2">Reto Vikingo · 30 días</p>
@@ -41,6 +55,11 @@ export default async function Temario({
             {estado.racha > 0 && (
               <span className="text-ink">
                 🔥 <strong>{estado.racha}</strong> {estado.racha === 1 ? "día" : "días"} de racha
+              </span>
+            )}
+            {estado.rachaMax > estado.racha && (
+              <span className="text-ink-dim">
+                Récord: <strong className="text-ink">{estado.rachaMax}</strong> {estado.rachaMax === 1 ? "día" : "días"}
               </span>
             )}
             <span className="text-ink-dim">
@@ -77,6 +96,11 @@ export default async function Temario({
             </div>
           )}
 
+          <div className="mt-7">
+            <p className="mb-3 font-display text-xs text-ink-dim">Runas del Método Secreto</p>
+            <Logros piezas={piezas} diasCompletados={estado.diasCompletados} />
+          </div>
+
           <NotificacionesPrompt habilitado={estado.diasCompletados.has(1)} />
 
           {/* Cerca del CTA pero no pegado — evita clicks accidentales sobre el botón de continuar. */}
@@ -87,12 +111,21 @@ export default async function Temario({
       </section>
 
       <div className="mx-auto max-w-4xl px-6 py-10">
-        {fases.map((fase) => (
+        {fases.map((fase) => {
+          const diasFase = fase.diaFin - fase.diaInicio + 1;
+          const completadosFase = Array.from(estado.diasCompletados).filter(
+            (d) => d >= fase.diaInicio && d <= fase.diaFin,
+          ).length;
+
+          return (
           <section key={fase.numero} className="mb-10">
             <header className="mb-3">
               <p className="font-display text-xs text-ember-2">Fase {fase.numero}</p>
               <h2 className="font-display text-xl">{fase.nombre}</h2>
               <p className="mt-1 text-sm text-ink-dim">{fase.descripcion}</p>
+              <div className="mt-3 max-w-xs">
+                <ProgressBar completados={completadosFase} total={diasFase} />
+              </div>
             </header>
 
             <ol className="divide-y divide-line border-y border-line">
@@ -136,11 +169,13 @@ export default async function Temario({
               })}
             </ol>
           </section>
-        ))}
+          );
+        })}
+
+        <GuiasDescargables faseMaxima={faseMaxima} />
 
         <div className="space-y-1 border-t border-line pt-6 text-sm text-ink-dim">
           <p>Comunidad de Discord — Próximamente</p>
-          <p>Guías descargables en PDF — Próximamente</p>
           <p>Testimonios del reto — Próximamente</p>
         </div>
       </div>

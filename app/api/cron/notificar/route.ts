@@ -2,12 +2,14 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { webpushConfigurado } from "@/lib/push/server";
 import { getTitulos } from "@/lib/contenido";
 import { diasEntre, hoyISO } from "@/lib/fecha";
+import { calcularRacha } from "@/lib/progreso";
 import { DIAS_TOTALES } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
 type PerfilFila = { id: string; fecha_inicio: string };
 type SuscripcionFila = { id: number; user_id: string; endpoint: string; p256dh: string; auth: string };
+type CompletadoFila = { user_id: string; completed_at: string };
 
 /**
  * Cron diario (ver vercel.json): a cada usuario cuyo siguiente día del reto se
@@ -51,6 +53,21 @@ export async function GET(request: Request) {
     return Response.json({ enviados: 0, error: errorSubs?.message ?? "sin suscripciones" }, { status: 500 });
   }
 
+  // Racha de cada usuario (antes del día que se acaba de habilitar) para
+  // variar el mensaje: motivar a no romperla en vez de un aviso genérico.
+  const { data: completados } = await admin
+    .from("daily_completions")
+    .select("user_id, completed_at")
+    .in("user_id", suscripciones.map((s) => s.user_id))
+    .returns<CompletadoFila[]>();
+
+  const fechasPorUsuario = new Map<string, string[]>();
+  for (const c of completados ?? []) {
+    const lista = fechasPorUsuario.get(c.user_id) ?? [];
+    lista.push(c.completed_at);
+    fechasPorUsuario.set(c.user_id, lista);
+  }
+
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "";
   let enviados = 0;
   const idsExpiradas: number[] = [];
@@ -60,10 +77,12 @@ export async function GET(request: Request) {
       const dia = usuariosANotificar.get(sub.user_id);
       if (!dia) return;
       const titulo = titulos.find((t) => t.dia === dia)?.titulo;
+      const { racha } = calcularRacha(fechasPorUsuario.get(sub.user_id) ?? [], hoy);
+      const prefijo = racha > 1 ? `🔥 Llevas ${racha} días seguidos. ` : "";
 
       const payload = JSON.stringify({
         titulo: "Reto Vikingo",
-        cuerpo: titulo ? `Día ${dia} disponible: ${titulo}` : `Tu día ${dia} ya está disponible.`,
+        cuerpo: titulo ? `${prefijo}Día ${dia} disponible: ${titulo}` : `${prefijo}Tu día ${dia} ya está disponible.`,
         url: `${siteUrl}/reto/${dia}`,
       });
 
