@@ -1,5 +1,4 @@
 import { FAQ } from "@/content/faq";
-import AdSlot from "@/app/components/AdSlot";
 
 export const metadata = {
   title: "Preguntas frecuentes",
@@ -13,8 +12,6 @@ export default function FaqPage() {
         <p className="font-display text-xs text-ember-2">Ayuda</p>
         <h1 className="mt-2 font-display text-3xl">Preguntas frecuentes</h1>
       </header>
-
-      <AdSlot slot="banner300x250Dashboard" className="mx-auto" />
 
       <div>
         {FAQ.map((p) => (

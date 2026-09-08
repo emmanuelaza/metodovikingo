@@ -1,7 +1,6 @@
 import { requireUsuario } from "@/lib/progreso";
 import { fechaCorta } from "@/lib/fecha";
 import type { BodyLog } from "@/lib/types";
-import AdSlot from "@/app/components/AdSlot";
 import GraficaProgreso, { type PuntoProgreso } from "./GraficaProgreso";
 import { registrarMedida, eliminarMedida } from "./actions";
 
@@ -72,8 +71,6 @@ export default async function Progreso({
           Guardar
         </button>
       </form>
-
-      <AdSlot slot="banner300x250Dashboard" className="mx-auto" />
 
       {logs.length === 0 ? (
         <p className="border-t border-line pt-6 text-sm text-ink-dim">

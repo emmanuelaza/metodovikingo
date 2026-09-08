@@ -1,10 +1,13 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
+import Script from "next/script";
 import { Anton, Manrope } from "next/font/google";
 import "./globals.css";
 import Nav from "@/app/components/Nav";
-import AdSlot from "@/app/components/AdSlot";
 import { ADS_ENABLED } from "@/lib/ads";
+
+const POPUNDER_SRC = "https://pl31224702.profitableratecpmnetwork.com/b6/1b/7c/b61b7c108f4bb722951d8eb5186cf118.js";
+const SOCIAL_BAR_SRC = "https://pl31224703.profitableratecpmnetwork.com/ec/85/e8/ec85e8d57198e6ba577e1836d8860803.js";
 
 const anton = Anton({ variable: "--font-anton", weight: "400", subsets: ["latin"] });
 const manrope = Manrope({ variable: "--font-manrope", subsets: ["latin"] });
@@ -43,7 +46,13 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es" className={`${anton.variable} ${manrope.variable} h-full antialiased`}>
-      <body className={`min-h-full flex flex-col ${ADS_ENABLED ? "pb-[50px] sm:pb-0" : ""}`}>
+      <body className="min-h-full flex flex-col">
+        {/* RootLayout no se vuelve a montar en navegación client-side (Link), así
+            que estos scripts cargan una sola vez por sesión de navegación, no en
+            cada cambio de ruta. strategy="afterInteractive": no bloquean el
+            primer render. Apagar todo con NEXT_PUBLIC_ADS_ENABLED=false. */}
+        {ADS_ENABLED && <Script src={POPUNDER_SRC} strategy="afterInteractive" />}
+
         <Nav />
         <main className="flex-1 w-full">{children}</main>
         <footer className="border-t border-line py-6 text-center text-xs text-ink-dim">
@@ -53,20 +62,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               Privacidad
             </Link>
           </p>
-          {/* Escritorio: banner 728x90 en el footer. Nunca junto al de 320x50 (móvil). */}
-          {ADS_ENABLED && (
-            <div className="mt-4 hidden justify-center sm:flex">
-              <AdSlot slot="banner728x90HeaderDesktop" />
-            </div>
-          )}
         </footer>
 
-        {/* Móvil: banner 320x50 fijo abajo. body tiene padding-bottom para no taparlo. */}
-        {ADS_ENABLED && (
-          <div className="fixed inset-x-0 bottom-0 z-30 flex justify-center bg-bg sm:hidden">
-            <AdSlot slot="banner320x50FooterMobile" />
-          </div>
-        )}
+        {ADS_ENABLED && <Script src={SOCIAL_BAR_SRC} strategy="afterInteractive" />}
       </body>
     </html>
   );

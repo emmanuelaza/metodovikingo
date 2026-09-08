@@ -3,7 +3,6 @@ import { requireUsuario, getPerfil, getFechasCompletado, calcularEstadoCurso } f
 import { getTitulos, getFases, getPiezas } from "@/lib/contenido";
 import { DIAS_TOTALES } from "@/lib/types";
 import { hoyISO, proximaMedianocheEpoch } from "@/lib/fecha";
-import AdSlot from "@/app/components/AdSlot";
 import ProgressBar from "@/app/components/ProgressBar";
 import CompartirRacha from "@/app/components/CompartirRacha";
 import NotificacionesPrompt from "@/app/components/NotificacionesPrompt";
@@ -101,11 +100,6 @@ export default async function Temario({
           </div>
 
           <NotificacionesPrompt habilitado={estado.diasCompletados.has(1)} />
-
-          {/* Cerca del CTA pero no pegado — evita clicks accidentales sobre el botón de continuar. */}
-          <div className="mt-8 flex justify-center sm:justify-start">
-            <AdSlot slot="banner300x250Dashboard" />
-          </div>
         </div>
       </section>
 
@@ -178,7 +172,7 @@ export default async function Temario({
 
         <div className="space-y-1 border-t border-line pt-6 text-sm text-ink-dim">
           <p>Comunidad de Discord — Próximamente</p>
-          <p>Guías descargables en PDF — Próximamente</p>
+          <p>Guías descargables en PDF — dentro de cada lección</p>
         </div>
       </div>
     </div>

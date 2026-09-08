@@ -3,12 +3,13 @@ import { notFound, redirect } from "next/navigation";
 import { requireUsuario, getPerfil, getFechasCompletado, calcularEstadoCurso } from "@/lib/progreso";
 import { getLeccion, getPiezaPorDia, getFases } from "@/lib/contenido";
 import { DIAS_TOTALES, DIAS_CON_PIEZA } from "@/lib/types";
-import AdSlot from "@/app/components/AdSlot";
 import PiezaDesbloqueada from "@/app/components/PiezaDesbloqueada";
 import MarcarCompletado from "@/app/components/MarcarCompletado";
 import TestimoniosCarrusel from "@/app/components/TestimoniosCarrusel";
 import QuizFase from "@/app/components/QuizFase";
+import DescargaPdfDia from "@/app/components/DescargaPdfDia";
 import { quizDelDia } from "@/content/quizzes-seed";
+import { pdfDelDia } from "@/lib/pdfsReto";
 
 /** Días de la Fase 3/4 donde se integra el carrusel de testimonios. */
 const DIAS_CON_TESTIMONIO = [19, 26];
@@ -63,8 +64,6 @@ export default async function DiaPage({ params }: { params: Promise<{ dia: strin
             <p className="leading-relaxed">{leccion.introduccion}</p>
             <p className="leading-relaxed text-ink/90">{leccion.concepto}</p>
 
-            <AdSlot slot="nativeBannerLeccion" />
-
             <div className="rounded-xl border border-line bg-bg-2 p-5">
               <p className="font-display text-xs text-ink-dim">{leccion.rutinaTitulo}</p>
               <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-relaxed">
@@ -92,9 +91,13 @@ export default async function DiaPage({ params }: { params: Promise<{ dia: strin
               </div>
             )}
 
+            <div className="border-t border-line pt-6">
+              <p className="mb-2 font-display text-xs text-ink-dim">Guía del día en PDF</p>
+              <DescargaPdfDia archivo={pdfDelDia(dia)} />
+            </div>
+
             <div className="border-t border-line pt-6 text-sm text-ink-dim">
               <p>Comunidad de Discord — Próximamente</p>
-              <p>Guía descargable en PDF — Próximamente</p>
             </div>
 
             <div className="border-t border-line pt-6">

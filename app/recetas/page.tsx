@@ -1,5 +1,4 @@
 import { RECETAS } from "@/content/recetas";
-import AdSlot from "@/app/components/AdSlot";
 
 export const metadata = {
   title: "Recetas",
@@ -14,8 +13,6 @@ export default function Recetas() {
         <h1 className="mt-2 font-display text-3xl">Recetas Vikingas</h1>
         <p className="mt-2 text-ink-dim">Altas en proteína, pocas cosas que lavar. Sin dietas raras.</p>
       </header>
-
-      <AdSlot slot="banner300x250Dashboard" className="mx-auto" />
 
       <div className="space-y-6">
         {RECETAS.map((r) => (

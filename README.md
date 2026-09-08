@@ -23,8 +23,9 @@ Ver [`sanity/README.md`](sanity/README.md). Mientras no esté configurado, la ap
 
 ### 3. Anuncios (Adsterra)
 
-- `NEXT_PUBLIC_ADS_ENABLED=true` para encender; `false` apaga los 4 slots del sitio de una vez.
-- Los 4 slots (código real, no configurables por env) están en `lib/adsConfig.ts`: banner nativo dentro de cada lección, 300x250 en el temario, y los banners de footer 320x50 (móvil) / 728x90 (escritorio), mutuamente excluyentes por breakpoint.
+- `NEXT_PUBLIC_ADS_ENABLED=true` para encender; `false` apaga todo de una vez.
+- Popunder + Social Bar, inyectados una sola vez en `app/layout.tsx` (no configurables por env más allá del interruptor).
+- Descarga de PDF por día con Smartlink (`app/components/DescargaPdfDia.tsx`): ver `public/pdfs/` más abajo.
 
 ### 4. Notificaciones push
 
@@ -42,11 +43,12 @@ app/
   progreso/                 Registro de peso/cintura + gráfica (Recharts)
   privacidad/               Política de privacidad (cookies + anuncios de terceros)
   api/og/racha/route.tsx    Imagen compartible de la racha (next/og)
-  api/ads/frame/route.ts    Aísla los banners iframe de Adsterra (document.write) en su propio HTML
+  api/og/route.tsx          Imagen OG genérica del sitio (next/og)
   api/cron/notificar/       Envío diario de push (protegido con CRON_SECRET)
   recetas/ · faq/           Contenido evergreen
-  components/               AdSlot, ProgressBar, CompartirRacha, PiezaDesbloqueada, MarcarCompletado,
-                             TestimonioProximamente, NotificacionesPrompt, Nav
+  components/               ProgressBar, CompartirRacha, PiezaDesbloqueada, MarcarCompletado,
+                             DescargaPdfDia, TestimoniosCarrusel, QuizFase, Logros, RunaIcon,
+                             NotificacionesPrompt, Nav
   template.tsx              Transición fade/slide entre navegaciones
   */loading.tsx             Skeletons por ruta
 lib/
@@ -54,12 +56,14 @@ lib/
   contenido.ts              Capa de contenido: Sanity → fallback content/ (lecciones, piezas/runas, fases)
   progreso.ts               requireUsuario, getPerfil, diaMaximoDisponible, calcularEstadoCurso
   fecha.ts                  "Hoy" en RETO_TIMEZONE
-  adsConfig.ts              Los 4 slots reales de Adsterra
+  pdfsReto.ts               Resuelve el PDF de cada día en public/pdfs/fase-X/ por prefijo dia-NN-
   push/                     client.ts (suscripción), actions.ts (guardar), server.ts (VAPID/web-push)
-content/                    Seeds locales (lecciones, piezas/runas, fases, recetas, FAQ)
+content/                    Seeds locales (lecciones, piezas/runas, fases, recetas, FAQ, quizzes, testimonios)
 supabase/migrations/        SQL del esquema (0001-0004, ya aplicadas al proyecto real)
 sanity/schemas/             Schemas para el Studio (leccionDiaria, piezaMetodo, fase)
 public/sw.js                Service worker (solo push, no cache offline)
+public/pdfs/fase-{1..5}/    Guías descargables por día (dia-NN-*.pdf) — no incluidas en el repo, subirlas
+                             a mano respetando esa estructura de carpetas
 ```
 
 ## Cómo funciona el desbloqueo (sin mecánicas de juego)
