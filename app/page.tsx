@@ -62,6 +62,11 @@ const PREGUNTAS = [
   },
 ];
 
+/** Botón centrado con ancho de mobile completo, pero sin estirarse infinito en pantallas grandes. */
+function CTAWrap({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return <div className={`mx-auto max-w-xs sm:max-w-sm ${className}`}>{children}</div>;
+}
+
 export default function Home() {
   return (
     <div>
@@ -80,30 +85,30 @@ export default function Home() {
 
       {/* HERO */}
       <section className="border-b border-line bg-bg-2">
-        <div className="mx-auto max-w-md px-6 py-14 text-center">
-          <IconoEscudo className="mx-auto h-14 w-14 text-ember-2" />
-          <h1 className="mt-4 font-display text-3xl leading-tight sm:text-4xl">🛡️ EL MÉTODO VIKINGO</h1>
-          <p className="mt-4 text-lg text-ink">
+        <div className="mx-auto max-w-md px-6 py-14 text-center sm:max-w-xl sm:py-20 lg:max-w-2xl lg:py-28">
+          <IconoEscudo className="mx-auto h-14 w-14 text-ember-2 lg:h-16 lg:w-16" />
+          <h1 className="mt-4 font-display text-3xl leading-tight sm:text-5xl lg:text-6xl">🛡️ EL MÉTODO VIKINGO</h1>
+          <p className="mx-auto mt-4 max-w-md text-lg text-ink sm:max-w-lg sm:text-xl lg:max-w-xl">
             Deja de ser el chico promedio. Construye un físico imponente, disciplina de acero y la fuerza de un
             guerrero.
           </p>
-          <p className="mt-3 text-sm text-ink-dim">
+          <p className="mx-auto mt-3 max-w-sm text-sm text-ink-dim sm:max-w-md sm:text-base">
             El mapa paso a paso para hombres jóvenes que quieren transformar su cuerpo y su mente, sin importar su
             genética actual.
           </p>
-          <div className="mt-7">
+          <CTAWrap className="mt-7">
             <BotonHotmart href={HOTMART_URL} ubicacion="hero" texto="⚔️ OBTENER EL MÉTODO VIKINGO AQUÍ" />
-          </div>
-          <p className="mt-2 text-xs text-ink-faint">(Acceso inmediato en tu celular)</p>
+          </CTAWrap>
+          <p className="mt-2 text-xs text-ink-faint">(Acceso inmediato en tu celular o computador)</p>
         </div>
       </section>
       {/* Sentinel: cuando esto sale de pantalla hacia arriba, aparece el sticky CTA. */}
       <div id="fin-hero" />
 
       {/* AGITACIÓN */}
-      <section className="mx-auto max-w-md px-6 py-12">
-        <h2 className="text-center font-display text-2xl">¿Te sientes identificado con esto?</h2>
-        <div className="mt-6 space-y-3 rounded-xl border border-err/30 bg-bg-2 p-5">
+      <section className="mx-auto max-w-md px-6 py-12 sm:max-w-2xl sm:py-16 lg:max-w-3xl">
+        <h2 className="text-center font-display text-2xl sm:text-3xl">¿Te sientes identificado con esto?</h2>
+        <div className="mt-6 grid gap-3 rounded-xl border border-err/30 bg-bg-2 p-5 sm:grid-cols-2 sm:gap-4 sm:p-6">
           {PROBLEMAS.map((p) => (
             <p key={p} className="flex items-start gap-2 text-sm leading-relaxed text-ink/90">
               <span aria-hidden className="text-err">
@@ -118,9 +123,9 @@ export default function Home() {
       <SeparadorRuna />
 
       {/* SOLUCIÓN */}
-      <section className="mx-auto max-w-md px-6 py-12">
-        <h2 className="text-center font-display text-2xl">El cambio empieza hoy: ¿qué incluye el Método?</h2>
-        <div className="mt-6 space-y-4">
+      <section className="mx-auto max-w-md px-6 py-12 sm:max-w-2xl sm:py-16 lg:max-w-5xl">
+        <h2 className="text-center font-display text-2xl sm:text-3xl">El cambio empieza hoy: ¿qué incluye el Método?</h2>
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {INCLUYE.map((item) => (
             <div key={item.titulo} className="rounded-xl border border-line bg-bg-2 p-5">
               <p className="font-display text-lg text-ember-2">
@@ -135,15 +140,15 @@ export default function Home() {
       <SeparadorRuna />
 
       {/* MÉTODOS DE PAGO SIN TARJETA */}
-      <section className="mx-auto max-w-md px-6 py-12">
-        <div className="rounded-xl border border-ember/40 bg-bg-2 p-5">
-          <h2 className="text-center font-display text-xl">💳 ¿No tienes tarjeta de crédito?</h2>
-          <p className="mt-3 text-center text-sm leading-relaxed text-ink-dim">
+      <section className="mx-auto max-w-md px-6 py-12 sm:max-w-2xl sm:py-16">
+        <div className="rounded-xl border border-ember/40 bg-bg-2 p-5 sm:p-8">
+          <h2 className="text-center font-display text-xl sm:text-2xl">💳 ¿No tienes tarjeta de crédito?</h2>
+          <p className="mx-auto mt-3 max-w-md text-center text-sm leading-relaxed text-ink-dim sm:text-base">
             No hay problema — puedes pagar en <strong className="text-ink">efectivo</strong> en la tienda más cercana
             o con tu <strong className="text-ink">billetera digital</strong> favorita. Genera tu código en el botón
             de abajo y listo.
           </p>
-          <ul className="mt-4 space-y-1.5 text-sm text-ink-dim">
+          <ul className="mx-auto mt-4 grid max-w-xl gap-x-8 gap-y-1.5 text-sm text-ink-dim sm:grid-cols-2">
             {METODOS_PAGO.map((m) => (
               <li key={m.pais} className="flex justify-between border-b border-line pb-1.5">
                 <span>{m.pais}</span>
@@ -156,10 +161,10 @@ export default function Home() {
       </section>
 
       {/* SOPORTE (sin lenguaje de garantía/reembolso que no respaldamos) */}
-      <section className="mx-auto max-w-md px-6 py-12">
-        <div className="rounded-xl border border-ember-2/40 bg-bg-2 p-5 text-center">
-          <p className="font-display text-lg text-ember-2">🤝 Compra segura</p>
-          <p className="mt-2 text-sm leading-relaxed text-ink-dim">
+      <section className="mx-auto max-w-md px-6 py-12 sm:max-w-2xl sm:py-16">
+        <div className="mx-auto max-w-xl rounded-xl border border-ember-2/40 bg-bg-2 p-5 text-center sm:p-8">
+          <p className="font-display text-lg text-ember-2 sm:text-xl">🤝 Compra segura</p>
+          <p className="mt-2 text-sm leading-relaxed text-ink-dim sm:text-base">
             Acceso instantáneo apenas pagas, soporte por correo si tienes dudas para adaptar las rutinas a tu cuerpo,
             y todas las actualizaciones futuras del método incluidas sin costo extra.
           </p>
@@ -170,43 +175,43 @@ export default function Home() {
 
       {/* PRECIO */}
       <section className="border-y border-line bg-bg-2">
-        <div className="mx-auto max-w-md px-6 py-14 text-center">
-          <p className="font-display text-xs text-ember-2">Acceso completo</p>
-          <p className="mt-3 font-display text-5xl text-ember-2">{PRECIO}</p>
-          <p className="mt-1 text-xs text-ink-faint">O el equivalente en la moneda de tu país</p>
-          <div className="mt-7">
+        <div className="mx-auto max-w-md px-6 py-14 text-center sm:max-w-xl sm:py-20">
+          <p className="font-display text-xs text-ember-2 sm:text-sm">Acceso completo</p>
+          <p className="mt-3 font-display text-5xl text-ember-2 sm:text-6xl">{PRECIO}</p>
+          <p className="mt-1 text-xs text-ink-faint sm:text-sm">O el equivalente en la moneda de tu país</p>
+          <CTAWrap className="mt-7">
             <BotonHotmart href={HOTMART_URL} ubicacion="precio" pulso texto="🛡️ QUIERO MI ACCESO AL MÉTODO VIKINGO" />
-          </div>
-          <p className="mt-3 text-xs text-ink-faint">
+          </CTAWrap>
+          <p className="mx-auto mt-3 max-w-sm text-xs text-ink-faint sm:text-sm">
             Al hacer clic, Hotmart convierte el precio a tu moneda local y te muestra las opciones de pago de tu país.
           </p>
         </div>
       </section>
 
       {/* FAQ */}
-      <section className="mx-auto max-w-md px-6 py-12">
-        <h2 className="text-center font-display text-2xl">Preguntas frecuentes</h2>
+      <section className="mx-auto max-w-md px-6 py-12 sm:max-w-2xl sm:py-16">
+        <h2 className="text-center font-display text-2xl sm:text-3xl">Preguntas frecuentes</h2>
         <div className="mt-6 divide-y divide-line border-y border-line">
           {PREGUNTAS.map((p) => (
             <details key={p.q} className="group py-4">
-              <summary className="cursor-pointer list-none text-sm font-semibold marker:content-none">
+              <summary className="cursor-pointer list-none text-sm font-semibold marker:content-none sm:text-base">
                 <span className="mr-2 text-ember-2 group-open:hidden">+</span>
                 <span className="mr-2 hidden text-ember-2 group-open:inline">−</span>
                 {p.q}
               </summary>
-              <p className="mt-2 text-sm leading-relaxed text-ink-dim">{p.a}</p>
+              <p className="mt-2 text-sm leading-relaxed text-ink-dim sm:text-base">{p.a}</p>
             </details>
           ))}
         </div>
       </section>
 
       {/* CTA FINAL */}
-      <section className="border-t border-line bg-bg-2 pb-20 sm:pb-14">
-        <div className="mx-auto max-w-md px-6 py-14 text-center">
-          <h2 className="font-display text-2xl">Únete a la tribu hoy</h2>
-          <div className="mt-6">
+      <section className="border-t border-line bg-bg-2 pb-20 sm:pb-16">
+        <div className="mx-auto max-w-md px-6 py-14 text-center sm:max-w-xl sm:py-20">
+          <h2 className="font-display text-2xl sm:text-3xl">Únete a la tribu hoy</h2>
+          <CTAWrap className="mt-6">
             <BotonHotmart href={HOTMART_URL} ubicacion="cta_final" pulso texto="🛡️ QUIERO MI ACCESO AL MÉTODO VIKINGO" />
-          </div>
+          </CTAWrap>
         </div>
       </section>
 
