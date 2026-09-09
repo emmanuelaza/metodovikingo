@@ -37,3 +37,13 @@ h1, h2, h3, .font-display {
   letter-spacing: 0.015em;
   font-weight: 400;
 }
+
+/* Pulso sutil en el CTA final — llama la atención sin parpadear como spam. */
+@keyframes pulso-cta {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 138, 61, 0.45); }
+  50% { box-shadow: 0 0 0 10px rgba(255, 138, 61, 0); }
+}
+.animate-pulso-cta { animation: pulso-cta 2.2s ease-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .animate-pulso-cta { animation: none; }
+}

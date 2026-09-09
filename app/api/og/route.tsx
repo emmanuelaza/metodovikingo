@@ -12,17 +12,17 @@ export async function GET() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(160deg, #0B0C0F 0%, #111318 60%, #181B21 100%)",
+          background: "linear-gradient(160deg, #0F0F11 0%, #111318 60%, #181B21 100%)",
           color: "#F2EFE9",
           fontFamily: "sans-serif",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 16, fontSize: 36, fontWeight: 800, letterSpacing: 6 }}>
-          <span style={{ color: "#FF8A3D" }}>⚔</span>
-          <span>MÉTODO VIKINGO</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 16, fontSize: 40, fontWeight: 800, letterSpacing: 4 }}>
+          <span style={{ color: "#FF8A3D" }}>🛡️</span>
+          <span>EL MÉTODO VIKINGO</span>
         </div>
-        <div style={{ display: "flex", fontSize: 40, fontWeight: 900, marginTop: 24, color: "#FF8A3D", textAlign: "center" }}>
-          12 semanas de nutrición y fuerza
+        <div style={{ display: "flex", fontSize: 32, fontWeight: 700, marginTop: 20, color: "#FF8A3D", textAlign: "center" }}>
+          Físico imponente. Disciplina de acero.
         </div>
       </div>
     ),

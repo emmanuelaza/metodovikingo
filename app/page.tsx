@@ -1,50 +1,64 @@
-import BotonHotmart from "@/app/components/BotonHotmart";
+import BotonHotmart, { HOTMART_URL_DEFAULT } from "@/app/components/BotonHotmart";
+import StickyCTA from "@/app/components/StickyCTA";
+import { IconoEscudo, SeparadorRuna } from "@/app/components/IconosNordicos";
 
-const HOTMART_URL = process.env.NEXT_PUBLIC_HOTMART_URL;
-const PRECIO = process.env.NEXT_PUBLIC_PRECIO;
-const GARANTIA_DIAS = process.env.NEXT_PUBLIC_GARANTIA_DIAS;
+const HOTMART_URL = process.env.NEXT_PUBLIC_HOTMART_URL || HOTMART_URL_DEFAULT;
+const PRECIO = process.env.NEXT_PUBLIC_PRECIO || "$23 USD";
 
-const PILARES = [
-  {
-    titulo: "Constancia",
-    texto:
-      "El cuerpo no cambia por intensidad, cambia por repetición. No necesitas la rutina perfecta — necesitas aparecer más veces que la mayoría. Un mal día no tiene que convertirse en una mala semana.",
-  },
-  {
-    titulo: "Estructura",
-    texto:
-      "La motivación se acaba; la estructura se queda. Horarios de comida fijos, entrenamiento agendado como una cita que no se cancela, un plato armado con una fórmula en vez de improvisado cada vez.",
-  },
-  {
-    titulo: "Medición",
-    texto:
-      "Lo que no se mide no se puede ajustar. Peso, medidas, rendimiento — no para juzgarte, para saber exactamente qué palanca mover cuando algo no funciona, en vez de adivinar o abandonar el plan completo.",
-  },
+const PROBLEMAS = [
+  "Cansado de mirarte al espejo y no ver el cambio físico que deseas.",
+  "Sin disciplina: empiezas una rutina y la dejas a los tres días por pereza.",
+  "Atrapado en la rutina: pegado al teléfono todo el día, sin energía.",
+  "Frustrado por no saber qué comer o cómo entrenar sin gastar una fortuna.",
 ];
 
 const INCLUYE = [
-  "Plan de alimentación completo, sin dietas raras",
-  "Rutinas de fuerza organizadas por nivel (principiante a avanzado)",
-  "Sistema de ajustes semana a semana según tus resultados reales",
-  "12 semanas de programa estructurado, no contenido suelto",
+  {
+    icono: "🏋️",
+    titulo: "Físico de guerrero",
+    texto: "Rutinas exactas para ganar músculo y fuerza. Para el gimnasio o para tu casa con lo que tengas a la mano.",
+  },
+  {
+    icono: "🧠",
+    titulo: "Mentalidad y disciplina",
+    texto: "El método diario para vencer la flojera, romper malos hábitos y mantenerte enfocado sin depender de la motivación.",
+  },
+  {
+    icono: "🥩",
+    titulo: "Nutrición sin complicaciones",
+    texto: "Guía de alimentación económica: qué comer para ponerte fuerte sin gastar de más en el supermercado.",
+  },
+  {
+    icono: "📱",
+    titulo: "Formato ultra-rápido",
+    texto: "PDF optimizado para leerlo y aplicarlo directo desde tu celular en 10 minutos.",
+  },
+];
+
+const METODOS_PAGO = [
+  { pais: "🇲🇽 México", opciones: "OXXO / Mercado Pago" },
+  { pais: "🇨🇴 Colombia", opciones: "Efecty / Nequi / Daviplata" },
+  { pais: "🇵🇪 Perú", opciones: "PagoEfectivo / Yape / Plin" },
+  { pais: "🇨🇱 Chile", opciones: "Sencillito / Servipag / Mach" },
+  { pais: "🇪🇸 España", opciones: "Bizum / Tarjeta débito" },
 ];
 
 const PREGUNTAS = [
   {
+    q: "¿No tengo tarjeta de crédito, puedo comprarlo igual?",
+    a: "Sí. Al hacer clic en el botón, Hotmart te da la opción de generar un código y pagar en efectivo en la tienda más cercana, o usar tu billetera digital — sin necesitar ninguna tarjeta.",
+  },
+  {
+    q: "¿Me va a llegar algo físico a mi casa?",
+    a: "No. El acceso es digital e inmediato. Te llega un enlace seguro a tu correo un minuto después de pagar, para abrirlo directo en tu celular.",
+  },
+  {
+    q: "¿Sirve si estoy muy flaco o con sobrepeso?",
+    a: "Sí. El método enseña los principios de fuerza y disciplina que aplican para cualquier tipo de cuerpo — tú decides qué ajustes tomar según el tuyo.",
+  },
+  {
     q: "¿Necesito gimnasio?",
-    a: "No es obligatorio. Las rutinas incluyen opciones para entrenar en casa; si tienes gimnasio, mejor, pero no es una excusa para no empezar.",
-  },
-  {
-    q: "¿Sirve si quiero ganar músculo y no bajar grasa?",
-    a: "Sí. Los principios (proteína, fuerza, estructura, medición) son los mismos; lo que cambia es el balance calórico según tu objetivo, y el plan lo ajusta.",
-  },
-  {
-    q: "¿Cuánto tiempo toma al día?",
-    a: "Las rutinas están pensadas para encajar en una vida real, no para vivir en el gimnasio. El plan es sostenible, no un sacrificio de tiempo completo.",
-  },
-  {
-    q: "¿Es consejo médico?",
-    a: "No. Es contenido educativo de entrenamiento y nutrición general. Si tienes una condición de salud, consulta con un profesional antes de empezar.",
+    a: "No es obligatorio. Las rutinas incluyen opciones para entrenar en casa; si tienes gimnasio, mejor, pero no es excusa para no empezar.",
   },
 ];
 
@@ -56,105 +70,126 @@ export default function Home() {
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "Course",
-            name: "Método Vikingo",
-            description: "Sistema de 12 semanas de nutrición y entrenamiento con plan de alimentación y rutinas por nivel.",
-            provider: { "@type": "Organization", name: "Método Vikingo" },
+            "@type": "Product",
+            name: "El Método Vikingo",
+            description: "Programa digital de entrenamiento, nutrición y disciplina para hombres jóvenes.",
+            offers: { "@type": "Offer", priceCurrency: "USD", price: "23" },
           }),
         }}
       />
 
-      {/* Hero */}
+      {/* HERO */}
       <section className="border-b border-line bg-bg-2">
-        <div className="mx-auto max-w-3xl px-6 py-16 text-center sm:py-24">
-          <p className="font-display text-xs text-ember-2">Método Vikingo</p>
-          <h1 className="mt-3 font-display text-4xl leading-tight sm:text-5xl">
-            El sistema completo de 12 semanas para transformar tu cuerpo de verdad
-          </h1>
-          <p className="mx-auto mt-5 max-w-xl text-ink-dim">
-            Plan de alimentación, rutinas de fuerza por nivel y un sistema de ajustes semana a semana — no otro PDF
-            genérico que se queda sin usar.
+        <div className="mx-auto max-w-md px-6 py-14 text-center">
+          <IconoEscudo className="mx-auto h-14 w-14 text-ember-2" />
+          <h1 className="mt-4 font-display text-3xl leading-tight sm:text-4xl">🛡️ EL MÉTODO VIKINGO</h1>
+          <p className="mt-4 text-lg text-ink">
+            Deja de ser el chico promedio. Construye un físico imponente, disciplina de acero y la fuerza de un
+            guerrero.
           </p>
-          {HOTMART_URL && (
-            <div className="mx-auto mt-8 max-w-xs">
-              <BotonHotmart href={HOTMART_URL} ubicacion="hero" />
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Problema */}
-      <section className="mx-auto max-w-3xl px-6 py-14">
-        <h2 className="font-display text-2xl">La mayoría de los planes fallan por lo mismo</h2>
-        <p className="mt-4 leading-relaxed text-ink-dim">
-          No es falta de fuerza de voluntad. Es intentar seguir una rutina genérica que no se ajusta a ti, sin saber
-          qué cambiar cuando deja de funcionar, y depender de una motivación que baja a la tercera semana — siempre.
-          El Método Vikingo no apuesta a la motivación: apuesta a un sistema que sigue funcionando cuando la
-          motivación ya no está.
-        </p>
-      </section>
-
-      {/* Los 3 pilares */}
-      <section className="border-t border-line bg-bg-2">
-        <div className="mx-auto max-w-3xl px-6 py-14">
-          <h2 className="font-display text-2xl">Los tres pilares del Método</h2>
-          <div className="mt-6 grid gap-5 sm:grid-cols-3">
-            {PILARES.map((p) => (
-              <div key={p.titulo} className="rounded-xl border border-line bg-bg p-5">
-                <h3 className="font-display text-lg text-ember-2">{p.titulo}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-ink-dim">{p.texto}</p>
-              </div>
-            ))}
+          <p className="mt-3 text-sm text-ink-dim">
+            El mapa paso a paso para hombres jóvenes que quieren transformar su cuerpo y su mente, sin importar su
+            genética actual.
+          </p>
+          <div className="mt-7">
+            <BotonHotmart href={HOTMART_URL} ubicacion="hero" texto="⚔️ OBTENER EL MÉTODO VIKINGO AQUÍ" />
           </div>
+          <p className="mt-2 text-xs text-ink-faint">(Acceso inmediato en tu celular)</p>
         </div>
       </section>
+      {/* Sentinel: cuando esto sale de pantalla hacia arriba, aparece el sticky CTA. */}
+      <div id="fin-hero" />
 
-      {/* Qué incluye */}
-      <section className="mx-auto max-w-3xl px-6 py-14">
-        <h2 className="font-display text-2xl">Qué incluye</h2>
-        <ul className="mt-6 space-y-3">
-          {INCLUYE.map((item) => (
-            <li key={item} className="flex items-start gap-3 text-ink/90">
-              <span aria-hidden className="mt-1 text-ember-2">
-                ✓
+      {/* AGITACIÓN */}
+      <section className="mx-auto max-w-md px-6 py-12">
+        <h2 className="text-center font-display text-2xl">¿Te sientes identificado con esto?</h2>
+        <div className="mt-6 space-y-3 rounded-xl border border-err/30 bg-bg-2 p-5">
+          {PROBLEMAS.map((p) => (
+            <p key={p} className="flex items-start gap-2 text-sm leading-relaxed text-ink/90">
+              <span aria-hidden className="text-err">
+                ❌
               </span>
-              {item}
-            </li>
+              {p}
+            </p>
           ))}
-        </ul>
+        </div>
       </section>
 
-      {/* Precio + garantía: nunca inventar un número, solo mostrar si viene configurado */}
-      {(PRECIO || GARANTIA_DIAS) && (
-        <section className="border-t border-line bg-bg-2">
-          <div className="mx-auto max-w-3xl px-6 py-14 text-center">
-            {PRECIO && (
-              <p className="font-display text-4xl text-ember-2">
-                {PRECIO}
-                <span className="ml-2 font-sans text-sm normal-case tracking-normal text-ink-dim">pago único</span>
-              </p>
-            )}
-            {GARANTIA_DIAS && (
-              <p className="mt-3 text-sm text-ink-dim">
-                Garantía de {GARANTIA_DIAS} días: si no te sirve, te devolvemos tu dinero.
-              </p>
-            )}
-            {HOTMART_URL && (
-              <div className="mx-auto mt-6 max-w-xs">
-                <BotonHotmart href={HOTMART_URL} ubicacion="precio" />
-              </div>
-            )}
-          </div>
-        </section>
-      )}
+      <SeparadorRuna />
 
-      {/* FAQ / objeciones */}
-      <section className="mx-auto max-w-3xl px-6 py-14">
-        <h2 className="font-display text-2xl">Preguntas frecuentes</h2>
+      {/* SOLUCIÓN */}
+      <section className="mx-auto max-w-md px-6 py-12">
+        <h2 className="text-center font-display text-2xl">El cambio empieza hoy: ¿qué incluye el Método?</h2>
+        <div className="mt-6 space-y-4">
+          {INCLUYE.map((item) => (
+            <div key={item.titulo} className="rounded-xl border border-line bg-bg-2 p-5">
+              <p className="font-display text-lg text-ember-2">
+                {item.icono} {item.titulo}
+              </p>
+              <p className="mt-2 text-sm leading-relaxed text-ink-dim">{item.texto}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <SeparadorRuna />
+
+      {/* MÉTODOS DE PAGO SIN TARJETA */}
+      <section className="mx-auto max-w-md px-6 py-12">
+        <div className="rounded-xl border border-ember/40 bg-bg-2 p-5">
+          <h2 className="text-center font-display text-xl">💳 ¿No tienes tarjeta de crédito?</h2>
+          <p className="mt-3 text-center text-sm leading-relaxed text-ink-dim">
+            No hay problema — puedes pagar en <strong className="text-ink">efectivo</strong> en la tienda más cercana
+            o con tu <strong className="text-ink">billetera digital</strong> favorita. Genera tu código en el botón
+            de abajo y listo.
+          </p>
+          <ul className="mt-4 space-y-1.5 text-sm text-ink-dim">
+            {METODOS_PAGO.map((m) => (
+              <li key={m.pais} className="flex justify-between border-b border-line pb-1.5">
+                <span>{m.pais}</span>
+                <span className="text-ink">{m.opciones}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3 text-center text-xs text-ink-faint">Y más opciones disponibles según tu país al hacer clic.</p>
+        </div>
+      </section>
+
+      {/* SOPORTE (sin lenguaje de garantía/reembolso que no respaldamos) */}
+      <section className="mx-auto max-w-md px-6 py-12">
+        <div className="rounded-xl border border-ember-2/40 bg-bg-2 p-5 text-center">
+          <p className="font-display text-lg text-ember-2">🤝 Compra segura</p>
+          <p className="mt-2 text-sm leading-relaxed text-ink-dim">
+            Acceso instantáneo apenas pagas, soporte por correo si tienes dudas para adaptar las rutinas a tu cuerpo,
+            y todas las actualizaciones futuras del método incluidas sin costo extra.
+          </p>
+        </div>
+      </section>
+
+      <SeparadorRuna />
+
+      {/* PRECIO */}
+      <section className="border-y border-line bg-bg-2">
+        <div className="mx-auto max-w-md px-6 py-14 text-center">
+          <p className="font-display text-xs text-ember-2">Acceso completo</p>
+          <p className="mt-3 font-display text-5xl text-ember-2">{PRECIO}</p>
+          <p className="mt-1 text-xs text-ink-faint">O el equivalente en la moneda de tu país</p>
+          <div className="mt-7">
+            <BotonHotmart href={HOTMART_URL} ubicacion="precio" pulso texto="🛡️ QUIERO MI ACCESO AL MÉTODO VIKINGO" />
+          </div>
+          <p className="mt-3 text-xs text-ink-faint">
+            Al hacer clic, Hotmart convierte el precio a tu moneda local y te muestra las opciones de pago de tu país.
+          </p>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="mx-auto max-w-md px-6 py-12">
+        <h2 className="text-center font-display text-2xl">Preguntas frecuentes</h2>
         <div className="mt-6 divide-y divide-line border-y border-line">
           {PREGUNTAS.map((p) => (
             <details key={p.q} className="group py-4">
-              <summary className="cursor-pointer list-none font-semibold marker:content-none">
+              <summary className="cursor-pointer list-none text-sm font-semibold marker:content-none">
                 <span className="mr-2 text-ember-2 group-open:hidden">+</span>
                 <span className="mr-2 hidden text-ember-2 group-open:inline">−</span>
                 {p.q}
@@ -165,17 +200,17 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA final */}
-      {HOTMART_URL && (
-        <section className="border-t border-line bg-bg-2">
-          <div className="mx-auto max-w-3xl px-6 py-16 text-center">
-            <h2 className="font-display text-3xl">Empieza el Método Vikingo hoy</h2>
-            <div className="mx-auto mt-6 max-w-xs">
-              <BotonHotmart href={HOTMART_URL} ubicacion="cta_final" />
-            </div>
+      {/* CTA FINAL */}
+      <section className="border-t border-line bg-bg-2 pb-20 sm:pb-14">
+        <div className="mx-auto max-w-md px-6 py-14 text-center">
+          <h2 className="font-display text-2xl">Únete a la tribu hoy</h2>
+          <div className="mt-6">
+            <BotonHotmart href={HOTMART_URL} ubicacion="cta_final" pulso texto="🛡️ QUIERO MI ACCESO AL MÉTODO VIKINGO" />
           </div>
-        </section>
-      )}
+        </div>
+      </section>
+
+      <StickyCTA href={HOTMART_URL} sentinelId="fin-hero" />
     </div>
   );
 }

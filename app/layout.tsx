@@ -7,8 +7,8 @@ import "./globals.css";
 const anton = Anton({ variable: "--font-anton", weight: "400", subsets: ["latin"] });
 const manrope = Manrope({ variable: "--font-manrope", subsets: ["latin"] });
 
-const TITULO = "Método Vikingo";
-const DESCRIPCION = "El sistema completo de nutrición y entrenamiento: 12 semanas, plan de alimentación y rutinas por nivel.";
+const TITULO = "El Método Vikingo";
+const DESCRIPCION = "Rutinas de fuerza, nutrición sin complicaciones y disciplina diaria para construir un físico imponente.";
 
 export const metadata: Metadata = {
   title: { default: TITULO, template: "%s · Método Vikingo" },
