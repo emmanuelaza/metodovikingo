@@ -225,7 +225,7 @@ h1, h2, h3, .font-display {
   to { transform: translateX(-50%); }
 }
 .marquesina-track {
-  animation: marquesina 55s linear infinite;
+  animation: marquesina 90s linear infinite;
   will-change: transform;
 }
 /* Pausa al pasar el cursor (desktop) o mantener el dedo encima (touch). */
