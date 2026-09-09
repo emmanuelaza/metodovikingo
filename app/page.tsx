@@ -6,6 +6,7 @@ import { hoyISO, proximaMedianocheEpoch } from "@/lib/fecha";
 import ProgressBar from "@/app/components/ProgressBar";
 import CompartirRacha from "@/app/components/CompartirRacha";
 import NotificacionesPrompt from "@/app/components/NotificacionesPrompt";
+import AtajoPrompt from "@/app/components/AtajoPrompt";
 import ContadorSiguienteDia from "@/app/components/ContadorSiguienteDia";
 import Logros from "@/app/components/Logros";
 import TestimoniosCarrusel from "@/app/components/TestimoniosCarrusel";
@@ -132,6 +133,10 @@ export default async function Temario({
           </div>
 
           <NotificacionesPrompt habilitado={estado.diasCompletados.has(1)} />
+          {/* Plan B para quien no aceptó las notificaciones: sin esto se queda
+              sin ninguna forma de volver. Solo aparece cuando el aviso de
+              notificaciones ya se resolvió, nunca los dos a la vez. */}
+          <AtajoPrompt habilitado={estado.diasCompletados.has(1)} />
         </div>
       </section>
 

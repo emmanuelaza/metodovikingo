@@ -22,6 +22,9 @@ export const metadata: Metadata = {
   title: { default: TITULO, template: "%s · Reto Vikingo" },
   description: DESCRIPCION,
   keywords: ["reto de 30 días", "reto fitness gratis", "nutrición y entrenamiento", "método vikingo", "reto vikingo"],
+  // iOS ignora los iconos del manifest al "Añadir a pantalla de inicio":
+  // usa este apple-touch-icon.
+  icons: { apple: "/apple-touch-icon.png" },
   metadataBase: process.env.NEXT_PUBLIC_SITE_URL ? new URL(process.env.NEXT_PUBLIC_SITE_URL) : undefined,
   openGraph: {
     type: "website",
