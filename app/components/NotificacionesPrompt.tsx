@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useSyncExternalStore } from "react";
+import { track } from "@vercel/analytics";
 import { activarNotificaciones } from "@/lib/push/client";
 
 const CLAVE_LS = "vk_push_prompt_visto";
@@ -38,9 +39,17 @@ export default function NotificacionesPrompt({ habilitado }: { habilitado: boole
     setCerrado(true);
   }
 
+  function rechazar() {
+    // Solo se pregunta una vez, así que este "no" define si esa persona
+    // vuelve a tener un camino de regreso. Medirlo importa.
+    track("push_prompt", { resultado: "ahora_no" });
+    cerrar();
+  }
+
   async function activar() {
     setPidiendo(true);
-    await activarNotificaciones();
+    const resultado = await activarNotificaciones();
+    track("push_prompt", { resultado });
     cerrar();
   }
 
@@ -58,7 +67,7 @@ export default function NotificacionesPrompt({ habilitado }: { habilitado: boole
         >
           Sí, avísame
         </button>
-        <button type="button" onClick={cerrar} className="rounded-lg border border-line px-4 py-2 text-ink-dim hover:text-ink">
+        <button type="button" onClick={rechazar} className="rounded-lg border border-line px-4 py-2 text-ink-dim hover:text-ink">
           Ahora no
         </button>
       </div>

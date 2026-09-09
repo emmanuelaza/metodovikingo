@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import Script from "next/script";
+import { Analytics } from "@vercel/analytics/next";
 import { Anton, Manrope } from "next/font/google";
 import "./globals.css";
 import Nav from "@/app/components/Nav";
@@ -71,6 +72,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </footer>
 
         <NavMovil />
+
+        {/* Analítica de Vercel: hay que activarla también en el panel del
+            proyecto (Analytics → Enable) para que empiece a registrar. */}
+        <Analytics />
 
         {ADS_ENABLED && <Script src={SOCIAL_BAR_SRC} strategy="afterInteractive" />}
       </body>

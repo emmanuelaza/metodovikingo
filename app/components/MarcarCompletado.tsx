@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { track } from "@vercel/analytics";
 import { marcarCompletado } from "@/app/reto/[dia]/actions";
 
 const ANGULOS = [0, 45, 90, 135, 180, 225, 270, 315];
@@ -21,6 +22,8 @@ export default function MarcarCompletado({
 
   function celebrar() {
     if (completado) return; // el efecto es solo al marcar, no al desmarcar
+    // Con esto se ve la curva de abandono: en qué día deja de marcar la gente.
+    track("dia_completado", { dia });
     if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(35);
     setCelebrando(true);
     window.setTimeout(() => setCelebrando(false), 1200);
