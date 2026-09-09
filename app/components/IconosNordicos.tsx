@@ -92,3 +92,41 @@ export function IconoMas({ className = "h-4 w-4" }: { className?: string }) {
     </svg>
   );
 }
+
+export function IconoCheck({ className = "h-4 w-4" }: { className?: string }) {
+  return (
+    <svg {...BASE} className={className}>
+      <path d="M20 6 9 17l-5-5" />
+    </svg>
+  );
+}
+
+/** Rayo — acceso instantáneo. */
+export function IconoRayo({ className = "h-5 w-5" }: { className?: string }) {
+  return (
+    <svg {...BASE} className={className}>
+      <path d="M13 2 4 14h7l-2 8 9-12h-7l2-8Z" />
+    </svg>
+  );
+}
+
+/** Sobre — soporte por correo. */
+export function IconoSobre({ className = "h-5 w-5" }: { className?: string }) {
+  return (
+    <svg {...BASE} className={className}>
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="m3 7 9 6 9-6" />
+    </svg>
+  );
+}
+
+/** Flechas de refresco — actualizaciones incluidas. */
+export function IconoActualizar({ className = "h-5 w-5" }: { className?: string }) {
+  return (
+    <svg {...BASE} className={className}>
+      <path d="M21 12a9 9 0 0 1-9 9 9 9 0 0 1-8-5" />
+      <path d="M3 12a9 9 0 0 1 9-9 9 9 0 0 1 8 5" />
+      <path d="M21 3v5h-5M3 21v-5h5" />
+    </svg>
+  );
+}

@@ -29,9 +29,14 @@ export default function BotonHotmart({
       target="_blank"
       rel="noopener noreferrer"
       onClick={() => track("clic_hotmart", { ubicacion })}
-      className={`block w-full rounded bg-ember px-5 py-4 text-center font-display text-sm tracking-wide text-ink transition-colors hover:bg-ember-deep sm:text-base ${pulso ? "animate-pulso-cta" : ""} ${className}`}
+      className={`btn-vikingo group relative block w-full overflow-hidden rounded-lg px-5 py-4 text-center font-display text-sm tracking-wide text-white sm:text-base ${pulso ? "animate-pulso-cta" : ""} ${className}`}
     >
-      {texto}
+      {/* Barrido de brillo al pasar el cursor (desktop). */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 group-hover:translate-x-full"
+      />
+      <span className="relative">{texto}</span>
     </a>
   );
 }

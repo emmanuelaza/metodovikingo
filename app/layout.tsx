@@ -44,10 +44,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           comprar o irse — nada que le reste confianza al CTA. */}
       <body className="flex min-h-full flex-col">
         <main className="flex-1 w-full">{children}</main>
-        <footer className="border-t border-line py-6 text-center text-xs text-ink-dim">
-          <p>Método Vikingo · Contenido educativo, no sustituye consejo médico.</p>
-          <p className="mt-2">
-            <Link href="/privacidad" className="underline hover:text-ink">
+        <footer className="border-t border-line py-8 text-center text-xs text-ink-faint">
+          <p className="font-display tracking-[0.2em] text-ink-dim">MÉTODO VIKINGO</p>
+          <p className="mx-auto mt-3 max-w-xs leading-relaxed">
+            Contenido educativo, no sustituye consejo médico.
+          </p>
+          <p className="mt-3">
+            <Link href="/privacidad" className="text-ink-dim underline-offset-4 transition-colors hover:text-ink hover:underline">
               Privacidad
             </Link>
           </p>

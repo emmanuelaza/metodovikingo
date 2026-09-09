@@ -31,8 +31,8 @@ export default function StickyCTA({ href, sentinelId }: { href: string; sentinel
   if (!visible) return null;
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-bg/95 p-3 backdrop-blur sm:hidden">
-      <BotonHotmart href={href} ubicacion="sticky" className="py-3 text-sm" />
+    <div className="fixed inset-x-0 bottom-0 z-30 border-t border-white/[0.08] bg-bg/80 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-lg sm:hidden">
+      <BotonHotmart href={href} ubicacion="sticky" className="py-3.5 text-sm" />
     </div>
   );
 }

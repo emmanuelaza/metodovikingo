@@ -3,13 +3,16 @@ import StickyCTA from "@/app/components/StickyCTA";
 import Acordeon from "@/app/components/Acordeon";
 import {
   IconoEscudo,
-  SeparadorRuna,
   IconoChevron,
   IconoPesa,
   IconoCerebro,
   IconoNutricion,
   IconoTelefono,
   IconoCandado,
+  IconoCheck,
+  IconoRayo,
+  IconoSobre,
+  IconoActualizar,
 } from "@/app/components/IconosNordicos";
 
 const HOTMART_URL = process.env.NEXT_PUBLIC_HOTMART_URL || HOTMART_URL_DEFAULT;
@@ -55,6 +58,23 @@ const METODOS_PAGO = [
   { pais: "ES", nombre: "España", opciones: "Bizum / Tarjeta débito" },
 ];
 
+// Lo que entra en el acceso — reordena en formato de oferta el mismo
+// contenido de INCLUYE + soporte, para el checklist de la tarjeta de precio.
+const LO_QUE_OBTIENES = [
+  "Rutinas de fuerza para gimnasio o para casa",
+  "Sistema diario de disciplina y hábitos",
+  "Guía de nutrición económica",
+  "PDF listo para leer desde tu celular",
+  "Soporte por correo para adaptar las rutinas",
+  "Actualizaciones futuras incluidas sin costo extra",
+];
+
+const CONFIANZA = [
+  { Icono: IconoRayo, texto: "Acceso instantáneo apenas pagas" },
+  { Icono: IconoSobre, texto: "Enlace seguro a tu correo" },
+  { Icono: IconoActualizar, texto: "Actualizaciones incluidas" },
+];
+
 const PREGUNTAS = [
   {
     q: "¿No tengo tarjeta de crédito, puedo comprarlo igual?",
@@ -79,6 +99,19 @@ function CTAWrap({ children, className = "" }: { children: React.ReactNode; clas
   return <div className={`mx-auto max-w-xs sm:max-w-sm ${className}`}>{children}</div>;
 }
 
+/** Encabezado editorial de sección: eyebrow con índice + título. */
+function EncabezadoSeccion({ indice, kicker, titulo, sub }: { indice: string; kicker: string; titulo: string; sub?: string }) {
+  return (
+    <div className="flex flex-col items-center text-center">
+      <span className="eyebrow centrado">
+        {indice} · {kicker}
+      </span>
+      <h2 className="mt-4 font-display text-2xl sm:text-3xl lg:text-4xl">{titulo}</h2>
+      {sub && <p className="mt-2 text-sm text-ink-dim sm:text-base">{sub}</p>}
+    </div>
+  );
+}
+
 export default function Home() {
   return (
     <div>
@@ -95,33 +128,40 @@ export default function Home() {
         }}
       />
 
-      {/* HERO — glow radial + trama de líneas geométricas, sin imágenes ni JS de parallax */}
+      {/* HERO — glow radial que respira + trama geométrica + escudo en anillo luminoso */}
       <section className="relative overflow-hidden border-b border-line">
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0"
+          className="respira pointer-events-none absolute inset-0"
           style={{
             background:
-              "radial-gradient(60% 50% at 50% 0%, rgba(230,57,70,0.16) 0%, rgba(230,57,70,0) 70%), radial-gradient(40% 40% at 85% 90%, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 70%)",
+              "radial-gradient(65% 55% at 50% -5%, rgba(230,57,70,0.22) 0%, rgba(230,57,70,0) 68%), radial-gradient(45% 45% at 88% 92%, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 70%)",
           }}
         />
         <svg
           aria-hidden
-          className="pointer-events-none absolute inset-0 h-full w-full opacity-[0.04]"
+          className="pointer-events-none absolute inset-0 h-full w-full text-ink opacity-[0.035]"
           preserveAspectRatio="none"
         >
-          <pattern id="lineas-hero" width="42" height="42" patternUnits="userSpaceOnUse">
-            <path d="M0 42 42 0" stroke="currentColor" strokeWidth="1" />
+          <pattern id="lineas-hero" width="44" height="44" patternUnits="userSpaceOnUse">
+            <path d="M0 44 44 0" stroke="currentColor" strokeWidth="1" />
           </pattern>
           <rect width="100%" height="100%" fill="url(#lineas-hero)" />
         </svg>
+        {/* Vignette inferior para fundir el hero con la siguiente sección. */}
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-bg" />
 
-        <div className="relative mx-auto max-w-md px-6 py-16 text-center sm:max-w-xl sm:py-24 lg:max-w-2xl lg:py-32">
-          <IconoEscudo className="mx-auto h-12 w-12 text-ember-2 lg:h-14 lg:w-14" />
-          <h1 className="mt-5 font-display text-4xl leading-tight tracking-tight text-ink sm:text-6xl lg:text-7xl">
-            EL MÉTODO VIKINGO
+        <div className="relative mx-auto max-w-md px-6 py-20 text-center sm:max-w-xl sm:py-28 lg:max-w-2xl lg:py-36">
+          <span className="mx-auto inline-flex items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.03] p-4 backdrop-blur-sm glow-ember">
+            <IconoEscudo className="h-9 w-9 text-ember-2 lg:h-10 lg:w-10" />
+          </span>
+          <p className="eyebrow centrado mt-7 justify-center">Transformación física y mental</p>
+          <h1 className="titulo-degradado mt-4 font-display text-5xl leading-[0.95] tracking-tight sm:text-6xl lg:text-8xl">
+            EL MÉTODO
+            <br />
+            VIKINGO
           </h1>
-          <p className="mx-auto mt-5 max-w-md text-lg text-ink sm:max-w-lg sm:text-xl lg:max-w-xl">
+          <p className="mx-auto mt-6 max-w-md text-lg leading-relaxed text-ink sm:max-w-lg sm:text-xl lg:max-w-xl">
             Deja de ser el chico promedio. Construye un físico imponente, disciplina de acero y la fuerza de un
             guerrero.
           </p>
@@ -129,61 +169,70 @@ export default function Home() {
             El mapa paso a paso para hombres jóvenes que quieren transformar su cuerpo y su mente, sin importar su
             genética actual.
           </p>
-          <CTAWrap className="mt-8">
+          <CTAWrap className="mt-9">
             <BotonHotmart href={HOTMART_URL} ubicacion="hero" texto="⚔ UNIRSE AL MÉTODO VIKINGO HOY" pulso />
           </CTAWrap>
-          <p className="mt-3 text-xs tracking-wide text-ink-faint">ACCESO INMEDIATO EN TU CELULAR O COMPUTADOR</p>
+          <p className="mt-4 flex items-center justify-center gap-1.5 text-xs tracking-wide text-ink-faint">
+            <IconoRayo className="h-3.5 w-3.5 text-ember-2" />
+            ACCESO INMEDIATO EN TU CELULAR O COMPUTADOR
+          </p>
         </div>
       </section>
       {/* Sentinel: cuando esto sale de pantalla hacia arriba, aparece el sticky CTA. */}
       <div id="fin-hero" />
 
-      {/* AGITACIÓN — bento con borde tenue + blur */}
-      <section className="mx-auto max-w-md px-6 py-14 sm:max-w-2xl sm:py-20 lg:max-w-3xl">
-        <h2 className="text-center font-display text-2xl sm:text-3xl">¿TE SIENTES IDENTIFICADO CON ESTO?</h2>
-        <div className="mt-7 grid gap-4 rounded border border-white/[0.06] bg-white/[0.02] p-6 backdrop-blur-md sm:grid-cols-2 sm:gap-5 sm:p-8">
-          {PROBLEMAS.map((p) => (
-            <p key={p} className="flex items-start gap-2.5 text-sm leading-relaxed text-ink/90">
-              <IconoChevron className="mt-0.5 h-4 w-4 flex-none text-ember" />
-              {p}
-            </p>
-          ))}
+      {/* AGITACIÓN — bento con borde en degradado */}
+      <section className="mx-auto max-w-md px-6 py-16 sm:max-w-2xl sm:py-24 lg:max-w-3xl">
+        <EncabezadoSeccion indice="01" kicker="El problema" titulo="¿TE SIENTES IDENTIFICADO?" />
+        <div className="borde-grad elev mt-9 p-6 sm:p-8">
+          <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
+            {PROBLEMAS.map((p) => (
+              <p key={p} className="flex items-start gap-3 text-sm leading-relaxed text-ink/90 sm:text-base">
+                <span className="mt-0.5 flex h-6 w-6 flex-none items-center justify-center rounded-md border border-ember/25 bg-ember/10 text-ember">
+                  <IconoChevron className="h-3.5 w-3.5" />
+                </span>
+                {p}
+              </p>
+            ))}
+          </div>
         </div>
       </section>
 
-      <SeparadorRuna />
-
-      {/* SOLUCIÓN — tarjetas nítidas, esquinas afiladas, filo superior sutil */}
-      <section className="mx-auto max-w-md px-6 py-14 sm:max-w-2xl sm:py-20 lg:max-w-5xl">
-        <h2 className="text-center font-display text-2xl sm:text-3xl">EL CAMBIO EMPIEZA HOY</h2>
-        <p className="mt-2 text-center text-sm text-ink-dim sm:text-base">¿Qué incluye el Método?</p>
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {INCLUYE.map(({ Icono, titulo, texto }) => (
-            <div key={titulo} className="relative rounded bg-bg-2 p-5">
-              <span aria-hidden className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-ember/60 to-transparent" />
-              <Icono className="h-6 w-6 text-ember" />
-              <p className="mt-3 font-display text-base tracking-wide">{titulo}</p>
+      {/* SOLUCIÓN — tarjetas con borde en degradado que levitan */}
+      <section className="mx-auto max-w-md px-6 py-16 sm:max-w-2xl sm:py-24 lg:max-w-6xl">
+        <EncabezadoSeccion indice="02" kicker="La solución" titulo="EL CAMBIO EMPIEZA HOY" sub="Esto es lo que incluye el Método." />
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
+          {INCLUYE.map(({ Icono, titulo, texto }, i) => (
+            <div key={titulo} className="borde-grad card-hover elev group p-6">
+              <div className="flex items-center justify-between">
+                <span className="flex h-11 w-11 items-center justify-center rounded-lg border border-ember/20 bg-ember/10 text-ember transition-colors group-hover:bg-ember/15">
+                  <Icono className="h-6 w-6" />
+                </span>
+                <span className="font-display text-sm text-ink-faint">0{i + 1}</span>
+              </div>
+              <p className="mt-4 font-display text-base tracking-wide text-ink">{titulo}</p>
               <p className="mt-2 text-sm leading-relaxed text-ink-dim">{texto}</p>
             </div>
           ))}
         </div>
       </section>
 
-      <SeparadorRuna />
-
-      {/* PAGO SIN TARJETA — estética fintech, sin emojis de bandera */}
-      <section className="mx-auto max-w-md px-6 py-14 sm:max-w-2xl sm:py-20">
-        <div className="rounded border border-white/[0.08] bg-bg-2 p-6 sm:p-8">
-          <h2 className="text-center font-display text-xl sm:text-2xl">¿NO TIENES TARJETA DE CRÉDITO?</h2>
-          <p className="mx-auto mt-3 max-w-md text-center text-sm leading-relaxed text-ink-dim sm:text-base">
+      {/* PAGO SIN TARJETA — estética fintech, borde en degradado */}
+      <section className="mx-auto max-w-md px-6 py-16 sm:max-w-2xl sm:py-24">
+        <EncabezadoSeccion indice="03" kicker="Sin barreras" titulo="¿NO TIENES TARJETA?" />
+        <div className="borde-grad elev mt-9 p-6 sm:p-8">
+          <p className="mx-auto max-w-md text-center text-sm leading-relaxed text-ink-dim sm:text-base">
             Paga en <strong className="text-ink">efectivo</strong> en la tienda más cercana o con tu{" "}
             <strong className="text-ink">billetera digital</strong> favorita. Genera tu código en el botón de abajo.
           </p>
-          <ul className="mx-auto mt-5 grid max-w-xl gap-2 sm:grid-cols-2">
+          <ul className="mx-auto mt-6 grid max-w-xl gap-2.5 sm:grid-cols-2">
             {METODOS_PAGO.map((m) => (
-              <li key={m.pais} className="flex items-center justify-between rounded border border-line px-3 py-2 text-sm">
-                <span className="flex items-center gap-2 text-ink-dim">
-                  <span className="rounded-sm bg-bg-3 px-1.5 py-0.5 font-display text-[10px] tracking-wider text-ember-2">
+              <li
+                key={m.pais}
+                className="flex items-center justify-between gap-3 rounded-lg border border-line bg-bg-3/50 px-3.5 py-2.5 text-sm transition-colors hover:border-white/[0.14]"
+              >
+                <span className="flex items-center gap-2.5 text-ink-dim">
+                  <span className="rounded-md border border-ember/20 bg-ember/10 px-1.5 py-0.5 font-display text-[10px] tracking-wider text-ember-2">
                     {m.pais}
                   </span>
                   {m.nombre}
@@ -192,67 +241,87 @@ export default function Home() {
               </li>
             ))}
           </ul>
-          <p className="mt-4 text-center text-xs text-ink-faint">Y más opciones disponibles según tu país al hacer clic.</p>
-          <p className="mt-5 flex items-center justify-center gap-1.5 text-xs text-ink-faint">
+          <p className="mt-5 text-center text-xs text-ink-faint">Y más opciones disponibles según tu país al hacer clic.</p>
+          <p className="mt-4 flex items-center justify-center gap-1.5 text-xs text-ink-faint">
             <IconoCandado className="h-3.5 w-3.5" />
             Conexión segura vía Hotmart
           </p>
         </div>
       </section>
 
-      {/* SOPORTE — sello fino en plata, sin lenguaje de garantía/reembolso */}
-      <section className="mx-auto max-w-md px-6 py-14 sm:max-w-2xl sm:py-20">
-        <div className="mx-auto max-w-xl rounded border border-[#c0c0c0]/25 bg-bg-2 p-6 text-center sm:p-8">
-          <p className="font-display text-lg tracking-wide text-[#d8d8d8] sm:text-xl">COMPRA SEGURA</p>
-          <p className="mt-2 text-sm leading-relaxed text-ink-dim sm:text-base">
-            Acceso instantáneo apenas pagas, soporte por correo si tienes dudas para adaptar las rutinas a tu cuerpo,
-            y todas las actualizaciones futuras del método incluidas sin costo extra.
-          </p>
-        </div>
-      </section>
-
-      <SeparadorRuna />
-
-      {/* PRECIO — número gigante, sin ancla inventada */}
-      <section className="relative overflow-hidden border-y border-line bg-bg-2">
+      {/* PRECIO — tarjeta destacada: borde carmesí, glow, checklist de oferta */}
+      <section className="relative overflow-hidden border-y border-line">
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0"
-          style={{ background: "radial-gradient(50% 60% at 50% 40%, rgba(230,57,70,0.12) 0%, rgba(230,57,70,0) 70%)" }}
+          className="respira pointer-events-none absolute inset-0"
+          style={{ background: "radial-gradient(55% 65% at 50% 45%, rgba(230,57,70,0.16) 0%, rgba(230,57,70,0) 70%)" }}
         />
-        <div className="relative mx-auto max-w-md px-6 py-16 text-center sm:max-w-xl sm:py-24">
-          <p className="font-display text-xs tracking-widest text-ember-2 sm:text-sm">ACCESO COMPLETO</p>
-          {PRECIO_ANTERIOR && <p className="mt-4 text-xl text-ink-faint line-through sm:text-2xl">{PRECIO_ANTERIOR}</p>}
-          <p className="mt-2 font-display text-6xl text-ember sm:text-7xl">{PRECIO}</p>
-          <p className="mt-2 text-xs text-ink-faint sm:text-sm">O el equivalente en la moneda de tu país</p>
-          <CTAWrap className="mt-8">
-            <BotonHotmart href={HOTMART_URL} ubicacion="precio" pulso texto="⚔ QUIERO MI ACCESO AL MÉTODO VIKINGO" />
-          </CTAWrap>
-          <p className="mx-auto mt-4 max-w-sm text-xs text-ink-faint sm:text-sm">
-            Al hacer clic, Hotmart convierte el precio a tu moneda local y te muestra las opciones de pago de tu país.
-          </p>
+        <div className="relative mx-auto max-w-md px-6 py-20 sm:max-w-lg sm:py-28">
+          <div className="borde-grad borde-grad-ember glow-ember overflow-hidden p-7 text-center sm:p-9">
+            <span className="eyebrow centrado justify-center">Acceso completo</span>
+            {PRECIO_ANTERIOR && <p className="mt-5 text-xl text-ink-faint line-through sm:text-2xl">{PRECIO_ANTERIOR}</p>}
+            <p className="mt-3 font-display text-7xl leading-none text-ember sm:text-8xl">{PRECIO}</p>
+            <p className="mt-3 text-xs text-ink-faint sm:text-sm">O el equivalente en la moneda de tu país</p>
+
+            <ul className="mx-auto mt-7 grid max-w-sm gap-2.5 text-left">
+              {LO_QUE_OBTIENES.map((item) => (
+                <li key={item} className="flex items-start gap-2.5 text-sm text-ink sm:text-[0.95rem]">
+                  <span className="mt-0.5 flex h-5 w-5 flex-none items-center justify-center rounded-full bg-ember/15 text-ember">
+                    <IconoCheck className="h-3.5 w-3.5" />
+                  </span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+
+            <CTAWrap className="mt-8">
+              <BotonHotmart href={HOTMART_URL} ubicacion="precio" pulso texto="⚔ QUIERO MI ACCESO AHORA" />
+            </CTAWrap>
+            <p className="mx-auto mt-4 max-w-sm text-xs leading-relaxed text-ink-faint sm:text-sm">
+              Al hacer clic, Hotmart convierte el precio a tu moneda local y te muestra las opciones de pago de tu país.
+            </p>
+          </div>
+
+          {/* Strip de confianza — reformatea el bloque "compra segura" en íconos. */}
+          <div className="mt-6 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
+            {CONFIANZA.map(({ Icono, texto }) => (
+              <div
+                key={texto}
+                className="flex items-center gap-2.5 rounded-lg border border-line bg-bg-2/60 px-3.5 py-3 text-xs text-ink-dim sm:flex-col sm:items-center sm:text-center"
+              >
+                <Icono className="h-5 w-5 flex-none text-ember-2" />
+                {texto}
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* FAQ */}
-      <section className="mx-auto max-w-md px-6 py-14 sm:max-w-2xl sm:py-20">
-        <h2 className="text-center font-display text-2xl sm:text-3xl">PREGUNTAS FRECUENTES</h2>
-        <div className="mt-7">
+      <section className="mx-auto max-w-md px-6 py-16 sm:max-w-2xl sm:py-24">
+        <EncabezadoSeccion indice="04" kicker="Dudas frecuentes" titulo="PREGUNTAS FRECUENTES" />
+        <div className="borde-grad elev mt-9 px-5 sm:px-7">
           <Acordeon items={PREGUNTAS} />
         </div>
       </section>
 
       {/* CTA FINAL */}
-      <section className="relative overflow-hidden border-t border-line bg-bg-2 pb-20 sm:pb-16">
+      <section className="relative overflow-hidden border-t border-line pb-24 sm:pb-16">
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0"
-          style={{ background: "radial-gradient(60% 60% at 50% 0%, rgba(230,57,70,0.14) 0%, rgba(230,57,70,0) 70%)" }}
+          className="respira pointer-events-none absolute inset-0"
+          style={{ background: "radial-gradient(65% 65% at 50% 0%, rgba(230,57,70,0.18) 0%, rgba(230,57,70,0) 70%)" }}
         />
-        <div className="relative mx-auto max-w-md px-6 py-16 text-center sm:max-w-xl sm:py-20">
-          <h2 className="font-display text-2xl sm:text-3xl">ÚNETE A LA TRIBU HOY</h2>
-          <CTAWrap className="mt-7">
-            <BotonHotmart href={HOTMART_URL} ubicacion="cta_final" pulso texto="⚔ QUIERO MI ACCESO AL MÉTODO VIKINGO" />
+        <div className="relative mx-auto max-w-md px-6 py-20 text-center sm:max-w-xl sm:py-24">
+          <span className="mx-auto inline-flex items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.03] p-3.5 backdrop-blur-sm glow-ember">
+            <IconoEscudo className="h-8 w-8 text-ember-2" />
+          </span>
+          <h2 className="titulo-degradado mt-6 font-display text-3xl sm:text-4xl lg:text-5xl">ÚNETE A LA TRIBU HOY</h2>
+          <p className="mx-auto mt-3 max-w-sm text-sm text-ink-dim sm:text-base">
+            El primer paso es una decisión. El resto es método.
+          </p>
+          <CTAWrap className="mt-8">
+            <BotonHotmart href={HOTMART_URL} ubicacion="cta_final" pulso texto="⚔ QUIERO MI ACCESO AHORA" />
           </CTAWrap>
         </div>
       </section>
