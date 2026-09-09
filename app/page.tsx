@@ -17,7 +17,8 @@ import {
 } from "@/app/components/IconosNordicos";
 
 const HOTMART_URL = process.env.NEXT_PUBLIC_HOTMART_URL || HOTMART_URL_DEFAULT;
-const PRECIO = process.env.NEXT_PUBLIC_PRECIO || "$23 USD";
+const PRECIO = process.env.NEXT_PUBLIC_PRECIO || "$23.00";
+const PRECIO_MONEDA = process.env.NEXT_PUBLIC_PRECIO_MONEDA || "USD";
 // Solo se muestra si es un precio anterior real — nunca un ancla inventada.
 const PRECIO_ANTERIOR = process.env.NEXT_PUBLIC_PRECIO_ANTERIOR;
 
@@ -315,7 +316,11 @@ export default function Home() {
           <div className="borde-grad borde-grad-ember glow-ember overflow-hidden p-7 text-center sm:p-9">
             <span className="eyebrow centrado justify-center">Acceso completo</span>
             {PRECIO_ANTERIOR && <p className="mt-5 text-xl text-ink-faint line-through sm:text-2xl">{PRECIO_ANTERIOR}</p>}
-            <p className="mt-3 font-display text-7xl leading-none text-ember sm:text-8xl">{PRECIO}</p>
+            <p className="mt-3 flex items-baseline justify-center gap-x-2 font-display leading-none text-ember">
+              <span aria-hidden className="text-3xl sm:text-5xl">🔥</span>
+              <span className="text-5xl sm:text-7xl">{PRECIO}</span>
+              <span className="text-xl text-ember/70 sm:text-3xl">{PRECIO_MONEDA}</span>
+            </p>
             <p className="mt-3 text-xs text-ink-faint sm:text-sm">O el equivalente en la moneda de tu país</p>
 
             <ul className="mx-auto mt-7 grid max-w-sm gap-2.5 text-left">
