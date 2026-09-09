@@ -1,1 +1,0 @@
-# Pendiente: pegar línea de verificación cuando AdSense apruebe el sitio (Adsterra no requiere ads.txt)

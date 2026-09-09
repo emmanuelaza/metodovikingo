@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Paleta de marca — Método Vikingo (portada desde la landing HTML original) */
+/* Paleta de marca — Método Vikingo */
 @theme {
   --color-bg: #0b0c0f;
   --color-bg-2: #111318;
@@ -36,45 +36,4 @@ h1, h2, h3, .font-display {
   text-transform: uppercase;
   letter-spacing: 0.015em;
   font-weight: 400;
-}
-
-/* Transición de entrada discreta para contenido (no es una animación "de juego") */
-@keyframes rise {
-  from { transform: translateY(8px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-.anim-rise { animation: rise 0.4s ease-out both; }
-
-/* Carrusel infinito de testimonios (TestimoniosCarrusel.tsx): la lista se
-   duplica una vez y se anima -50% para que el loop sea continuo. */
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-.animate-marquee { animation: marquee 36s linear infinite; }
-@media (prefers-reduced-motion: reduce) {
-  .animate-marquee { animation: none; }
-}
-
-/* Skeleton loading (ver los loading.tsx de cada ruta) */
-@keyframes pulse-suave {
-  0%, 100% { opacity: 0.5; }
-  50% { opacity: 0.9; }
-}
-.skeleton { animation: pulse-suave 1.6s ease-in-out infinite; background: var(--color-bg-3); border-radius: 0.5rem; }
-
-/* Efecto "reveal" al marcar un día como completado: 8 chispas ember, 1-2s, no bloquea nada */
-@keyframes ember-spark {
-  0% { transform: translate(-50%, -50%) rotate(var(--angulo)) translateX(0) scale(1); opacity: 1; }
-  100% { transform: translate(-50%, -50%) rotate(var(--angulo)) translateX(28px) scale(0); opacity: 0; }
-}
-.ember-spark {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 6px;
-  height: 6px;
-  border-radius: 999px;
-  background: var(--color-ember-2);
-  animation: ember-spark 0.9s ease-out both;
 }

@@ -1,6 +1,6 @@
 export const metadata = {
   title: "Privacidad",
-  description: "Política de privacidad del Reto Vikingo.",
+  description: "Política de privacidad de Método Vikingo.",
 };
 
 export default function Privacidad() {
@@ -13,25 +13,19 @@ export default function Privacidad() {
 
       <div className="space-y-4 text-sm leading-relaxed text-ink-dim">
         <p>
-          Al entrar a esta plataforma se crea automáticamente una sesión anónima para guardar tu progreso en el reto
-          (qué día vas, tu racha, tus registros de peso y medidas si decides usarlos). No pedimos correo, contraseña
-          ni ningún dato de registro visible.
+          Esta página no pide registro ni guarda ningún dato personal tuyo. No hay cuentas, ni formularios, ni
+          cookies de sesión.
         </p>
-        <h2 className="font-display text-lg text-ink">Cookies</h2>
+        <h2 className="font-display text-lg text-ink">Analítica</h2>
         <p>
-          Usamos una cookie técnica para mantener tu sesión anónima activa entre visitas. Sin ella no podríamos
-          recordar en qué día del reto vas.
+          Usamos Vercel Analytics para medir visitas de forma agregada y anónima (qué tanto tráfico llega, qué
+          secciones se visitan). No identifica a personas individuales.
         </p>
-        <h2 className="font-display text-lg text-ink">Publicidad de terceros</h2>
+        <h2 className="font-display text-lg text-ink">Compra</h2>
         <p>
-          Este sitio muestra anuncios de la red Adsterra. Adsterra puede usar sus propias cookies de terceros para
-          medir y segmentar publicidad. No controlamos ni vemos los datos que esas cookies recolectan — te
-          recomendamos revisar la política de privacidad de Adsterra si quieres el detalle completo.
-        </p>
-        <h2 className="font-display text-lg text-ink">Notificaciones</h2>
-        <p>
-          Si aceptas activar los avisos de nuevo contenido, guardamos únicamente la suscripción técnica de tu
-          navegador (necesaria para poder enviarte la notificación) — no un correo ni un número de teléfono.
+          El botón de compra te lleva a Hotmart, una plataforma externa que procesa el pago. Nosotros no vemos ni
+          almacenamos tus datos de pago — revisa la política de privacidad de Hotmart para el detalle completo de esa
+          parte del proceso.
         </p>
         <h2 className="font-display text-lg text-ink">Contacto</h2>
         <p>Si tienes preguntas sobre estos datos, escríbenos por los canales de contacto de Método Vikingo.</p>

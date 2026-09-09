@@ -1,221 +1,181 @@
-import Link from "next/link";
-import { requireUsuario, getPerfil, getFechasCompletado, calcularEstadoCurso, contarCompletadosHoy } from "@/lib/progreso";
-import { getTitulos, getFases, getPiezas } from "@/lib/contenido";
-import { DIAS_TOTALES } from "@/lib/types";
-import { hoyISO, proximaMedianocheEpoch } from "@/lib/fecha";
-import ProgressBar from "@/app/components/ProgressBar";
-import CompartirRacha from "@/app/components/CompartirRacha";
-import NotificacionesPrompt from "@/app/components/NotificacionesPrompt";
-import AtajoPrompt from "@/app/components/AtajoPrompt";
-import ContadorSiguienteDia from "@/app/components/ContadorSiguienteDia";
-import Logros from "@/app/components/Logros";
-import TestimoniosCarrusel from "@/app/components/TestimoniosCarrusel";
-import CalendarioRacha from "@/app/components/CalendarioRacha";
+import BotonHotmart from "@/app/components/BotonHotmart";
 
-const JSON_LD_CURSO = {
-  "@context": "https://schema.org",
-  "@type": "Course",
-  name: "Reto Vikingo — 30 días",
-  description: "Curso gratuito de 30 días de nutrición y entrenamiento, una lección nueva cada día.",
-  provider: { "@type": "Organization", name: "Método Vikingo" },
-};
+const HOTMART_URL = process.env.NEXT_PUBLIC_HOTMART_URL;
+const PRECIO = process.env.NEXT_PUBLIC_PRECIO;
+const GARANTIA_DIAS = process.env.NEXT_PUBLIC_GARANTIA_DIAS;
 
-const MENSAJES: Record<string, string> = {
-  bloqueado: "Ese día todavía no está disponible: se abre cuando completes el anterior.",
-  // /metodo-secreto redirige aquí con ?msg=secreto si aún no se llegó al día 30.
-  secreto: "El Método completo se revela cuando termines el día 30. Sigue avanzando.",
-};
+const PILARES = [
+  {
+    titulo: "Constancia",
+    texto:
+      "El cuerpo no cambia por intensidad, cambia por repetición. No necesitas la rutina perfecta — necesitas aparecer más veces que la mayoría. Un mal día no tiene que convertirse en una mala semana.",
+  },
+  {
+    titulo: "Estructura",
+    texto:
+      "La motivación se acaba; la estructura se queda. Horarios de comida fijos, entrenamiento agendado como una cita que no se cancela, un plato armado con una fórmula en vez de improvisado cada vez.",
+  },
+  {
+    titulo: "Medición",
+    texto:
+      "Lo que no se mide no se puede ajustar. Peso, medidas, rendimiento — no para juzgarte, para saber exactamente qué palanca mover cuando algo no funciona, en vez de adivinar o abandonar el plan completo.",
+  },
+];
 
-export default async function Temario({
-  searchParams,
-}: {
-  searchParams: Promise<{ msg?: string }>;
-}) {
-  const { msg } = await searchParams;
-  const { supabase, user } = await requireUsuario();
-  const hoy = hoyISO();
-  const [perfil, fechas, titulos, fases, piezas, completadosHoy] = await Promise.all([
-    getPerfil(supabase, user),
-    getFechasCompletado(supabase, user),
-    getTitulos(),
-    getFases(),
-    getPiezas(),
-    contarCompletadosHoy(supabase, hoy),
-  ]);
-  const estado = calcularEstadoCurso(perfil, fechas, hoy);
-  const aviso = msg ? MENSAJES[msg] : undefined;
+const INCLUYE = [
+  "Plan de alimentación completo, sin dietas raras",
+  "Rutinas de fuerza organizadas por nivel (principiante a avanzado)",
+  "Sistema de ajustes semana a semana según tus resultados reales",
+  "12 semanas de programa estructurado, no contenido suelto",
+];
 
+const PREGUNTAS = [
+  {
+    q: "¿Necesito gimnasio?",
+    a: "No es obligatorio. Las rutinas incluyen opciones para entrenar en casa; si tienes gimnasio, mejor, pero no es una excusa para no empezar.",
+  },
+  {
+    q: "¿Sirve si quiero ganar músculo y no bajar grasa?",
+    a: "Sí. Los principios (proteína, fuerza, estructura, medición) son los mismos; lo que cambia es el balance calórico según tu objetivo, y el plan lo ajusta.",
+  },
+  {
+    q: "¿Cuánto tiempo toma al día?",
+    a: "Las rutinas están pensadas para encajar en una vida real, no para vivir en el gimnasio. El plan es sostenible, no un sacrificio de tiempo completo.",
+  },
+  {
+    q: "¿Es consejo médico?",
+    a: "No. Es contenido educativo de entrenamiento y nutrición general. Si tienes una condición de salud, consulta con un profesional antes de empezar.",
+  },
+];
+
+export default function Home() {
   return (
     <div>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD_CURSO) }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Course",
+            name: "Método Vikingo",
+            description: "Sistema de 12 semanas de nutrición y entrenamiento con plan de alimentación y rutinas por nivel.",
+            provider: { "@type": "Organization", name: "Método Vikingo" },
+          }),
+        }}
+      />
 
+      {/* Hero */}
       <section className="border-b border-line bg-bg-2">
-        <div className="mx-auto max-w-4xl px-6 py-10 sm:py-12">
-          <p className="font-display text-xs text-ember-2">Reto Vikingo · 30 días</p>
-          <h1 className="mt-2 font-display text-3xl leading-tight sm:text-4xl">Tu temario</h1>
-
-          {aviso && <p className="mt-4 text-sm text-ember-2">{aviso}</p>}
-
-          {/* Quien vuelve tras ausentarse no perdió nada: el desbloqueo está
-              encadenado, así que su día sigue intacto. Decirlo evita que
-              sienta que fracasó y abandone. */}
-          {estado.diasDesdeUltimaActividad !== null &&
-            estado.diasDesdeUltimaActividad >= 2 &&
-            estado.diaPendiente !== null && (
-              <p className="mt-4 rounded-lg border border-ember/40 bg-bg-3 p-4 text-sm">
-                Estuviste {estado.diasDesdeUltimaActividad} días fuera y no perdiste nada: tu Día{" "}
-                <strong className="text-ember-2">{estado.diaPendiente}</strong> sigue justo donde lo dejaste. Se retoma
-                hoy.
-              </p>
-            )}
-
-          <div className="mt-5 flex flex-wrap items-center gap-x-8 gap-y-3 text-sm">
-            {estado.racha > 0 && (
-              <span className="text-ink">
-                🔥 <strong>{estado.racha}</strong> {estado.racha === 1 ? "día" : "días"} de racha
-              </span>
-            )}
-            {estado.rachaMax > estado.racha && (
-              <span className="text-ink-dim">
-                Récord: <strong className="text-ink">{estado.rachaMax}</strong> {estado.rachaMax === 1 ? "día" : "días"}
-              </span>
-            )}
-            <span className="text-ink-dim">
-              {estado.diasCompletados.size} / {DIAS_TOTALES} lecciones completadas
-            </span>
-          </div>
-
-          {/* Prueba social real. Se oculta con números bajos: "2 personas" desmotiva
-              más de lo que motiva, y no se va a inflar la cifra. */}
-          {completadosHoy !== null && completadosHoy >= 5 && (
-            <p className="mt-3 text-sm text-ink-dim">
-              <strong className="text-ink">{completadosHoy}</strong> personas ya completaron su día de hoy.
-            </p>
-          )}
-
-          {/* La acción principal va antes de las métricas: en móvil tiene que
-              alcanzarse sin scroll, sobre todo si se llegó desde un push. */}
-          <div className="mt-5">
-            {estado.cursoCompletado ? (
-              <Link
-                href="/metodo-secreto"
-                className="block w-full rounded-lg bg-ember px-5 py-3.5 text-center font-semibold text-bg hover:bg-ember-deep sm:inline-block sm:w-auto"
-              >
-                Ver el Método completo →
-              </Link>
-            ) : estado.diaPendiente ? (
-              <Link
-                href={`/reto/${estado.diaPendiente}`}
-                className="block w-full rounded-lg bg-ember px-5 py-3.5 text-center font-semibold text-bg hover:bg-ember-deep sm:inline-block sm:w-auto"
-              >
-                Continuar: Día {estado.diaPendiente} →
-              </Link>
-            ) : (
-              <ContadorSiguienteDia objetivoEpoch={proximaMedianocheEpoch(hoy)} />
-            )}
-          </div>
-
-          <div className="mt-6 max-w-sm">
-            <ProgressBar completados={estado.diasCompletados.size} total={DIAS_TOTALES} />
-          </div>
-
-          <div className="mt-5 max-w-md">
-            <CalendarioRacha diaMaximo={estado.diaMaximo} diasCompletados={estado.diasCompletados} />
-          </div>
-
-          {estado.racha > 0 && (
-            <div className="mt-5 max-w-xs">
-              <CompartirRacha racha={estado.racha} dia={estado.diasCompletados.size} />
+        <div className="mx-auto max-w-3xl px-6 py-16 text-center sm:py-24">
+          <p className="font-display text-xs text-ember-2">Método Vikingo</p>
+          <h1 className="mt-3 font-display text-4xl leading-tight sm:text-5xl">
+            El sistema completo de 12 semanas para transformar tu cuerpo de verdad
+          </h1>
+          <p className="mx-auto mt-5 max-w-xl text-ink-dim">
+            Plan de alimentación, rutinas de fuerza por nivel y un sistema de ajustes semana a semana — no otro PDF
+            genérico que se queda sin usar.
+          </p>
+          {HOTMART_URL && (
+            <div className="mx-auto mt-8 max-w-xs">
+              <BotonHotmart href={HOTMART_URL} ubicacion="hero" />
             </div>
           )}
-
-          <div className="mt-7">
-            <p className="mb-3 font-display text-xs text-ink-dim">Runas del Método Secreto</p>
-            <Logros piezas={piezas} diasCompletados={estado.diasCompletados} />
-          </div>
-
-          <NotificacionesPrompt habilitado={estado.diasCompletados.has(1)} />
-          {/* Plan B para quien no aceptó las notificaciones: sin esto se queda
-              sin ninguna forma de volver. Solo aparece cuando el aviso de
-              notificaciones ya se resolvió, nunca los dos a la vez. */}
-          <AtajoPrompt habilitado={estado.diasCompletados.has(1)} />
         </div>
       </section>
 
-      <div className="mx-auto max-w-4xl px-6 py-10">
-        {fases.map((fase) => {
-          const diasFase = fase.diaFin - fase.diaInicio + 1;
-          const completadosFase = Array.from(estado.diasCompletados).filter(
-            (d) => d >= fase.diaInicio && d <= fase.diaFin,
-          ).length;
+      {/* Problema */}
+      <section className="mx-auto max-w-3xl px-6 py-14">
+        <h2 className="font-display text-2xl">La mayoría de los planes fallan por lo mismo</h2>
+        <p className="mt-4 leading-relaxed text-ink-dim">
+          No es falta de fuerza de voluntad. Es intentar seguir una rutina genérica que no se ajusta a ti, sin saber
+          qué cambiar cuando deja de funcionar, y depender de una motivación que baja a la tercera semana — siempre.
+          El Método Vikingo no apuesta a la motivación: apuesta a un sistema que sigue funcionando cuando la
+          motivación ya no está.
+        </p>
+      </section>
 
-          return (
-          <section key={fase.numero} className="mb-10">
-            <header className="mb-3">
-              <p className="font-display text-xs text-ember-2">Fase {fase.numero}</p>
-              <h2 className="font-display text-xl">{fase.nombre}</h2>
-              <p className="mt-1 text-sm text-ink-dim">{fase.descripcion}</p>
-              <div className="mt-3 max-w-xs">
-                <ProgressBar completados={completadosFase} total={diasFase} />
+      {/* Los 3 pilares */}
+      <section className="border-t border-line bg-bg-2">
+        <div className="mx-auto max-w-3xl px-6 py-14">
+          <h2 className="font-display text-2xl">Los tres pilares del Método</h2>
+          <div className="mt-6 grid gap-5 sm:grid-cols-3">
+            {PILARES.map((p) => (
+              <div key={p.titulo} className="rounded-xl border border-line bg-bg p-5">
+                <h3 className="font-display text-lg text-ember-2">{p.titulo}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-ink-dim">{p.texto}</p>
               </div>
-            </header>
-
-            <ol className="divide-y divide-line border-y border-line">
-              {Array.from({ length: fase.diaFin - fase.diaInicio + 1 }, (_, i) => fase.diaInicio + i).map((d) => {
-                const disponible = d <= estado.diaMaximo;
-                const hecho = estado.diasCompletados.has(d);
-                const titulo = titulos.find((t) => t.dia === d)?.titulo;
-
-                const contenido = (
-                  <div className="flex items-center justify-between gap-4 px-1 py-4">
-                    <div>
-                      <p className={disponible ? "font-semibold" : "font-semibold text-ink-faint blur-[3px] select-none"}>
-                        Día {d}
-                        {titulo ? ` — ${titulo}` : ""}
-                      </p>
-                      {!disponible && (
-                        <p className="mt-0.5 text-xs text-ink-faint">
-                          {d === estado.diaMaximo + 1
-                            ? `Se abre mañana, al completar el Día ${estado.diaMaximo}`
-                            : `Se abre al completar el Día ${d - 1}`}
-                        </p>
-                      )}
-                    </div>
-                    {hecho && (
-                      <span aria-hidden className="text-lg text-ok">
-                        ✓
-                      </span>
-                    )}
-                  </div>
-                );
-
-                return (
-                  <li key={d}>
-                    {disponible ? (
-                      <Link href={`/reto/${d}`} className="block hover:bg-bg-2">
-                        {contenido}
-                      </Link>
-                    ) : (
-                      <div>{contenido}</div>
-                    )}
-                  </li>
-                );
-              })}
-            </ol>
-          </section>
-          );
-        })}
-
-        <div className="border-t border-line pt-6">
-          <p className="mb-4 font-display text-xs text-ink-dim">Lo que dice quien ya lo hizo</p>
-          <TestimoniosCarrusel />
+            ))}
+          </div>
         </div>
+      </section>
 
-        <div className="space-y-1 border-t border-line pt-6 text-sm text-ink-dim">
-          <p>Comunidad de Discord — Próximamente</p>
-          <p>Guías descargables en PDF — dentro de cada lección</p>
+      {/* Qué incluye */}
+      <section className="mx-auto max-w-3xl px-6 py-14">
+        <h2 className="font-display text-2xl">Qué incluye</h2>
+        <ul className="mt-6 space-y-3">
+          {INCLUYE.map((item) => (
+            <li key={item} className="flex items-start gap-3 text-ink/90">
+              <span aria-hidden className="mt-1 text-ember-2">
+                ✓
+              </span>
+              {item}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {/* Precio + garantía: nunca inventar un número, solo mostrar si viene configurado */}
+      {(PRECIO || GARANTIA_DIAS) && (
+        <section className="border-t border-line bg-bg-2">
+          <div className="mx-auto max-w-3xl px-6 py-14 text-center">
+            {PRECIO && (
+              <p className="font-display text-4xl text-ember-2">
+                {PRECIO}
+                <span className="ml-2 font-sans text-sm normal-case tracking-normal text-ink-dim">pago único</span>
+              </p>
+            )}
+            {GARANTIA_DIAS && (
+              <p className="mt-3 text-sm text-ink-dim">
+                Garantía de {GARANTIA_DIAS} días: si no te sirve, te devolvemos tu dinero.
+              </p>
+            )}
+            {HOTMART_URL && (
+              <div className="mx-auto mt-6 max-w-xs">
+                <BotonHotmart href={HOTMART_URL} ubicacion="precio" />
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* FAQ / objeciones */}
+      <section className="mx-auto max-w-3xl px-6 py-14">
+        <h2 className="font-display text-2xl">Preguntas frecuentes</h2>
+        <div className="mt-6 divide-y divide-line border-y border-line">
+          {PREGUNTAS.map((p) => (
+            <details key={p.q} className="group py-4">
+              <summary className="cursor-pointer list-none font-semibold marker:content-none">
+                <span className="mr-2 text-ember-2 group-open:hidden">+</span>
+                <span className="mr-2 hidden text-ember-2 group-open:inline">−</span>
+                {p.q}
+              </summary>
+              <p className="mt-2 text-sm leading-relaxed text-ink-dim">{p.a}</p>
+            </details>
+          ))}
         </div>
-      </div>
+      </section>
+
+      {/* CTA final */}
+      {HOTMART_URL && (
+        <section className="border-t border-line bg-bg-2">
+          <div className="mx-auto max-w-3xl px-6 py-16 text-center">
+            <h2 className="font-display text-3xl">Empieza el Método Vikingo hoy</h2>
+            <div className="mx-auto mt-6 max-w-xs">
+              <BotonHotmart href={HOTMART_URL} ubicacion="cta_final" />
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   );
 }

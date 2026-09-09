@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-/** Imagen OG genérica del sitio (1200x630) para compartir enlaces sin contexto de usuario. */
+/** Imagen OG genérica del sitio (1200x630) para compartir el link sin contexto de usuario. */
 export async function GET() {
   return new ImageResponse(
     (
@@ -19,11 +19,10 @@ export async function GET() {
       >
         <div style={{ display: "flex", alignItems: "center", gap: 16, fontSize: 36, fontWeight: 800, letterSpacing: 6 }}>
           <span style={{ color: "#FF8A3D" }}>⚔</span>
-          <span>RETO VIKINGO</span>
+          <span>MÉTODO VIKINGO</span>
         </div>
-        <div style={{ display: "flex", fontSize: 96, fontWeight: 900, marginTop: 24, color: "#FF8A3D" }}>30 días</div>
-        <div style={{ display: "flex", fontSize: 32, marginTop: 16, color: "#9AA0A8" }}>
-          Curso gratuito de nutrición y entrenamiento
+        <div style={{ display: "flex", fontSize: 40, fontWeight: 900, marginTop: 24, color: "#FF8A3D", textAlign: "center" }}>
+          12 semanas de nutrición y fuerza
         </div>
       </div>
     ),
