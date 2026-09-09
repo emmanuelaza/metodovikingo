@@ -120,6 +120,15 @@ export function IconoSobre({ className = "h-5 w-5" }: { className?: string }) {
   );
 }
 
+/** Comillas — marca de cita en las tarjetas de testimonio. */
+export function IconoComillas({ className = "h-6 w-6" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden>
+      <path d="M9.5 6C6.5 6 5 8.3 5 11.2V18h6v-6.8H8.2c0-1.8.8-2.9 2.4-3.2L9.5 6Zm9 0c-3 0-4.5 2.3-4.5 5.2V18h6v-6.8h-2.8c0-1.8.8-2.9 2.4-3.2L18.5 6Z" />
+    </svg>
+  );
+}
+
 /** Flechas de refresco — actualizaciones incluidas. */
 export function IconoActualizar({ className = "h-5 w-5" }: { className?: string }) {
   return (

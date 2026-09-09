@@ -216,6 +216,29 @@ h1, h2, h3, .font-display {
 }
 
 /*
+ * Marquesina de testimonios — el track lleva dos grupos idénticos y se
+ * desplaza a -50%: al terminar el primer grupo, el segundo ya ocupa la misma
+ * posición inicial, por eso el loop es continuo y sin salto. Solo CSS.
+ */
+@keyframes marquesina {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquesina-track {
+  animation: marquesina 55s linear infinite;
+  will-change: transform;
+}
+/* Pausa al pasar el cursor (desktop) o mantener el dedo encima (touch). */
+.marquesina:hover .marquesina-track,
+.marquesina:active .marquesina-track {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquesina-track { animation: none; }
+  .marquesina { overflow-x: auto; }
+}
+
+/*
  * Acordeón fluido con el truco grid-template-rows (0fr → 1fr): a diferencia
  * de max-height, anima con el alto real del contenido sin adivinar un
  * número, y con GPU compositing en vez de recalcular layout en cada frame.

@@ -1,6 +1,7 @@
 import BotonHotmart, { HOTMART_URL_DEFAULT } from "@/app/components/BotonHotmart";
 import StickyCTA from "@/app/components/StickyCTA";
 import Acordeon from "@/app/components/Acordeon";
+import Testimonios, { type Testimonio } from "@/app/components/Testimonios";
 import {
   IconoEscudo,
   IconoChevron,
@@ -73,6 +74,50 @@ const CONFIANZA = [
   { Icono: IconoRayo, texto: "Acceso instantáneo apenas pagas" },
   { Icono: IconoSobre, texto: "Enlace seguro a tu correo" },
   { Icono: IconoActualizar, texto: "Actualizaciones incluidas" },
+];
+
+// Testimonios reales aportados por el negocio (verbatim).
+const TESTIMONIOS: Testimonio[] = [
+  {
+    texto: "Tengo 16 años y me daba vergüenza ir al gimnasio porque estaba demasiado flaco. Empecé el Método en mi habitación hace un mes y ya gané 4 kilos de músculo puro.",
+    autor: "Mateo R. (16 años)",
+  },
+  {
+    texto: "Me pasaba 8 horas al día haciendo scroll, sin energía. Este mapa me dio la disciplina que me faltaba. Dejé de perder el tiempo y ahora entreno a diario.",
+    autor: "Kevin M. (17 años)",
+  },
+  {
+    texto: "Pensé que necesitaba comprar suplementos caros o pedirle dinero a mis padres. La guía de alimentación económica te enseña a comer con lo que hay en casa.",
+    autor: "Santiago L.",
+  },
+  {
+    texto: "Tengo 15 años y no tengo tarjeta. Generé el código en efectivo, fui a pagar a la tienda de la esquina y el acceso me llegó al correo en un minuto. Cero estafas.",
+    autor: "Dylan C. (15 años)",
+  },
+  {
+    texto: "Las rutinas en casa son brutales. No necesitas equipo raro. Con constancia y este PDF he construido más hombros y espalda que en 6 meses de gimnasio flojo.",
+    autor: "Alejandro V. (18 años)",
+  },
+  {
+    texto: "Lo que más me sirvió fue el sistema para destruir la pereza. La regla de los 5 segundos que enseña el método cambió por completo mis mañanas.",
+    autor: "Carlos T. (16 años)",
+  },
+  {
+    texto: "Tengo 17 años y tenía algo de sobrepeso. El método no te complica la vida con dietas imposibles. He bajado grasa manteniendo la fuerza de forma real.",
+    autor: "Matías P. (17 años)",
+  },
+  {
+    texto: "Un mapa directo al grano. Odio leer libros aburridos de escuela, pero este PDF te dice exactamente qué hacer en 10 minutos desde tu celular.",
+    autor: "Nicolás B.",
+  },
+  {
+    texto: "Hacer que mis padres me apoyaran era difícil, pero les mostré la parte educativa del método y ellos mismos me dieron el dinero para ir a pagar en efectivo.",
+    autor: "Samuel G. (15 años)",
+  },
+  {
+    texto: "La mentalidad vikinga es otro nivel. No solo cambió mi cuerpo, ahora tengo el enfoque necesario para estudiar y levantarme temprano sin dar excusas.",
+    autor: "Esteban J. (19 años)",
+  },
 ];
 
 const PREGUNTAS = [
@@ -217,9 +262,19 @@ export default function Home() {
         </div>
       </section>
 
+      {/* TESTIMONIOS — marquesina infinita 100% CSS, pausa al mantener el dedo */}
+      <section className="py-16 sm:py-24">
+        <div className="mx-auto max-w-md px-6 sm:max-w-2xl lg:max-w-6xl">
+          <EncabezadoSeccion indice="03" kicker="Lo que dicen" titulo="LA TRIBU YA ESTÁ ENTRENANDO" />
+        </div>
+        <div className="mt-10">
+          <Testimonios items={TESTIMONIOS} />
+        </div>
+      </section>
+
       {/* PAGO SIN TARJETA — estética fintech, borde en degradado */}
       <section className="mx-auto max-w-md px-6 py-16 sm:max-w-2xl sm:py-24">
-        <EncabezadoSeccion indice="03" kicker="Sin barreras" titulo="¿NO TIENES TARJETA?" />
+        <EncabezadoSeccion indice="04" kicker="Sin barreras" titulo="¿NO TIENES TARJETA?" />
         <div className="borde-grad elev mt-9 p-6 sm:p-8">
           <p className="mx-auto max-w-md text-center text-sm leading-relaxed text-ink-dim sm:text-base">
             Paga en <strong className="text-ink">efectivo</strong> en la tienda más cercana o con tu{" "}
@@ -299,7 +354,7 @@ export default function Home() {
 
       {/* FAQ */}
       <section className="mx-auto max-w-md px-6 py-16 sm:max-w-2xl sm:py-24">
-        <EncabezadoSeccion indice="04" kicker="Dudas frecuentes" titulo="PREGUNTAS FRECUENTES" />
+        <EncabezadoSeccion indice="05" kicker="Dudas frecuentes" titulo="PREGUNTAS FRECUENTES" />
         <div className="borde-grad elev mt-9 px-5 sm:px-7">
           <Acordeon items={PREGUNTAS} />
         </div>
