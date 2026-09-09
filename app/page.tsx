@@ -53,6 +53,19 @@ export default async function Temario({
 
           {aviso && <p className="mt-4 text-sm text-ember-2">{aviso}</p>}
 
+          {/* Quien vuelve tras ausentarse no perdió nada: el desbloqueo está
+              encadenado, así que su día sigue intacto. Decirlo evita que
+              sienta que fracasó y abandone. */}
+          {estado.diasDesdeUltimaActividad !== null &&
+            estado.diasDesdeUltimaActividad >= 2 &&
+            estado.diaPendiente !== null && (
+              <p className="mt-4 rounded-lg border border-ember/40 bg-bg-3 p-4 text-sm">
+                Estuviste {estado.diasDesdeUltimaActividad} días fuera y no perdiste nada: tu Día{" "}
+                <strong className="text-ember-2">{estado.diaPendiente}</strong> sigue justo donde lo dejaste. Se retoma
+                hoy.
+              </p>
+            )}
+
           <div className="mt-5 flex flex-wrap items-center gap-x-8 gap-y-3 text-sm">
             {estado.racha > 0 && (
               <span className="text-ink">
@@ -155,7 +168,9 @@ export default async function Temario({
                       </p>
                       {!disponible && (
                         <p className="mt-0.5 text-xs text-ink-faint">
-                          Se habilita en {d - estado.diaMaximo} {d - estado.diaMaximo === 1 ? "día" : "días"}
+                          {d === estado.diaMaximo + 1
+                            ? `Se abre mañana, al completar el Día ${estado.diaMaximo}`
+                            : `Se abre al completar el Día ${d - 1}`}
                         </p>
                       )}
                     </div>

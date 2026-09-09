@@ -2,19 +2,23 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { webpushConfigurado } from "@/lib/push/server";
 import { getTitulos } from "@/lib/contenido";
 import { diasEntre, hoyISO } from "@/lib/fecha";
-import { calcularRacha } from "@/lib/progreso";
-import { DIAS_TOTALES } from "@/lib/types";
+import { calcularEstadoCurso } from "@/lib/progreso";
+import type { Profile } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
-type PerfilFila = { id: string; fecha_inicio: string };
 type SuscripcionFila = { id: number; user_id: string; endpoint: string; p256dh: string; auth: string };
-type CompletadoFila = { user_id: string; completed_at: string };
+type CompletadoFila = { user_id: string; day_number: number; completed_at: string };
 
 /**
- * Cron diario (ver vercel.json): a cada usuario cuyo siguiente día del reto se
- * habilitó justo hoy le manda un push simple. No hay "completar" que rastrear:
- * el desbloqueo ya es puro calendario (lib/progreso.ts), este cron solo avisa.
+ * Cron de la mañana (ver vercel.json): avisa a quien se le acaba de abrir
+ * un día nuevo, es decir, a quien completó el día anterior *ayer* — el
+ * desbloqueo está encadenado a completar (lib/progreso.ts), así que el
+ * corte ocurre en la medianoche siguiente a marcar.
+ *
+ * A quien no completó nada no se le insiste aquí: de eso se encarga el
+ * cron de la noche, que solo reengancha a los 3, 7 y 14 días de ausencia
+ * en vez de repetir el mismo aviso cada mañana.
  */
 export async function GET(request: Request) {
   const secreto = process.env.CRON_SECRET;
@@ -28,44 +32,31 @@ export async function GET(request: Request) {
   const admin = createAdminClient();
   const hoy = hoyISO();
 
-  const [{ data: perfiles, error: errorPerfiles }, titulos] = await Promise.all([
-    admin.from("profiles").select("id, fecha_inicio").returns<PerfilFila[]>(),
-    getTitulos(),
-  ]);
-  if (errorPerfiles || !perfiles) {
-    return Response.json({ enviados: 0, error: errorPerfiles?.message ?? "sin perfiles" }, { status: 500 });
-  }
-
-  // user_id -> día que se acaba de habilitar hoy (solo días 2..30; el día 1 no necesita aviso).
-  const usuariosANotificar = new Map<string, number>();
-  for (const perfil of perfiles) {
-    const dia = diasEntre(perfil.fecha_inicio, hoy) + 1;
-    if (dia >= 2 && dia <= DIAS_TOTALES) usuariosANotificar.set(perfil.id, dia);
-  }
-  if (usuariosANotificar.size === 0) return Response.json({ enviados: 0 });
-
   const { data: suscripciones, error: errorSubs } = await admin
     .from("push_subscriptions")
     .select("id, user_id, endpoint, p256dh, auth")
-    .in("user_id", Array.from(usuariosANotificar.keys()))
     .returns<SuscripcionFila[]>();
-  if (errorSubs || !suscripciones) {
-    return Response.json({ enviados: 0, error: errorSubs?.message ?? "sin suscripciones" }, { status: 500 });
+  if (errorSubs || !suscripciones || suscripciones.length === 0) {
+    return Response.json({ enviados: 0, error: errorSubs?.message ?? "sin suscripciones" });
   }
 
-  // Racha de cada usuario (antes del día que se acaba de habilitar) para
-  // variar el mensaje: motivar a no romperla en vez de un aviso genérico.
-  const { data: completados } = await admin
-    .from("daily_completions")
-    .select("user_id, completed_at")
-    .in("user_id", suscripciones.map((s) => s.user_id))
-    .returns<CompletadoFila[]>();
+  const userIds = suscripciones.map((s) => s.user_id);
+  const [{ data: perfiles }, { data: completados }, titulos] = await Promise.all([
+    admin.from("profiles").select("id, fecha_inicio, created_at").in("id", userIds).returns<Profile[]>(),
+    admin
+      .from("daily_completions")
+      .select("user_id, day_number, completed_at")
+      .in("user_id", userIds)
+      .returns<CompletadoFila[]>(),
+    getTitulos(),
+  ]);
 
-  const fechasPorUsuario = new Map<string, string[]>();
+  const perfilPorUsuario = new Map((perfiles ?? []).map((p) => [p.id, p]));
+  const completadosPorUsuario = new Map<string, CompletadoFila[]>();
   for (const c of completados ?? []) {
-    const lista = fechasPorUsuario.get(c.user_id) ?? [];
-    lista.push(c.completed_at);
-    fechasPorUsuario.set(c.user_id, lista);
+    const lista = completadosPorUsuario.get(c.user_id) ?? [];
+    lista.push(c);
+    completadosPorUsuario.set(c.user_id, lista);
   }
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "";
@@ -74,11 +65,20 @@ export async function GET(request: Request) {
 
   await Promise.all(
     suscripciones.map(async (sub) => {
-      const dia = usuariosANotificar.get(sub.user_id);
-      if (!dia) return;
+      const perfil = perfilPorUsuario.get(sub.user_id);
+      if (!perfil) return;
+
+      const completadosUsuario = completadosPorUsuario.get(sub.user_id) ?? [];
+      const estado = calcularEstadoCurso(perfil, completadosUsuario, hoy);
+      const dia = estado.diaPendiente;
+      if (dia === null || dia === 1) return;
+
+      // El día se abrió esta medianoche solo si el anterior se completó ayer.
+      const anterior = completadosUsuario.find((c) => c.day_number === dia - 1);
+      if (!anterior || diasEntre(anterior.completed_at, hoy) !== 1) return;
+
       const titulo = titulos.find((t) => t.dia === dia)?.titulo;
-      const { racha } = calcularRacha(fechasPorUsuario.get(sub.user_id) ?? [], hoy);
-      const prefijo = racha > 1 ? `🔥 Llevas ${racha} días seguidos. ` : "";
+      const prefijo = estado.racha > 1 ? `🔥 Llevas ${estado.racha} días seguidos. ` : "";
 
       const payload = JSON.stringify({
         titulo: "Reto Vikingo",
@@ -87,10 +87,7 @@ export async function GET(request: Request) {
       });
 
       try {
-        await webpush.sendNotification(
-          { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
-          payload,
-        );
+        await webpush.sendNotification({ endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } }, payload);
         enviados++;
       } catch (err) {
         const status = (err as { statusCode?: number }).statusCode;

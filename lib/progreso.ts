@@ -37,10 +37,27 @@ export async function getPerfil(supabase: SupabaseClient, user: User): Promise<P
   return creado as Profile;
 }
 
-/** Día máximo habilitado hoy por calendario (1..30), a partir de fecha_inicio. */
-export function diaMaximoDisponible(perfil: Profile, hoy: string = hoyISO()): number {
-  const diasTranscurridos = Math.max(0, diasEntre(perfil.fecha_inicio, hoy));
-  return Math.min(DIAS_TOTALES, diasTranscurridos + 1);
+/**
+ * Día máximo habilitado (1..30). El desbloqueo está **encadenado a
+ * completar**: el día D+1 se abre en la medianoche siguiente a haber
+ * completado el día D. Dos consecuencias buscadas: nadie se salta
+ * contenido, y quien se ausenta no pierde nada — vuelve exactamente donde
+ * lo dejó, porque el reloj no corre solo.
+ */
+export function diaMaximoDisponible(
+  fechasCompletado: { day_number: number; completed_at: string }[],
+  hoy: string = hoyISO(),
+): number {
+  const fechaPorDia = new Map(fechasCompletado.map((f) => [f.day_number, f.completed_at]));
+
+  let dia = 1;
+  while (dia < DIAS_TOTALES) {
+    const completadoEl = fechaPorDia.get(dia);
+    // Hace falta haberlo completado y que haya pasado al menos una medianoche.
+    if (!completadoEl || diasEntre(completadoEl, hoy) < 1) break;
+    dia++;
+  }
+  return dia;
 }
 
 export type EstadoCurso = {
@@ -52,6 +69,8 @@ export type EstadoCurso = {
   cursoCompletado: boolean;
   racha: number;
   rachaMax: number;
+  /** Días desde la última lección marcada; null si nunca marcó ninguna. */
+  diasDesdeUltimaActividad: number | null;
 };
 
 /**
@@ -64,7 +83,7 @@ export function calcularEstadoCurso(
   fechasCompletado: { day_number: number; completed_at: string }[],
   hoy: string = hoyISO(),
 ): EstadoCurso {
-  const diaMaximo = diaMaximoDisponible(perfil, hoy);
+  const diaMaximo = diaMaximoDisponible(fechasCompletado, hoy);
   const diasCompletados = new Set(fechasCompletado.map((f) => f.day_number));
 
   let diaPendiente: number | null = null;
@@ -80,6 +99,11 @@ export function calcularEstadoCurso(
     hoy,
   );
 
+  const ultimaActividad = fechasCompletado.reduce<string | null>(
+    (max, f) => (max === null || f.completed_at > max ? f.completed_at : max),
+    null,
+  );
+
   return {
     diaMaximo,
     diasCompletados,
@@ -87,6 +111,7 @@ export function calcularEstadoCurso(
     cursoCompletado: diasCompletados.has(DIAS_TOTALES),
     racha,
     rachaMax,
+    diasDesdeUltimaActividad: ultimaActividad === null ? null : diasEntre(ultimaActividad, hoy),
   };
 }
 

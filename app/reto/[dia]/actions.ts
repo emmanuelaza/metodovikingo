@@ -1,15 +1,15 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { requireUsuario, getPerfil, diaMaximoDisponible } from "@/lib/progreso";
+import { requireUsuario, getPerfil, getFechasCompletado, diaMaximoDisponible } from "@/lib/progreso";
 import { hoyISO } from "@/lib/fecha";
 import { DIAS_TOTALES } from "@/lib/types";
 
 /**
- * Checkbox "marcar como completado": un simple hecho (insert/delete), sin
- * ninguna lógica de racha o desbloqueo que proteger — eso se calcula al
- * leer (ver lib/progreso.ts). No afecta qué días puedes ver, solo tu
- * seguimiento personal.
+ * Marcar un día como completado es lo que abre el siguiente: el desbloqueo
+ * está encadenado (ver `diaMaximoDisponible` en lib/progreso.ts), así que
+ * este insert/delete sí decide qué puede ver el usuario. Igual no hace
+ * falta guardar contadores: el estado se deriva al leer.
  */
 export async function marcarCompletado(formData: FormData) {
   const dia = Number(formData.get("dia"));
@@ -17,8 +17,9 @@ export async function marcarCompletado(formData: FormData) {
   if (!Number.isInteger(dia) || dia < 1 || dia > DIAS_TOTALES) return;
 
   const { supabase, user } = await requireUsuario();
-  const perfil = await getPerfil(supabase, user);
-  if (dia > diaMaximoDisponible(perfil)) return;
+  // getPerfil garantiza que exista la fila de profiles a la que apunta la FK.
+  const [, fechas] = await Promise.all([getPerfil(supabase, user), getFechasCompletado(supabase, user)]);
+  if (dia > diaMaximoDisponible(fechas)) return;
 
   if (marcar) {
     await supabase
