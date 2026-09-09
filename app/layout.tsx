@@ -1,11 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import { Analytics } from "@vercel/analytics/next";
-import { Anton, Manrope } from "next/font/google";
+import { Oswald, Inter } from "next/font/google";
 import "./globals.css";
 
-const anton = Anton({ variable: "--font-anton", weight: "400", subsets: ["latin"] });
-const manrope = Manrope({ variable: "--font-manrope", subsets: ["latin"] });
+const oswald = Oswald({ variable: "--font-oswald", weight: ["500", "700"], subsets: ["latin"] });
+const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
 
 const TITULO = "El Método Vikingo";
 const DESCRIPCION = "Rutinas de fuerza, nutrición sin complicaciones y disciplina diaria para construir un físico imponente.";
@@ -32,14 +32,14 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0b0c0f",
+  themeColor: "#0a0a0c",
   width: "device-width",
   initialScale: 1,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className={`${anton.variable} ${manrope.variable} h-full antialiased`}>
+    <html lang="es" className={`${oswald.variable} ${inter.variable} h-full antialiased`}>
       {/* Landing de una sola página, sin anuncios: el único camino es
           comprar o irse — nada que le reste confianza al CTA. */}
       <body className="flex min-h-full flex-col">
