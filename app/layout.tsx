@@ -4,8 +4,11 @@ import { Analytics } from "@vercel/analytics/next";
 import { Oswald, Inter } from "next/font/google";
 import "./globals.css";
 
-const oswald = Oswald({ variable: "--font-oswald", weight: ["500", "700"], subsets: ["latin"] });
-const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
+// display:"swap" → el texto se pinta al instante con la fuente de sistema y
+// se cambia a la tipográfica al cargar (nunca texto invisible). Self-hosted
+// por next/font: cero round-trip a Google, clave en el navegador de TikTok.
+const oswald = Oswald({ variable: "--font-oswald", weight: ["500", "700"], subsets: ["latin"], display: "swap" });
+const inter = Inter({ variable: "--font-inter", subsets: ["latin"], display: "swap", preload: true });
 
 const TITULO = "El Método Vikingo";
 const DESCRIPCION = "Rutinas de fuerza, nutrición sin complicaciones y disciplina diaria para construir un físico imponente.";
