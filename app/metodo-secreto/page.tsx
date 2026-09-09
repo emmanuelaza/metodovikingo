@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { requireUsuario, getPerfil, getFechasCompletado, calcularEstadoCurso } from "@/lib/progreso";
 import { getPiezas } from "@/lib/contenido";
 import CompartirRacha from "@/app/components/CompartirRacha";
+import BotonHotmart from "@/app/components/BotonHotmart";
 
 export const metadata = { title: "El Método completo" };
 
@@ -13,6 +14,11 @@ export default async function MetodoSecreto() {
   const [perfil, fechas] = await Promise.all([getPerfil(supabase, user), getFechasCompletado(supabase, user)]);
   const estado = calcularEstadoCurso(perfil, fechas);
   if (estado.diaMaximo < 30) redirect("/?msg=secreto");
+
+  // Sin esta variable el CTA de venta desaparece por completo y sin aviso
+  // visual — este log es la única señal de que algo falta, revisar en los
+  // logs de Vercel si el botón "Quiero el Método completo" no aparece.
+  if (!HOTMART_URL) console.warn("NEXT_PUBLIC_HOTMART_URL no está configurada: el CTA de venta no se muestra.");
 
   const piezas = await getPiezas();
 
@@ -54,14 +60,7 @@ export default async function MetodoSecreto() {
               Plan de alimentación, rutinas de fuerza por nivel y el sistema de ajustes semana a semana. Todo lo que
               viste en el reto, llevado a la práctica durante 12 semanas.
             </p>
-            <a
-              href={HOTMART_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-4 block w-full rounded-lg bg-ember px-4 py-3 text-center font-semibold text-bg hover:bg-ember-deep"
-            >
-              Quiero el Método completo →
-            </a>
+            <BotonHotmart href={HOTMART_URL} rachaMax={estado.rachaMax} />
           </section>
         )}
 
