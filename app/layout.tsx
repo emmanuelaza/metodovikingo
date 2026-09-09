@@ -7,6 +7,7 @@ import "./globals.css";
 import Nav from "@/app/components/Nav";
 import NavMovil from "@/app/components/NavMovil";
 import PopunderGate from "@/app/components/PopunderGate";
+import AdsGate from "@/app/components/AdsGate";
 import { ADS_ENABLED } from "@/lib/ads";
 
 const SOCIAL_BAR_SRC = "https://pl31224703.profitableratecpmnetwork.com/ec/85/e8/ec85e8d57198e6ba577e1836d8860803.js";
@@ -60,8 +61,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             que estos scripts cargan una sola vez por sesión de navegación, no en
             cada cambio de ruta. strategy="afterInteractive": no bloquean el
             primer render. Apagar todo con NEXT_PUBLIC_ADS_ENABLED=false.
-            PopunderGate además limita el Popunder a una vez cada 24h por navegador. */}
-        {ADS_ENABLED && <PopunderGate />}
+            PopunderGate además limita el Popunder a una vez cada 24h por navegador.
+            AdsGate apaga ambos en /metodo-secreto: es la página de ventas, un
+            anuncio ahí le resta confianza justo al momento de decidir comprar. */}
+        {ADS_ENABLED && (
+          <AdsGate>
+            <PopunderGate />
+          </AdsGate>
+        )}
 
         <Nav />
         <main className="flex-1 w-full">{children}</main>
@@ -80,7 +87,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             proyecto (Analytics → Enable) para que empiece a registrar. */}
         <Analytics />
 
-        {ADS_ENABLED && <Script src={SOCIAL_BAR_SRC} strategy="afterInteractive" />}
+        {ADS_ENABLED && (
+          <AdsGate>
+            <Script src={SOCIAL_BAR_SRC} strategy="afterInteractive" />
+          </AdsGate>
+        )}
       </body>
     </html>
   );
