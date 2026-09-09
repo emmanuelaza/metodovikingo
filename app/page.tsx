@@ -21,7 +21,9 @@ const JSON_LD_CURSO = {
 };
 
 const MENSAJES: Record<string, string> = {
-  bloqueado: "Ese día todavía no está disponible. Vuelve cuando le toque a tu calendario.",
+  bloqueado: "Ese día todavía no está disponible: se abre cuando completes el anterior.",
+  // /metodo-secreto redirige aquí con ?msg=secreto si aún no se llegó al día 30.
+  secreto: "El Método completo se revela cuando termines el día 30. Sigue avanzando.",
 };
 
 export default async function Temario({

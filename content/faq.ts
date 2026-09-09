@@ -11,11 +11,11 @@ export const FAQ: Pregunta[] = [
   },
   {
     q: "¿Cómo se desbloquean los días?",
-    a: "Por calendario, desde el día en que entraste por primera vez: el día 1 se abre de inmediato, el día 2 al día siguiente, y así hasta el 30. No depende de que marques nada como completado.",
+    a: "Completando el anterior. El día 1 está abierto apenas entras; cuando lo marcas como completado, el día 2 se abre a la medianoche siguiente, y así hasta el 30. No puedes adelantarte, pero tampoco se te escapa nada.",
   },
   {
     q: "¿Qué pasa si me salto un día?",
-    a: "Nada bloquea tu avance: los días siguen abriéndose según el calendario, y puedes ponerte al día leyendo varias lecciones pendientes de una sola vez. Solo se reinicia el contador de racha, que mide días seguidos de actividad.",
+    a: "No pierdes nada. Como cada día se abre al completar el anterior, si te ausentas una semana vuelves exactamente donde lo dejaste: tu siguiente lección sigue ahí esperándote. Lo único que se reinicia es la racha, que cuenta días seguidos de actividad.",
   },
   {
     q: "¿Qué son las piezas del Método?",
@@ -28,6 +28,10 @@ export const FAQ: Pregunta[] = [
   {
     q: "¿Sirve si quiero ganar músculo y no bajar grasa?",
     a: "Sí. Los principios (proteína, fuerza, sueño, constancia) son los mismos; cambia el balance calórico según tu objetivo.",
+  },
+  {
+    q: "¿Cómo dejo el reto a un toque en mi celular?",
+    a: "Guarda el ícono en tu pantalla de inicio y entras sin buscar la dirección. En iPhone: toca el botón de Compartir de Safari (el cuadrito con la flecha hacia arriba), baja en la lista y elige “Añadir a pantalla de inicio”. En Android: abre el menú del navegador (los tres puntos, arriba a la derecha) y elige “Añadir a pantalla de inicio”. Se abre igual que ahora, en tu navegador de siempre.",
   },
   {
     q: "¿Qué pasa si cambio de navegador o de celular?",
