@@ -11,7 +11,7 @@ const oswald = Oswald({ variable: "--font-oswald", weight: ["500", "700"], subse
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"], display: "swap", preload: true });
 
 const TITULO = "El Método Vikingo";
-const DESCRIPCION = "Rutinas de fuerza, nutrición sin complicaciones y disciplina diaria para construir un físico imponente.";
+const DESCRIPCION = "Gana tus primeros 5 kg de músculo en casa o en el gimnasio, con la disciplina, mentalidad y nutrición para lograrlo.";
 
 export const metadata: Metadata = {
   title: { default: TITULO, template: "%s · Método Vikingo" },

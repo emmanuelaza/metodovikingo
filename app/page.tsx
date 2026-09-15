@@ -207,13 +207,12 @@ export default function Home() {
             <br />
             VIKINGO
           </h1>
-          <p className="mx-auto mt-6 max-w-md text-lg leading-relaxed text-ink sm:max-w-lg sm:text-xl lg:max-w-xl">
-            Deja de ser el chico promedio. Construye un físico imponente, disciplina de acero y la fuerza de un
-            guerrero.
+          <p className="mx-auto mt-6 max-w-md text-xl font-semibold leading-snug text-ink sm:max-w-lg sm:text-2xl lg:max-w-xl">
+            Gana tus <span className="text-ember-2">primeros 5 kg de músculo</span>, en casa o en el gimnasio.
           </p>
-          <p className="mx-auto mt-3 max-w-sm text-sm text-ink-dim sm:max-w-md sm:text-base">
-            El mapa paso a paso para hombres jóvenes que quieren transformar su cuerpo y su mente, sin importar su
-            genética actual.
+          <p className="mx-auto mt-4 max-w-sm text-sm leading-relaxed text-ink-dim sm:max-w-md sm:text-base">
+            Más la disciplina, la mentalidad y la nutrición para construir un físico imponente y no rendirte a los tres
+            días. El mapa paso a paso para hombres jóvenes, sin importar tu genética.
           </p>
           <CTAWrap className="mt-9">
             <BotonHotmart href={HOTMART_URL} ubicacion="hero" texto="⚔ UNIRSE AL MÉTODO VIKINGO HOY" pulso />
