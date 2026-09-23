@@ -2,6 +2,12 @@
 
 import { track } from "@vercel/analytics";
 
+declare global {
+  interface Window {
+    ttq?: { track: (evento: string, props?: Record<string, unknown>) => void };
+  }
+}
+
 /** Link real de checkout dado por el negocio — nunca la home genérica de hotmart.com. */
 export const HOTMART_URL_DEFAULT = "https://pay.hotmart.com/E94996678E?checkoutMode=2";
 
@@ -28,7 +34,11 @@ export default function BotonHotmart({
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      onClick={() => track("clic_hotmart", { ubicacion })}
+      onClick={() => {
+        track("clic_hotmart", { ubicacion });
+        // El pago real ocurre en Hotmart; aquí marcamos que inició el checkout.
+        window.ttq?.track("InitiateCheckout", { content_name: "El Método Vikingo", ubicacion });
+      }}
       className={`btn-vikingo group relative block w-full overflow-hidden rounded-lg px-5 py-4 text-center font-display text-sm tracking-wide text-white sm:text-base ${pulso ? "animate-pulso-cta" : ""} ${className}`}
     >
       {/* Barrido de brillo al pasar el cursor (desktop). */}

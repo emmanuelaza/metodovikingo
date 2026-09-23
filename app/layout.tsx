@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import { Analytics } from "@vercel/analytics/next";
 import { Oswald, Inter } from "next/font/google";
+import TikTokPixel from "@/app/components/TikTokPixel";
 import "./globals.css";
 
 // display:"swap" → el texto se pinta al instante con la fuente de sistema y
@@ -59,6 +60,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </p>
         </footer>
         <Analytics />
+        <TikTokPixel />
       </body>
     </html>
   );
