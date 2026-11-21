@@ -292,6 +292,9 @@ export default function Home() {
       {/* TESTIMONIOS — marquesina infinita 100% CSS, pausa al mantener el dedo */}
       <section className="py-16 sm:py-24">
         <div className="mx-auto max-w-md px-6 sm:max-w-2xl lg:max-w-6xl">
+          <div className="flex justify-center">
+            <VikingMascot pose="sonriente" width={110} />
+          </div>
           <EncabezadoSeccion pill="Lo que dicen" titulo="LA TRIBU YA ESTÁ ENTRENANDO" resaltar="ENTRENANDO" />
         </div>
         <div className="mt-10">
@@ -301,6 +304,9 @@ export default function Home() {
 
       {/* PAGO SIN TARJETA */}
       <section className="mx-auto max-w-md px-6 py-16 sm:max-w-2xl sm:py-24">
+        <div className="flex justify-center">
+          <VikingMascot pose="pulgar" width={110} />
+        </div>
         <EncabezadoSeccion pill="Sin barreras" titulo="¿NO TIENES TARJETA?" resaltar="TARJETA?" />
         <Reveal delay={0.1}>
           <div className="card-vikingo card-vikingo-ice mt-9 p-6 sm:p-8">
@@ -389,6 +395,9 @@ export default function Home() {
 
       {/* FAQ */}
       <section className="mx-auto max-w-md px-6 py-16 sm:max-w-2xl sm:py-24">
+        <div className="flex justify-center">
+          <VikingMascot pose="atento" width={110} />
+        </div>
         <EncabezadoSeccion pill="Dudas frecuentes" titulo="PREGUNTAS FRECUENTES" resaltar="FRECUENTES" />
         <div className="card-vikingo mt-9 px-5 sm:px-7">
           <Acordeon items={PREGUNTAS} />

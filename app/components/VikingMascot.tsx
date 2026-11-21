@@ -36,7 +36,10 @@ export function VikingMascot({
       viewport={{ once: true }}
       transition={{ type: "spring", stiffness: 240, damping: 14 }}
     >
-      <motion.div animate={reduce ? undefined : { y: [0, -6, 0] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}>
+      <motion.div
+        animate={reduce ? undefined : { y: [0, -6, 0], rotate: [-2, 2, -2] }}
+        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+      >
         <Image
           src={`/vikingo/viking_${pose}.png`}
           alt="Vikingo, guía del Método"
