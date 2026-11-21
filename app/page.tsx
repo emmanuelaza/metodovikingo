@@ -16,10 +16,11 @@ import {
   Mail,
   RefreshCw,
   X,
+  Globe,
 } from "lucide-react";
 
 const HOTMART_URL = process.env.NEXT_PUBLIC_HOTMART_URL || HOTMART_URL_DEFAULT;
-const PRECIO = process.env.NEXT_PUBLIC_PRECIO || "$23.00";
+const PRECIO = process.env.NEXT_PUBLIC_PRECIO || "$18.99";
 const PRECIO_MONEDA = process.env.NEXT_PUBLIC_PRECIO_MONEDA || "USD";
 // Solo se muestra si es un precio anterior real — nunca un ancla inventada.
 const PRECIO_ANTERIOR = process.env.NEXT_PUBLIC_PRECIO_ANTERIOR;
@@ -184,7 +185,7 @@ export default function Home() {
             "@type": "Product",
             name: "El Método Vikingo",
             description: "Programa digital de entrenamiento, nutrición y disciplina para hombres jóvenes.",
-            offers: { "@type": "Offer", priceCurrency: "USD", price: "23" },
+            offers: { "@type": "Offer", priceCurrency: "USD", price: "18.99" },
           }),
         }}
       />
@@ -218,6 +219,10 @@ export default function Home() {
             <span className="font-display text-2xl text-ember-2">{PRECIO}</span>
             <span className="text-sm text-ink-dim">{PRECIO_MONEDA} · pago único</span>
           </div>
+          <p className="mt-1 flex items-center justify-center gap-1.5 text-xs text-ink-faint">
+            <Globe className="h-3.5 w-3.5 text-ice" />
+            Hotmart lo convierte a tu moneda local al pagar
+          </p>
           <CTAWrap className="mt-5">
             <BotonHotmart href={HOTMART_URL} ubicacion="hero" texto="Empezar el Método" className="w-full" pulso />
           </CTAWrap>
@@ -341,7 +346,10 @@ export default function Home() {
                 <span className="text-5xl sm:text-7xl">{PRECIO}</span>
                 <span className="text-xl opacity-70 sm:text-3xl">{PRECIO_MONEDA}</span>
               </p>
-              <p className="mt-3 text-xs opacity-70 sm:text-sm">O el equivalente en la moneda de tu país</p>
+              <p className="mt-3 flex items-center justify-center gap-1.5 text-xs opacity-70 sm:text-sm">
+                <Globe className="h-3.5 w-3.5" />
+                Precio final en tu moneda local al pagar
+              </p>
 
               <ul className="mx-auto mt-7 grid max-w-sm gap-2.5 text-left">
                 {LO_QUE_OBTIENES.map((item) => (
