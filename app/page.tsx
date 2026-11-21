@@ -22,8 +22,9 @@ import {
 const HOTMART_URL = process.env.NEXT_PUBLIC_HOTMART_URL || HOTMART_URL_DEFAULT;
 const PRECIO = process.env.NEXT_PUBLIC_PRECIO || "$18.99";
 const PRECIO_MONEDA = process.env.NEXT_PUBLIC_PRECIO_MONEDA || "USD";
-// Solo se muestra si es un precio anterior real — nunca un ancla inventada.
-const PRECIO_ANTERIOR = process.env.NEXT_PUBLIC_PRECIO_ANTERIOR;
+// Fallback real: el precio del producto era $23.00 antes de bajar a $18.99.
+// Solo se muestra un valor aquí si es un precio anterior real — nunca un ancla inventada.
+const PRECIO_ANTERIOR = process.env.NEXT_PUBLIC_PRECIO_ANTERIOR || "$23.00";
 
 const PROBLEMAS = [
   "Cansado de mirarte al espejo y no ver el cambio físico que deseas.",
@@ -413,7 +414,7 @@ export default function Home() {
       </section>
 
       <StickyCTA href={HOTMART_URL} sentinelId="fin-hero" precio={`${PRECIO} ${PRECIO_MONEDA}`} />
-      <ExitPopup href={HOTMART_URL} />
+      <ExitPopup href={HOTMART_URL} precio={PRECIO} precioAnterior={PRECIO_ANTERIOR} precioMoneda={PRECIO_MONEDA} />
     </div>
   );
 }
