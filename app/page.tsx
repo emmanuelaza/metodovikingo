@@ -2,19 +2,21 @@ import BotonHotmart, { HOTMART_URL_DEFAULT } from "@/app/components/BotonHotmart
 import StickyCTA from "@/app/components/StickyCTA";
 import Acordeon from "@/app/components/Acordeon";
 import Testimonios, { type Testimonio } from "@/app/components/Testimonios";
+import ExitPopup from "@/app/components/ExitPopup";
+import { Reveal, Stagger } from "@/app/components/Reveal";
+import { VikingMascot } from "@/app/components/VikingMascot";
 import {
-  IconoEscudo,
-  IconoChevron,
-  IconoPesa,
-  IconoCerebro,
-  IconoNutricion,
-  IconoTelefono,
-  IconoCandado,
-  IconoCheck,
-  IconoRayo,
-  IconoSobre,
-  IconoActualizar,
-} from "@/app/components/IconosNordicos";
+  Dumbbell,
+  Brain,
+  Apple,
+  Smartphone,
+  Lock,
+  Check,
+  Zap,
+  Mail,
+  RefreshCw,
+  X,
+} from "lucide-react";
 
 const HOTMART_URL = process.env.NEXT_PUBLIC_HOTMART_URL || HOTMART_URL_DEFAULT;
 const PRECIO = process.env.NEXT_PUBLIC_PRECIO || "$23.00";
@@ -31,22 +33,22 @@ const PROBLEMAS = [
 
 const INCLUYE = [
   {
-    Icono: IconoPesa,
+    Icono: Dumbbell,
     titulo: "Físico de guerrero",
     texto: "Rutinas exactas para ganar músculo y fuerza. Para el gimnasio o para tu casa con lo que tengas a la mano.",
   },
   {
-    Icono: IconoCerebro,
+    Icono: Brain,
     titulo: "Mentalidad y disciplina",
     texto: "El método diario para vencer la flojera, romper malos hábitos y mantenerte enfocado sin depender de la motivación.",
   },
   {
-    Icono: IconoNutricion,
+    Icono: Apple,
     titulo: "Nutrición sin complicaciones",
     texto: "Guía de alimentación económica: qué comer para ponerte fuerte sin gastar de más en el supermercado.",
   },
   {
-    Icono: IconoTelefono,
+    Icono: Smartphone,
     titulo: "Formato ultra-rápido",
     texto: "PDF optimizado para leerlo y aplicarlo directo desde tu celular en 10 minutos.",
   },
@@ -72,9 +74,9 @@ const LO_QUE_OBTIENES = [
 ];
 
 const CONFIANZA = [
-  { Icono: IconoRayo, texto: "Acceso instantáneo apenas pagas" },
-  { Icono: IconoSobre, texto: "Enlace seguro a tu correo" },
-  { Icono: IconoActualizar, texto: "Actualizaciones incluidas" },
+  { Icono: Zap, texto: "Acceso instantáneo apenas pagas" },
+  { Icono: Mail, texto: "Enlace seguro a tu correo" },
+  { Icono: RefreshCw, texto: "Actualizaciones incluidas" },
 ];
 
 // Testimonios reales aportados por el negocio (verbatim).
@@ -145,15 +147,28 @@ function CTAWrap({ children, className = "" }: { children: React.ReactNode; clas
   return <div className={`mx-auto max-w-xs sm:max-w-sm ${className}`}>{children}</div>;
 }
 
-/** Encabezado editorial de sección: eyebrow con índice + título. */
-function EncabezadoSeccion({ indice, kicker, titulo, sub }: { indice: string; kicker: string; titulo: string; sub?: string }) {
+/** Encabezado de sección: pill + título en dos tonos. */
+function EncabezadoSeccion({ pill, titulo, resaltar, sub }: { pill: string; titulo: string; resaltar: string; sub?: string }) {
+  const [antes, despues] = titulo.split(resaltar);
   return (
     <div className="flex flex-col items-center text-center">
-      <span className="eyebrow centrado">
-        {indice} · {kicker}
-      </span>
-      <h2 className="mt-4 font-display text-2xl sm:text-3xl lg:text-4xl">{titulo}</h2>
+      <span className="pill text-ember">{pill}</span>
+      <h2 className="mt-4 font-display text-2xl sm:text-3xl lg:text-4xl">
+        {antes}
+        <span className="resalta">{resaltar}</span>
+        {despues}
+      </h2>
       {sub && <p className="mt-2 text-sm text-ink-dim sm:text-base">{sub}</p>}
+    </div>
+  );
+}
+
+/** Llama de antorcha decorativa — oculta en móvil pequeño para no saturar. */
+function Antorcha({ lado }: { lado: "left" | "right" }) {
+  return (
+    <div className={`pointer-events-none absolute top-10 ${lado === "left" ? "left-2 sm:left-6" : "right-2 sm:right-6"} hidden sm:block`} aria-hidden>
+      <div className="mx-auto h-16 w-2 rounded-full bg-gradient-to-b from-[#5a3820] to-[#2a1a10]" />
+      <div className="antorcha-llama -mt-3 h-10 w-10 rounded-full" />
     </div>
   );
 }
@@ -174,179 +189,186 @@ export default function Home() {
         }}
       />
 
-      {/* HERO — glow radial que respira + trama geométrica + escudo en anillo luminoso */}
+      {/* HERO */}
       <section className="relative overflow-hidden border-b border-line">
-        <div
-          aria-hidden
-          className="respira pointer-events-none absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(65% 55% at 50% -5%, rgba(230,57,70,0.22) 0%, rgba(230,57,70,0) 68%), radial-gradient(45% 45% at 88% 92%, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 70%)",
-          }}
-        />
-        <svg
-          aria-hidden
-          className="pointer-events-none absolute inset-0 h-full w-full text-ink opacity-[0.035]"
-          preserveAspectRatio="none"
-        >
-          <pattern id="lineas-hero" width="44" height="44" patternUnits="userSpaceOnUse">
-            <path d="M0 44 44 0" stroke="currentColor" strokeWidth="1" />
-          </pattern>
-          <rect width="100%" height="100%" fill="url(#lineas-hero)" />
-        </svg>
-        {/* Vignette inferior para fundir el hero con la siguiente sección. */}
-        <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-bg" />
-
-        <div className="relative mx-auto max-w-md px-6 py-20 text-center sm:max-w-xl sm:py-28 lg:max-w-2xl lg:py-36">
-          <span className="mx-auto inline-flex items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.03] p-4 backdrop-blur-sm glow-ember">
-            <IconoEscudo className="h-9 w-9 text-ember-2 lg:h-10 lg:w-10" />
-          </span>
-          <p className="eyebrow centrado mt-7 justify-center">Transformación física y mental</p>
-          <h1 className="titulo-degradado mt-4 font-display text-5xl leading-[0.95] tracking-tight sm:text-6xl lg:text-8xl">
+        <Antorcha lado="left" />
+        <Antorcha lado="right" />
+        <div className="relative mx-auto max-w-md px-6 py-16 text-center sm:max-w-xl sm:py-24 lg:max-w-2xl lg:py-28">
+          <Reveal>
+            <span className="pill text-ember">Método Vikingo</span>
+          </Reveal>
+          <h1 className="mt-5 font-display text-5xl leading-[0.95] tracking-tight sm:text-6xl lg:text-7xl">
             EL MÉTODO
             <br />
-            VIKINGO
+            <span className="resalta">VIKINGO</span>
           </h1>
-          <p className="mx-auto mt-6 max-w-md text-xl font-semibold leading-snug text-ink sm:max-w-lg sm:text-2xl lg:max-w-xl">
-            Gana tus <span className="text-ember-2">primeros 5 kg de músculo</span>, en casa o en el gimnasio.
+          <p className="mx-auto mt-6 max-w-md text-xl font-semibold leading-snug sm:max-w-lg sm:text-2xl lg:max-w-xl">
+            Gana tus <span className="resalta">primeros 5 kg de músculo</span>, en casa o en el gimnasio.
           </p>
           <p className="mx-auto mt-4 max-w-sm text-sm leading-relaxed text-ink-dim sm:max-w-md sm:text-base">
             Más la disciplina, la mentalidad y la nutrición para construir un físico imponente y no rendirte a los tres
             días. El mapa paso a paso para hombres jóvenes, sin importar tu genética.
           </p>
-          <CTAWrap className="mt-9">
-            <BotonHotmart href={HOTMART_URL} ubicacion="hero" texto="⚔ UNIRSE AL MÉTODO VIKINGO HOY" pulso />
-          </CTAWrap>
-          <p className="mt-4 flex items-center justify-center gap-1.5 text-xs tracking-wide text-ink-faint">
-            <IconoRayo className="h-3.5 w-3.5 text-ember-2" />
-            ACCESO INMEDIATO EN TU CELULAR O COMPUTADOR
-          </p>
-        </div>
-      </section>
-      {/* Sentinel: cuando esto sale de pantalla hacia arriba, aparece el sticky CTA. */}
-      <div id="fin-hero" />
 
-      {/* AGITACIÓN — bento con borde en degradado */}
-      <section className="mx-auto max-w-md px-6 py-16 sm:max-w-2xl sm:py-24 lg:max-w-3xl">
-        <EncabezadoSeccion indice="01" kicker="El problema" titulo="¿TE SIENTES IDENTIFICADO?" />
-        <div className="borde-grad elev mt-9 p-6 sm:p-8">
-          <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
-            {PROBLEMAS.map((p) => (
-              <p key={p} className="flex items-start gap-3 text-sm leading-relaxed text-ink/90 sm:text-base">
-                <span className="mt-0.5 flex h-6 w-6 flex-none items-center justify-center rounded-md border border-ember/25 bg-ember/10 text-ember">
-                  <IconoChevron className="h-3.5 w-3.5" />
-                </span>
-                {p}
-              </p>
-            ))}
+          <div className="mt-7 flex justify-center">
+            <VikingMascot pose="colgado" width={150} priority />
+          </div>
+
+          <div className="mt-2 flex items-center justify-center gap-2">
+            <span className="font-display text-2xl text-ember-2">{PRECIO}</span>
+            <span className="text-sm text-ink-dim">{PRECIO_MONEDA} · pago único</span>
+          </div>
+          <CTAWrap className="mt-5">
+            <BotonHotmart href={HOTMART_URL} ubicacion="hero" texto="Empezar el Método" className="w-full" pulso />
+          </CTAWrap>
+
+          <div className="mx-auto mt-6 flex max-w-sm flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-ink-faint">
+            <span className="flex items-center gap-1.5"><Zap className="h-3.5 w-3.5 text-ember-2" /> Acceso al momento</span>
+            <span className="flex items-center gap-1.5"><Mail className="h-3.5 w-3.5 text-ember-2" /> Soporte por correo</span>
+            <span className="flex items-center gap-1.5"><Lock className="h-3.5 w-3.5 text-ember-2" /> Pago seguro</span>
           </div>
         </div>
       </section>
+      {/* Sentinel: cuando esto sale de pantalla hacia arriba, aparece la barra fija. */}
+      <div id="fin-hero" />
 
-      {/* SOLUCIÓN — tarjetas con borde en degradado que levitan */}
+      {/* ¿TE PASA ESTO? */}
+      <section className="mx-auto max-w-md px-6 py-16 sm:max-w-2xl sm:py-24 lg:max-w-4xl">
+        <EncabezadoSeccion pill="El problema" titulo="¿TE PASA ESTO?" resaltar="ESTO" />
+        <div className="mt-9 grid gap-4 sm:grid-cols-[auto_1fr] sm:items-center sm:gap-8">
+          <div className="hidden justify-self-center sm:block">
+            <VikingMascot pose="esfuerzo" width={160} />
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {PROBLEMAS.map((p, i) => (
+              <Reveal key={p} delay={i * 0.08}>
+                <div className="card-vikingo card-vikingo-err flex h-full items-start gap-3 p-4">
+                  <span className="mt-0.5 flex h-6 w-6 flex-none items-center justify-center rounded-full bg-err/15 text-err">
+                    <X className="h-3.5 w-3.5" />
+                  </span>
+                  <p className="text-sm leading-relaxed sm:text-base">{p}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+        <Reveal delay={0.2}>
+          <div className="card-crema mt-6 p-5 text-center sm:p-6">
+            <p className="text-sm leading-relaxed sm:text-base">
+              Por eso existe el Método Vikingo: un sistema diario, paso a paso, que te explica qué hacer y por qué —
+              sin relleno, sin excusas para no empezar.
+            </p>
+          </div>
+        </Reveal>
+      </section>
+
+      {/* TODO LO QUE RECIBES */}
       <section className="mx-auto max-w-md px-6 py-16 sm:max-w-2xl sm:py-24 lg:max-w-6xl">
-        <EncabezadoSeccion indice="02" kicker="La solución" titulo="EL CAMBIO EMPIEZA HOY" sub="Esto es lo que incluye el Método." />
+        <EncabezadoSeccion pill="La solución" titulo="EL CAMBIO EMPIEZA HOY" resaltar="HOY" sub="Esto es lo que incluye el Método." />
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
-          {INCLUYE.map(({ Icono, titulo, texto }, i) => (
-            <div key={titulo} className="borde-grad card-hover elev group p-6">
-              <div className="flex items-center justify-between">
-                <span className="flex h-11 w-11 items-center justify-center rounded-lg border border-ember/20 bg-ember/10 text-ember transition-colors group-hover:bg-ember/15">
-                  <Icono className="h-6 w-6" />
-                </span>
-                <span className="font-display text-sm text-ink-faint">0{i + 1}</span>
+          <Stagger>
+            {INCLUYE.map(({ Icono, titulo, texto }, i) => (
+              <div key={titulo} className="card-vikingo p-6">
+                <div className="flex items-center justify-between">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-ember/15 text-ember">
+                    <Icono className="h-6 w-6" />
+                  </span>
+                  <span className="font-display text-sm text-ink-faint">0{i + 1}</span>
+                </div>
+                <p className="mt-4 font-display text-base tracking-wide">{titulo}</p>
+                <p className="mt-2 text-sm leading-relaxed text-ink-dim">{texto}</p>
               </div>
-              <p className="mt-4 font-display text-base tracking-wide text-ink">{titulo}</p>
-              <p className="mt-2 text-sm leading-relaxed text-ink-dim">{texto}</p>
-            </div>
-          ))}
+            ))}
+          </Stagger>
         </div>
       </section>
 
       {/* TESTIMONIOS — marquesina infinita 100% CSS, pausa al mantener el dedo */}
       <section className="py-16 sm:py-24">
         <div className="mx-auto max-w-md px-6 sm:max-w-2xl lg:max-w-6xl">
-          <EncabezadoSeccion indice="03" kicker="Lo que dicen" titulo="LA TRIBU YA ESTÁ ENTRENANDO" />
+          <EncabezadoSeccion pill="Lo que dicen" titulo="LA TRIBU YA ESTÁ ENTRENANDO" resaltar="ENTRENANDO" />
         </div>
         <div className="mt-10">
           <Testimonios items={TESTIMONIOS} />
         </div>
       </section>
 
-      {/* PAGO SIN TARJETA — estética fintech, borde en degradado */}
+      {/* PAGO SIN TARJETA */}
       <section className="mx-auto max-w-md px-6 py-16 sm:max-w-2xl sm:py-24">
-        <EncabezadoSeccion indice="04" kicker="Sin barreras" titulo="¿NO TIENES TARJETA?" />
-        <div className="borde-grad elev mt-9 p-6 sm:p-8">
-          <p className="mx-auto max-w-md text-center text-sm leading-relaxed text-ink-dim sm:text-base">
-            Paga en <strong className="text-ink">efectivo</strong> en la tienda más cercana o con tu{" "}
-            <strong className="text-ink">billetera digital</strong> favorita. Genera tu código en el botón de abajo.
-          </p>
-          <ul className="mx-auto mt-6 grid max-w-xl gap-2.5 sm:grid-cols-2">
-            {METODOS_PAGO.map((m) => (
-              <li
-                key={m.pais}
-                className="flex items-center justify-between gap-3 rounded-lg border border-line bg-bg-3/50 px-3.5 py-2.5 text-sm transition-colors hover:border-white/[0.14]"
-              >
-                <span className="flex items-center gap-2.5 text-ink-dim">
-                  <span className="rounded-md border border-ember/20 bg-ember/10 px-1.5 py-0.5 font-display text-[10px] tracking-wider text-ember-2">
-                    {m.pais}
-                  </span>
-                  {m.nombre}
-                </span>
-                <span className="text-right text-ink">{m.opciones}</span>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-5 text-center text-xs text-ink-faint">Y más opciones disponibles según tu país al hacer clic.</p>
-          <p className="mt-4 flex items-center justify-center gap-1.5 text-xs text-ink-faint">
-            <IconoCandado className="h-3.5 w-3.5" />
-            Conexión segura vía Hotmart
-          </p>
-        </div>
-      </section>
-
-      {/* PRECIO — tarjeta destacada: borde carmesí, glow, checklist de oferta */}
-      <section className="relative overflow-hidden border-y border-line">
-        <div
-          aria-hidden
-          className="respira pointer-events-none absolute inset-0"
-          style={{ background: "radial-gradient(55% 65% at 50% 45%, rgba(230,57,70,0.16) 0%, rgba(230,57,70,0) 70%)" }}
-        />
-        <div className="relative mx-auto max-w-md px-6 py-20 sm:max-w-lg sm:py-28">
-          <div className="borde-grad borde-grad-ember glow-ember overflow-hidden p-7 text-center sm:p-9">
-            <span className="eyebrow centrado justify-center">Acceso completo</span>
-            {PRECIO_ANTERIOR && <p className="mt-5 text-xl text-ink-faint line-through sm:text-2xl">{PRECIO_ANTERIOR}</p>}
-            <p className="mt-3 flex items-baseline justify-center gap-x-2 font-display leading-none text-ember">
-              <span aria-hidden className="text-3xl sm:text-5xl">🔥</span>
-              <span className="text-5xl sm:text-7xl">{PRECIO}</span>
-              <span className="text-xl text-ember/70 sm:text-3xl">{PRECIO_MONEDA}</span>
+        <EncabezadoSeccion pill="Sin barreras" titulo="¿NO TIENES TARJETA?" resaltar="TARJETA?" />
+        <Reveal delay={0.1}>
+          <div className="card-vikingo card-vikingo-ice mt-9 p-6 sm:p-8">
+            <p className="mx-auto max-w-md text-center text-sm leading-relaxed text-ink-dim sm:text-base">
+              Paga en <strong className="text-ink">efectivo</strong> en la tienda más cercana o con tu{" "}
+              <strong className="text-ink">billetera digital</strong> favorita. Genera tu código en el botón de abajo.
             </p>
-            <p className="mt-3 text-xs text-ink-faint sm:text-sm">O el equivalente en la moneda de tu país</p>
-
-            <ul className="mx-auto mt-7 grid max-w-sm gap-2.5 text-left">
-              {LO_QUE_OBTIENES.map((item) => (
-                <li key={item} className="flex items-start gap-2.5 text-sm text-ink sm:text-[0.95rem]">
-                  <span className="mt-0.5 flex h-5 w-5 flex-none items-center justify-center rounded-full bg-ember/15 text-ember">
-                    <IconoCheck className="h-3.5 w-3.5" />
+            <ul className="mx-auto mt-6 grid max-w-xl gap-2.5 sm:grid-cols-2">
+              {METODOS_PAGO.map((m) => (
+                <li
+                  key={m.pais}
+                  className="flex items-center justify-between gap-3 rounded-xl border border-line bg-bg-2/60 px-3.5 py-2.5 text-sm"
+                >
+                  <span className="flex items-center gap-2.5 text-ink-dim">
+                    <span className="rounded-md bg-ice/15 px-1.5 py-0.5 font-display text-[10px] tracking-wider text-ice">
+                      {m.pais}
+                    </span>
+                    {m.nombre}
                   </span>
-                  {item}
+                  <span className="text-right text-ink">{m.opciones}</span>
                 </li>
               ))}
             </ul>
-
-            <CTAWrap className="mt-8">
-              <BotonHotmart href={HOTMART_URL} ubicacion="precio" pulso texto="⚔ QUIERO MI ACCESO AHORA" />
-            </CTAWrap>
-            <p className="mx-auto mt-4 max-w-sm text-xs leading-relaxed text-ink-faint sm:text-sm">
-              Al hacer clic, Hotmart convierte el precio a tu moneda local y te muestra las opciones de pago de tu país.
+            <p className="mt-5 text-center text-xs text-ink-faint">Y más opciones disponibles según tu país al hacer clic.</p>
+            <p className="mt-4 flex items-center justify-center gap-1.5 text-xs text-ink-faint">
+              <Lock className="h-3.5 w-3.5" />
+              Conexión segura vía Hotmart
             </p>
           </div>
+        </Reveal>
+      </section>
+
+      {/* PRECIO — tarjeta crema destacada */}
+      <section className="relative overflow-hidden border-y border-line py-16 sm:py-24">
+        <div className="relative mx-auto max-w-md px-6 sm:max-w-lg">
+          <Reveal>
+            <div className="card-crema overflow-hidden p-7 text-center sm:p-9">
+              <div className="mx-auto -mt-2 mb-1 flex justify-center">
+                <VikingMascot pose="orgulloso" width={120} />
+              </div>
+              <span className="pill text-ember-deep">Acceso completo</span>
+              {PRECIO_ANTERIOR && <p className="mt-5 text-xl opacity-50 line-through sm:text-2xl">{PRECIO_ANTERIOR}</p>}
+              <p className="mt-3 flex items-baseline justify-center gap-x-2 font-display leading-none text-ember-deep">
+                <span className="text-5xl sm:text-7xl">{PRECIO}</span>
+                <span className="text-xl opacity-70 sm:text-3xl">{PRECIO_MONEDA}</span>
+              </p>
+              <p className="mt-3 text-xs opacity-70 sm:text-sm">O el equivalente en la moneda de tu país</p>
+
+              <ul className="mx-auto mt-7 grid max-w-sm gap-2.5 text-left">
+                {LO_QUE_OBTIENES.map((item) => (
+                  <li key={item} className="flex items-start gap-2.5 text-sm sm:text-[0.95rem]">
+                    <span className="mt-0.5 flex h-5 w-5 flex-none items-center justify-center rounded-full bg-ok/20 text-[#2f8f55]">
+                      <Check className="h-3.5 w-3.5" />
+                    </span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+
+              <CTAWrap className="mt-8">
+                <BotonHotmart href={HOTMART_URL} ubicacion="precio" pulso texto="Quiero mi acceso ahora" className="w-full" />
+              </CTAWrap>
+              <p className="mx-auto mt-4 max-w-sm text-xs leading-relaxed opacity-70 sm:text-sm">
+                Al hacer clic, Hotmart convierte el precio a tu moneda local y te muestra las opciones de pago de tu país.
+              </p>
+            </div>
+          </Reveal>
 
           {/* Strip de confianza — reformatea el bloque "compra segura" en íconos. */}
           <div className="mt-6 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
             {CONFIANZA.map(({ Icono, texto }) => (
               <div
                 key={texto}
-                className="flex items-center gap-2.5 rounded-lg border border-line bg-bg-2/60 px-3.5 py-3 text-xs text-ink-dim sm:flex-col sm:items-center sm:text-center"
+                className="flex items-center gap-2.5 rounded-xl border border-line bg-bg-2/60 px-3.5 py-3 text-xs text-ink-dim sm:flex-col sm:items-center sm:text-center"
               >
                 <Icono className="h-5 w-5 flex-none text-ember-2" />
                 {texto}
@@ -358,34 +380,32 @@ export default function Home() {
 
       {/* FAQ */}
       <section className="mx-auto max-w-md px-6 py-16 sm:max-w-2xl sm:py-24">
-        <EncabezadoSeccion indice="05" kicker="Dudas frecuentes" titulo="PREGUNTAS FRECUENTES" />
-        <div className="borde-grad elev mt-9 px-5 sm:px-7">
+        <EncabezadoSeccion pill="Dudas frecuentes" titulo="PREGUNTAS FRECUENTES" resaltar="FRECUENTES" />
+        <div className="card-vikingo mt-9 px-5 sm:px-7">
           <Acordeon items={PREGUNTAS} />
         </div>
       </section>
 
-      {/* CTA FINAL */}
-      <section className="relative overflow-hidden border-t border-line pb-24 sm:pb-16">
-        <div
-          aria-hidden
-          className="respira pointer-events-none absolute inset-0"
-          style={{ background: "radial-gradient(65% 65% at 50% 0%, rgba(230,57,70,0.18) 0%, rgba(230,57,70,0) 70%)" }}
-        />
-        <div className="relative mx-auto max-w-md px-6 py-20 text-center sm:max-w-xl sm:py-24">
-          <span className="mx-auto inline-flex items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.03] p-3.5 backdrop-blur-sm glow-ember">
-            <IconoEscudo className="h-8 w-8 text-ember-2" />
-          </span>
-          <h2 className="titulo-degradado mt-6 font-display text-3xl sm:text-4xl lg:text-5xl">ÚNETE A LA TRIBU HOY</h2>
+      {/* CIERRE */}
+      <section className="relative overflow-hidden border-t border-line pb-24 pt-16 sm:pb-16 sm:pt-24">
+        <div className="relative mx-auto max-w-md px-6 text-center sm:max-w-xl">
+          <div className="flex justify-center">
+            <VikingMascot pose="apunta_abajo" width={150} />
+          </div>
+          <h2 className="mt-4 font-display text-3xl sm:text-4xl lg:text-5xl">
+            ÚNETE A LA <span className="resalta">TRIBU</span> HOY
+          </h2>
           <p className="mx-auto mt-3 max-w-sm text-sm text-ink-dim sm:text-base">
             El primer paso es una decisión. El resto es método.
           </p>
           <CTAWrap className="mt-8">
-            <BotonHotmart href={HOTMART_URL} ubicacion="cta_final" pulso texto="⚔ QUIERO MI ACCESO AHORA" />
+            <BotonHotmart href={HOTMART_URL} ubicacion="cta_final" pulso texto="Quiero mi acceso ahora" className="w-full" />
           </CTAWrap>
         </div>
       </section>
 
-      <StickyCTA href={HOTMART_URL} sentinelId="fin-hero" />
+      <StickyCTA href={HOTMART_URL} sentinelId="fin-hero" precio={`${PRECIO} ${PRECIO_MONEDA}`} />
+      <ExitPopup href={HOTMART_URL} />
     </div>
   );
 }

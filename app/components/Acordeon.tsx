@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { IconoMas } from "@/app/components/IconosNordicos";
+import { Plus } from "lucide-react";
 
 /**
  * Acordeón con transición fluida real (grid-template-rows 0fr→1fr en
@@ -12,7 +12,7 @@ export default function Acordeon({ items }: { items: { q: string; a: string }[] 
   const [abierto, setAbierto] = useState<number | null>(null);
 
   return (
-    <div className="divide-y divide-line border-y border-line">
+    <div className="divide-y divide-line">
       {items.map((item, i) => {
         const estaAbierto = abierto === i;
         return (
@@ -24,7 +24,7 @@ export default function Acordeon({ items }: { items: { q: string; a: string }[] 
               className="flex w-full items-center justify-between gap-4 py-4 text-left text-sm font-semibold sm:text-base"
             >
               {item.q}
-              <IconoMas className={`h-4 w-4 flex-none text-ember ${estaAbierto ? "rotate-45" : ""}`} />
+              <Plus className={`h-4 w-4 flex-none text-ember transition-transform duration-200 ${estaAbierto ? "rotate-45" : ""}`} />
             </button>
             <div className="acordeon-contenido" data-abierto={estaAbierto}>
               <div>

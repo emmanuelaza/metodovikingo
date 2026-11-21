@@ -19,7 +19,7 @@ export const HOTMART_URL_DEFAULT = "https://pay.hotmart.com/E94996678E?checkoutM
 export default function BotonHotmart({
   href,
   ubicacion = "hero",
-  texto = "⚔️ OBTENER EL MÉTODO VIKINGO AQUÍ",
+  texto = "Empezar el Método",
   className = "",
   pulso = false,
 }: {
@@ -39,14 +39,9 @@ export default function BotonHotmart({
         // El pago real ocurre en Hotmart; aquí marcamos que inició el checkout.
         window.ttq?.track("InitiateCheckout", { content_name: "El Método Vikingo", ubicacion });
       }}
-      className={`btn-vikingo group relative block w-full overflow-hidden rounded-lg px-5 py-4 text-center font-display text-sm tracking-wide text-white sm:text-base ${pulso ? "animate-pulso-cta" : ""} ${className}`}
+      className={`btn-viking px-6 py-4 text-sm sm:text-base ${pulso ? "animate-pulso-cta" : ""} ${className}`}
     >
-      {/* Barrido de brillo al pasar el cursor (desktop). */}
-      <span
-        aria-hidden
-        className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 group-hover:translate-x-full"
-      />
-      <span className="relative">{texto}</span>
+      {texto}
     </a>
   );
 }

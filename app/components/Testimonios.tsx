@@ -1,4 +1,4 @@
-import { IconoComillas } from "@/app/components/IconosNordicos";
+import { Quote } from "lucide-react";
 
 /**
  * Marquesina de testimonios — 100% CSS (keyframes en globals.css), sin JS ni
@@ -12,8 +12,8 @@ export type Testimonio = { texto: string; autor: string };
 
 function Tarjeta({ t }: { t: Testimonio }) {
   return (
-    <figure className="borde-grad elev flex w-72 flex-none flex-col justify-between p-5 sm:w-80">
-      <IconoComillas className="h-6 w-6 text-ember/50" />
+    <figure className="card-vikingo flex w-72 flex-none flex-col justify-between p-5 sm:w-80">
+      <Quote className="h-6 w-6 fill-ember/40 text-ember/60" />
       <blockquote className="mt-3 text-sm leading-relaxed text-ink/90">{t.texto}</blockquote>
       <figcaption className="mt-4 flex items-center gap-2 text-xs font-semibold tracking-wide text-ember-2">
         <span className="h-px w-4 bg-ember/40" />
