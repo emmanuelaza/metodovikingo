@@ -414,7 +414,7 @@ export default function Home() {
       </section>
 
       <StickyCTA href={HOTMART_URL} sentinelId="fin-hero" precio={`${PRECIO} ${PRECIO_MONEDA}`} />
-      <ExitPopup href={HOTMART_URL} precio={PRECIO} precioAnterior={PRECIO_ANTERIOR} precioMoneda={PRECIO_MONEDA} />
+      <ExitPopup href={HOTMART_URL} />
     </div>
   );
 }

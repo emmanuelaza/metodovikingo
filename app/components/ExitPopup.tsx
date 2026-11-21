@@ -1,29 +1,21 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
-import { ChevronDown } from "lucide-react";
-import { VikingMascot } from "@/app/components/VikingMascot";
+import { useEffect, useRef, useState } from "react";
+import { Volume2, VolumeX, X as IconoCerrar } from "lucide-react";
 import BotonHotmart from "@/app/components/BotonHotmart";
 
 /**
  * Popup de salida — SOLO por intención real de salir, nunca por tiempo:
  * escritorio, el cursor sale por arriba de la ventana; móvil, el usuario
- * presiona "atrás". Una vez por sesión (sessionStorage). El precio tachado
- * es real (el producto costaba eso antes), nunca un descuento inventado.
+ * presiona "atrás". Una vez por sesión (sessionStorage). El video
+ * (public/popup/salida.mp4) solo se descarga cuando esto se monta en el DOM
+ * al abrirse — nunca en la carga inicial de la página.
  */
-export default function ExitPopup({
-  href,
-  precio,
-  precioAnterior,
-  precioMoneda,
-}: {
-  href: string;
-  precio: string;
-  precioAnterior?: string;
-  precioMoneda: string;
-}) {
+export default function ExitPopup({ href }: { href: string }) {
   const [open, setOpen] = useState(false);
+  const [conSonido, setConSonido] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     if (sessionStorage.getItem("salida_mostrada")) return;
@@ -57,6 +49,13 @@ export default function ExitPopup({
     };
   }, []);
 
+  const alternarSonido = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.muted = conSonido;
+    setConSonido(!conSonido);
+  };
+
   return (
     <AnimatePresence>
       {open && (
@@ -68,56 +67,45 @@ export default function ExitPopup({
           onClick={() => setOpen(false)}
         >
           <motion.div
-            className="card-vikingo relative w-full max-w-sm overflow-hidden p-6 text-center sm:p-8"
-            initial={{ scale: 0.75, y: 40, rotate: -2 }}
-            animate={{ scale: 1, y: 0, rotate: 0 }}
+            className="card-vikingo relative w-full max-w-xs overflow-hidden p-0 sm:max-w-sm"
+            initial={{ scale: 0.75, y: 40 }}
+            animate={{ scale: 1, y: 0 }}
             transition={{ type: "spring", stiffness: 260, damping: 16 }}
             onClick={(e) => e.stopPropagation()}
           >
-            <span className="pill text-err">Antes de irte</span>
-
-            <div className="mt-2 flex justify-center">
-              <VikingMascot pose="sorpresa" width={150} priority />
-            </div>
-
-            <h3 className="texto-glow mt-1 font-display text-2xl text-ember-2 sm:text-3xl">
-              TU FÍSICO PUEDE
-              <br />
-              EMPEZAR HOY
-            </h3>
-
-            <p className="mx-auto mt-3 max-w-xs text-sm leading-relaxed text-ink-dim">
-              Un plan claro de entrenamiento, mentalidad y nutrición — sin relleno, directo a lo que funciona.
-            </p>
-
-            <div className="mx-auto mt-5 max-w-[14rem] text-ember-2">
-              <div className="barra-pesas">
-                <span />
-              </div>
-            </div>
-
-            <div className="mt-4">
-              {precioAnterior && (
-                <p className="text-base text-ink-faint line-through sm:text-lg">
-                  Antes costaba {precioAnterior} {precioMoneda}
-                </p>
-              )}
-              <p className="texto-glow mt-1 font-display text-4xl text-ember sm:text-5xl">
-                {precio} {precioMoneda}
-              </p>
-            </div>
-
-            <p className="mt-5 flex items-center justify-center gap-1 text-xs font-bold uppercase tracking-wide text-ember-2">
-              Dale al botón
-              <motion.span animate={{ y: [0, 4, 0] }} transition={{ duration: 1.1, repeat: Infinity, ease: "easeInOut" }}>
-                <ChevronDown className="h-4 w-4" />
-              </motion.span>
-            </p>
-            <BotonHotmart href={href} ubicacion="exit_popup" className="mt-2 w-full" texto="Quiero mi acceso ahora" pulso />
-
-            <button onClick={() => setOpen(false)} className="mt-4 text-xs text-ink-faint underline opacity-70">
-              No, gracias
+            <button
+              onClick={() => setOpen(false)}
+              aria-label="Cerrar"
+              className="absolute right-2 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/60 text-white"
+            >
+              <IconoCerrar className="h-4 w-4" />
             </button>
+
+            <div className="relative aspect-[9/16] w-full bg-black">
+              <video
+                ref={videoRef}
+                src="/popup/salida.mp4"
+                autoPlay
+                loop
+                muted={!conSonido}
+                playsInline
+                className="h-full w-full object-cover"
+              />
+              <button
+                onClick={alternarSonido}
+                aria-label={conSonido ? "Silenciar" : "Activar sonido"}
+                className="absolute bottom-3 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-black/60 text-white"
+              >
+                {conSonido ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+              </button>
+            </div>
+
+            <div className="p-5 text-center sm:p-6">
+              <BotonHotmart href={href} ubicacion="exit_popup" className="w-full" texto="Quiero mi acceso ahora" pulso />
+              <button onClick={() => setOpen(false)} className="mt-3 text-xs text-ink-faint underline opacity-70">
+                No, gracias
+              </button>
+            </div>
           </motion.div>
         </motion.div>
       )}
